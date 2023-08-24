@@ -1,0 +1,85 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Orçamento</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/novoorcamentos/" method="post" id="form-orcamento">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Selecione o Orçamento</label>
+                    <br />
+                    <select class="form-select" name="orcamento" aria-label="Selecione o Orçamento">
+                        <option value="1">Orçamento 1</option>
+                        <option value="2">Orçamento 2</option>
+                        <option value="3">Orçamento 3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label">Quantidade de Pessoas</label>
+                    <input type="text" class="form-control" name="cpf" value="" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Selecione os Pratos</label>
+                    <br />
+                    <select class="form-select multiple-select" name="prato" aria-label="Selecione os Pratos" multiple="multiple">
+                        <option value="1">Prato 1</option>
+                        <option value="2">Prato 2</option>
+                        <option value="3">Prato 3</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Selecione os Itens de Locação</label>
+                    <br />
+                    <select class="form-select multiple-select" name="item-locacao" aria-label="Selecione os Itens de Locação" multiple="multiple">
+                        <option value="1">Item de locação 1</option>
+                        <option value="2">Item de locação 2</option>
+                        <option value="3">Item de locação 3</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Selecione os Prestadores</label>
+                    <br />
+                    <select class="form-select multiple-select" name="prestador" aria-label="Selecione os Prestadores" multiple="multiple">
+                        <option value="1">Prestador 1</option>
+                        <option value="2">Prestador 2</option>
+                        <option value="3">Prestador 3</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-orcamento" />
+
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/multiple-select.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal orcamento');
+
+        $('.multiple-select').multipleSelect();
+    });
+</script>

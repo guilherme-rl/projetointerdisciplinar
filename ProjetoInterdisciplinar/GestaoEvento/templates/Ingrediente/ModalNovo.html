@@ -1,0 +1,49 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Unidade de Medida</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/novounidademedida/" method="post" id="form-unidade-medida">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="nome" value="" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Unidade Medida</label>
+                    <select class="form-select" name="unidade-medida" aria-label="Selecione a Unidade de Medida">
+                        <option value="1">Unidade Medida 1</option>
+                        <option value="2">Unidade Medida 2</option>
+                        <option value="3">Unidade Medida 3</option>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Custo por Unidade Medida</label>
+                    <input type="text" class="form-control" name="custo-unidade" value="" placeholder="0,00" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-unidade-medida" />
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal ingrediente');
+    });
+</script>

@@ -1,0 +1,33 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center">Código</th>
+            <th class="text-center">Qtd. Pessoas</th>
+            <th class="text-center">Data do Evento</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if orcamentos|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for orcamento in orcamentos %}
+            <tr>
+                <td class="text-center">
+                    {{ orcamentos.cpf_cnpj }}
+                </td>
+                <td class="text-center">
+                    {{ orcamentos.nome_razao }}
+                </td>
+                <td class="text-center">
+                    {{ orcamentos.data_nascimento_criacao }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

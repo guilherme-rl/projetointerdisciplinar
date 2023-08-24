@@ -1,0 +1,34 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center" style="width: 150px;">Código</th>
+            <th class="text-left">Descrição</th>
+            <th class="text-center" style="width: 150px;">Custo Unitário</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if itenslocacao|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for itemlocacao in itenslocacao %}
+            <tr>
+                <td class="text-center">
+                    {{ itemlocacao.id }}
+                </td>
+                <td class="text-left">
+                    {{ itemlocacao.descricao }}
+                </td>
+                <td class="text-center">
+                    {{ itemlocacao.custo_unitario }}
+                </td>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

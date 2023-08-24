@@ -1,0 +1,37 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center" style="width: 150px;">Código</th>
+            <th class="text-left">Descrição</th>
+            <th class="text-center" style="width: 150px;">Unidade Medida</th>
+            <th class="text-center" style="width: 150px;">Custo por Unidade Medida</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if ingrediente|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for ingrediente in ingrediente %}
+            <tr>
+                <td class="text-center">
+                    {{ ingrediente.id }}
+                </td>
+                <td class="text-left">
+                    {{ ingrediente.descricao }}
+                </td>
+                <td class="text-center">
+                    {{ ingrediente.unidade_medida.descricao }}
+                </td>
+                <td class="text-center">
+                    {{ ingrediente.custo_unidade }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

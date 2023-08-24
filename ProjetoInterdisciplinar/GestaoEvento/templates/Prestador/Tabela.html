@@ -1,0 +1,41 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center">CPF/CNPJ</th>
+            <th class="text-center">Nome/Razão Social</th>
+            <th class="text-center">Data Nasc./Criação</th>
+            <th class="text-center">Cidade - Estado</th>
+            <th class="text-center">Descrição do Serviço</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if prestadores|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for prestador in prestadores %}
+            <tr>
+                <td class="text-center">
+                    {{ prestador.cpf_cnpj }}
+                </td>
+                <td class="text-center">
+                    {{ prestador.nome_razao }}
+                </td>
+                <td class="text-center">
+                    {{ prestador.data_nascimento_criacao }}
+                </td>
+                <td class="text-center">
+                    {{ prestador.endereco.cidade.descricao }} - {{ prestador.endereco.cidade.estado.descricao }}
+                </td>
+                <td class="text-left">
+                    {{ prestador.descricao_servico }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

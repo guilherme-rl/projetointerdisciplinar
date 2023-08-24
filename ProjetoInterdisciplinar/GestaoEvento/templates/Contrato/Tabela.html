@@ -1,0 +1,33 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center">Código Contrato</th>
+            <th class="text-center">Orçamento</th>
+            <th class="text-center">Data Impressáo</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if contratos|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for contrato in contratos %}
+            <tr>
+                <td class="text-center">
+                    {{ contrato.id }}
+                </td>
+                <td class="text-center">
+                    {{ contrato.orcamento.id }}
+                </td>
+                <td class="text-center">
+                    {{ contrato.data_impressao }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

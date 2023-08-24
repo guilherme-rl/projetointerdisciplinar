@@ -1,0 +1,29 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center" style="width: 150px;">Código</th>
+            <th class="text-left">Descrição</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if unidadesmedida|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for unidademedida in unidadesmedida %}
+            <tr>
+                <td class="text-center">
+                    {{ unidadesmedida.id }}
+                </td>
+                <td class="text-left">
+                    {{ unidadesmedida.descricao }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

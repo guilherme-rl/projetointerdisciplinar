@@ -1,0 +1,33 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center" style="width: 150px;">Código</th>
+            <th class="text-left">Descrição</th>
+            <th class="text-center" style="width: 150px;">Rendimento</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if pratos|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for pratos in pratos %}
+            <tr>
+                <td class="text-center">
+                    {{ prato.id }}
+                </td>
+                <td class="text-left">
+                    {{ prato.descricao }}
+                </td>
+                <td class="text-center">
+                    {{ prato.rendimento }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

@@ -1,0 +1,39 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Prato</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/novoprato/" method="post" id="form-prato">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="descricao" value="" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Rendimento por receita</label>
+                    <input type="text" class="form-control" name="rendimento" value="" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-prato" />
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal prato');
+    });
+</script>

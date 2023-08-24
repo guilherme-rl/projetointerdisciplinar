@@ -1,0 +1,31 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Unidade de Medida</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/novounidademedida/" method="post" id="form-unidade-medida">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="descricao" value="" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-unidade-medida" />
+    
+</div>
+
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal unidade medida');
+    });
+</script>
