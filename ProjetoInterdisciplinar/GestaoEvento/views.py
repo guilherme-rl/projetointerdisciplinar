@@ -51,8 +51,20 @@ def ModalNovoCliente(request):
 
 
 def NovoCliente(request):
+    
+    try:
+        novo_cliente = Cliente(
+            nome_razao=request.POST.get('nome'),
+            data_nascimento_criacao=request.POST.get('data_nasc'),
+            cpf_cnpj=request.POST.get('cpf_cnpj'),
+        )
+        
+        novo_cliente.save()
 
-    return JsonResponse({'success': True})
+        return JsonResponse({'success': True})
+    
+    except Exception as e:
+        print(e)
 
 
 ############## Prestador ##############
