@@ -16,64 +16,28 @@ class Entidade(models.Model):
     data_nascimento_criacao = models.DateField(null=True)
     cpf_cnpj = models.CharField(max_length=14)
     tipo = models.CharField(max_length=1, choices=escolha_entidade, default='C')
-    excluido = models.BooleanField(default=False)
-
-    class Meta:
-        abstract = True
-
-
-class Usuario(Entidade):
-    login = models.CharField(max_length=200)
-    senha = models.CharField(max_length=200)
-
-    def save(self, *args, **kwargs):
-        self.tipo = 'U'
-        super().save(**args, **kwargs)
-
-
-class Prestador(Entidade):
+    login = models.CharField(max_length=100)
+    senha = models.CharField(max_length=100)
     descricao_servico = models.CharField(max_length=200)
-
-    def save(self, *args, **kwargs):
-        self.tipo = 'P'
-        super().save(**args, **kwargs)
-
-
-class Cliente(Entidade):
-    def save(self, *args, **kwargs):
-        self.tipo = 'C'
-        super().save(**args, **kwargs)
-
-
-class Estado(models.Model):
-    descricao = models.CharField(max_length=200)
-
-
-class Cidade(models.Model):
-    estado = models.ForeignKey(Estado, on_delete=models.CASCADE)
-    descricao = models.CharField(max_length=200)
+    excluido = models.BooleanField(default=False)
     
 
 class Endereco(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='endereco')
-    prestador = models.ForeignKey(Prestador, on_delete=models.CASCADE, related_name='endereco')
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='endereco')
-    cidade = models.ForeignKey(Cidade, on_delete=models.CASCADE)
+    entidade = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='entidade')
+    cep = models.CharField(max_length=8)
     bairro = models.CharField(max_length=200)
     complemento = models.CharField(max_length=200)
+    cidade = models.CharField(max_length=200)
+    estado = models.CharField(max_length=2)
 
 
 class Email(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='email')
-    prestador = models.ForeignKey(Prestador, on_delete=models.CASCADE, related_name='email')
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='email')
+    entidade = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='email')
     email = models.CharField(max_length=200)
 
 
 class Telefone(models.Model):
-    usuario = models.ForeignKey(Usuario, on_delete=models.CASCADE, related_name='telefone')
-    prestador = models.ForeignKey(Prestador, on_delete=models.CASCADE, related_name='telefone')
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='telefone')
+    entidade = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='telefone')
     telefone = models.CharField(max_length=30)
 
 
@@ -111,7 +75,7 @@ class PratoIngredienteAux(models.Model):
 
 
 class Orcamento(models.Model):
-    cliente = models.ForeignKey(Cliente, on_delete=models.CASCADE, related_name='orcamentos')
+    cliente = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='orcamentos')
     quantidade_pessoas = models.IntegerField()
     data_evento = models.DateField(null=True)
     excluido = models.BooleanField(default=False)
@@ -126,7 +90,7 @@ class Orcamento(models.Model):
         through_fields=("orcamento", "prato")
     )
     prestadores = models.ManyToManyField(
-        Prestador, 
+        Entidade, 
         through="OrcamentoPrestadorAux",
         through_fields=("orcamento", "prestador")
     )
@@ -151,5 +115,5 @@ class OrcamentoPratoAux(models.Model):
 
 class OrcamentoPrestadorAux(models.Model):
     orcamento = models.ForeignKey(Orcamento, on_delete=models.CASCADE)
-    prestador = models.ForeignKey(Prestador, on_delete=models.CASCADE)
+    prestador = models.ForeignKey(Entidade, on_delete=models.CASCADE)
     valor_pago = models.DecimalField(max_digits=10, decimal_places=2)
