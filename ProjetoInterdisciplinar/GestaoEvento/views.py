@@ -1,7 +1,9 @@
 from datetime import datetime
+from django.db import transaction, connection, models
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from GestaoEvento.models import *
+import re
 
 # Create your views here.
 
@@ -27,10 +29,10 @@ def Contato(request):
     )
 
 
-############## Cliente ##############
+# region Cliente 
 def IndexCliente(request):
     
-    clientes = Cliente.objects.all()
+    clientes = Entidade.objects.filter(tipo='C')
 
     return render(
         request,
@@ -51,14 +53,43 @@ def ModalNovoCliente(request):
 
 
 def NovoCliente(request):
+    try:
+        with transaction.atomic():
+            
+            data = datetime.strptime(request.POST.get('data_nasc'), '%Y-%m-%d')
+            
+            cpf = request.POST.get('cpf_cnpj')
+            cpf = re.sub(r'[^0-9]', '', cpf)
+            
+            novo_cliente = Entidade(
+                nome_razao = request.POST.get('nome'),
+                cpf_cnpj = cpf,
+                data_nascimento_criacao = data,
+                tipo = 'C',
+            )
+            novo_cliente.save()
+            
+            novo_cliente.endereco.create(
+                cep = request.POST.get('cep') if request.POST.get('cep') else '',
+                bairro = request.POST.get('bairro'),
+                complemento = request.POST.get('endereco'),
+                cidade = request.POST.get('cidade'),
+                estado = request.POST.get('estado').upper(),
+            )
+            
+            novo_cliente.save()
 
-    return JsonResponse({'success': True})
+            return JsonResponse({'success': True})
+    
+    except Exception as e:
+        print(e)
 
+# endregion
 
-############## Prestador ##############
+# region Prestador
 def IndexPrestador(request):
     
-    prestadores = Prestador.objects.all()
+    prestadores = Entidade.objects.filter(tipo='P')
 
     return render(
         request,
@@ -82,11 +113,12 @@ def NovoPrestador(request):
 
     return JsonResponse({'success': True})
 
+# endregion
 
-############## Usuario ##############
+# region Usuario
 def IndexUsuario(request):
     
-    usuarios = Usuario.objects.all()
+    usuarios = Entidade.objects.filter(tipo='U')
 
     return render(
         request,
@@ -110,8 +142,9 @@ def NovoUsuario(request):
 
     return JsonResponse({'success': True})
 
+# endregion
 
-############## ItemLocacao ##############
+# region ItemLocacao
 def IndexItemLocacao(request):
     
     itens_locacao = ItemLocacao.objects.all()
@@ -138,8 +171,9 @@ def NovoItemLocacao(request):
 
     return JsonResponse({'success': True})
 
+# endregion
 
-############## UnidadeMedida ##############
+# region UnidadeMedida
 def IndexUnidadeMedida(request):
     
     unidades_medida = UnidadeMedida.objects.all()
@@ -166,8 +200,9 @@ def NovoUnidadeMedida(request):
 
     return JsonResponse({'success': True})
 
+# endregion
 
-############## Ingrediente ##############
+# region Ingrediente
 def IndexIngrediente(request):
     
     ingredientes = Ingrediente.objects.all()
@@ -194,8 +229,9 @@ def NovoIngrediente(request):
 
     return JsonResponse({'success': True})
 
+# endregion
 
-############## Prato ##############
+# region Prato
 def IndexPrato(request):
     
     pratos = Prato.objects.all()
@@ -222,8 +258,9 @@ def NovoPrato(request):
 
     return JsonResponse({'success': True})
 
+# endregion
 
-############## Orcamento ##############
+# region Orcamento
 def IndexOrcamento(request):
     
     orcamentos = Orcamento.objects.all()
@@ -250,8 +287,9 @@ def NovoOrcamento(request):
 
     return JsonResponse({'success': True})
 
+# endregion
 
-############## Relatorio ##############
+# region Relatorio
 def IndexRelatorio(request):
     
     relatorios = ''
@@ -278,8 +316,9 @@ def NovoRelatorio(request):
 
     return JsonResponse({'success': True})
 
+# endregion
 
-############## Contrato ##############
+# region Contrato
 def IndexContrato(request):
     
     contrato = ''
@@ -305,3 +344,5 @@ def ModalNovoContrato(request):
 def NovoContrato(request):
 
     return JsonResponse({'success': True})
+
+# endregion

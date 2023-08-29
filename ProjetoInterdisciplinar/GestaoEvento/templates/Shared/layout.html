@@ -11,11 +11,15 @@
 
     <link rel="stylesheet" type="text/css" href="{% static 'GestaoEvento/content/site.css' %}" />
 
+    {% block scripts %}
     <script src="{% static 'GestaoEvento/scripts/modernizr-2.6.2.js' %}"></script>
     <script src="{% static 'GestaoEvento/scripts/jquery-3.7.0.js' %}"></script>
     <script src="{% static 'GestaoEvento/bootstrap-5.3.0/js/bootstrap.bundle.min.js' %}"></script>
     <script src="{% static 'GestaoEvento/scripts/respond.js' %}"></script>
     <script src="{% static 'GestaoEvento/scripts/multiple-select.js' %}"></script>
+    <script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+    <script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+    {% endblock %}
 </head>
 
 <body>
@@ -77,7 +81,6 @@
             <p>&copy; {{ year }} - Aplicativo Gestão de Evento</p>
         </footer>
     </div>
-
 
 </body>
 </html>
