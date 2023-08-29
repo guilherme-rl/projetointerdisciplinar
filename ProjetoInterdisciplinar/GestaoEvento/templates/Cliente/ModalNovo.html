@@ -11,7 +11,7 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="form-label">Nome/Razão Social</label>
-                    <input type="text" class="form-control" name="nome" value="" />
+                    <input type="text" class="form-control" name="nome" id="nome" value="" />
                 </div>
             </div>
         </div>
@@ -19,47 +19,47 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="form-label">CPF/CNPJ</label>
-                    <input type="text" class="form-control" name="cpf" value="" />
+                    <input type="text" class="form-control" name="cpf_cnpj" id="cpf_cnpj" value="" />
                 </div>
             </div>
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="form-label">Data Nascimento/Criação</label>
-                    <input type="date" class="form-control" name="data_nasc" value="" />
+                    <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="" />
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-9">
                 <div class="form-group">
                     <label class="form-label">Endereço</label>
-                    <input type="text" class="form-control" name="cpf" value="" />
+                    <input type="text" class="form-control" name="endereco" id="endereco" value="" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label">CEP</label>
+                    <input type="text" class="form-control" name="cep" id="cep" value="" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-5">
                 <div class="form-group">
                     <label class="form-label">Bairro</label>
-                    <input type="text" class="form-control" name="bairro" value="" />
+                    <input type="text" class="form-control" name="bairro" id="bairro" value="" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-5">
                 <div class="form-group">
                     <label class="form-label">Cidade</label>
-                    <select class="form-select" name="cidade" aria-label="Selecione a Cidade">
-                        <option value="1">Cidade 1</option>
-                        <option value="2">Cidade 2</option>
-                        <option value="3">Cidade 3</option>
-                    </select>
+                    <input type="text" class="form-control" name="cidade" id="cidade" value="" />
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label class="form-label">Estado</label>
-                    <select class="form-select" name="estado" aria-label="Selecione o Estado">
-                        <option value="1">Estado 1</option>
-                        <option value="2">Estado 2</option>
-                        <option value="3">Estado 3</option>
-                    </select>
+                    <input type="text" class="form-control" name="estado" id="estado" maxlength="2" value="" />
                 </div>
             </div>
         </div>
@@ -72,8 +72,104 @@
     
 </div>
 
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
 <script>
     $(document).ready(function () {
         console.log('Document ready modal cliente');
+
+        $('#cep').mask('00000-000');
+
+        $('#cpf_cnpj').focus(function () {
+            console.log('focus cpf/cnpj');
+            $(this).unmask();
+        });
+
+        $('#cpf_cnpj').blur(function () {
+            valor = $(this).val().replace(/[^\d]+/g, '')
+            if (valor.length == 11){
+                $(this).mask('000.000.000-00');
+            } else if (valor.length == 14) {
+                $(this).mask('00.000.000/0000-00');
+            }
+        })
+
+        $.validator.messages.required = 'Campo obrigatório';
+
+        $.validator.addMethod('valido', function (value, element) {
+            
+            value = value.replace(/[^\w]+/g, '');
+
+            if (value !== "") {
+                if (value.length == 14) {
+                    //valido = validarCNPJ(value);
+                    return true;
+                }
+                else if (value.length == 11) {
+                    //valido = validaCPF(value);
+                    return true;
+                }
+            }
+
+            return false;
+        }, 'CNPJ/CPF inválido');
+
+        $('#form-cliente').validate({
+            rules: {
+                'nome': {
+                    required: true,
+                    minlength: 3,
+                },
+                'cpf_cnpj': {
+                    required: true,
+                    valido: true,
+                },
+                'data_nasc': {
+                    required: true,
+                },
+                'endereco': {
+                    required: true,
+                },
+                'bairro': {
+                    required: true,
+                },
+                'cidade': {
+                    required: true,
+                },
+                'estado': {
+                    required: true,
+                },
+            },
+        });
+
+        $('#form-cliente').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            if (form.valid()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    beforeSend: function () {
+                        $('#btn-salvar').val('Aguarde...');
+                        $('#btn-salvar').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-salvar').val('Salvar');
+                        $('#btn-salvar').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resp) {
+                        //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
+                        
+                        $('#modal-container').modal('hide');
+                    }
+                });
+            }
+        })
     });
 </script>

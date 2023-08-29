@@ -38,8 +38,7 @@
     </div>
 </div>
 
-{% load static %}
-<script src="{% static 'GestaoEvento/scripts/jquery-3.7.0.js' %}"></script>
+
 <script>
     $(document).ready(function () {
         console.log('Script index cliente');
@@ -65,7 +64,7 @@
                 $('#modal-container').off('shown.bs.modal');
             });
             $('#modal-container').modal('show');
-        })
+        });
     });
 </script>
 
