@@ -16,19 +16,19 @@ class Entidade(models.Model):
     data_nascimento_criacao = models.DateField(null=True)
     cpf_cnpj = models.CharField(max_length=14)
     tipo = models.CharField(max_length=1, choices=escolha_entidade, default='C')
-    login = models.CharField(max_length=100)
-    senha = models.CharField(max_length=100)
-    descricao_servico = models.CharField(max_length=200)
     excluido = models.BooleanField(default=False)
+    login = models.CharField(max_length=200, default='')
+    senha = models.CharField(max_length=200, default='')
+    descricao_servico = models.CharField(max_length=200, default='')
     
 
 class Endereco(models.Model):
-    entidade = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='entidade')
-    cep = models.CharField(max_length=8)
+    entidade = models.ForeignKey(Entidade, on_delete=models.CASCADE, related_name='endereco')
+    cep = models.CharField(max_length=8, default='')
     bairro = models.CharField(max_length=200)
     complemento = models.CharField(max_length=200)
-    cidade = models.CharField(max_length=200)
-    estado = models.CharField(max_length=2)
+    cidade = models.CharField(max_length=200, default='')
+    estado = models.CharField(max_length=200, default='')
 
 
 class Email(models.Model):

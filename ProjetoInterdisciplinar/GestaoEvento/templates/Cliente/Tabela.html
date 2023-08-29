@@ -4,7 +4,6 @@
             <th class="text-center">CPF/CNPJ</th>
             <th class="text-center">Nome/Razão Social</th>
             <th class="text-center">Data Nasc./Criação</th>
-            <th class="text-center">Cidade - Estado</th>
         </tr>
     </thead>
 
@@ -19,19 +18,35 @@
             {% for cliente in clientes %}
             <tr>
                 <td class="text-center">
-                    {{ cliente.cpf_cnpj }}
+                    {% if cliente.cpf_cnpj|length == 11%}
+                    <span class="mask-cpf" >
+                        {{ cliente.cpf_cnpj }}
+                    </span>
+                    {% else %}
+                    <span class="mask-cnpj" >
+                        {{ cliente.cpf_cnpj }}
+                    </span>
+                    {% endif %}
                 </td>
                 <td class="text-center">
                     {{ cliente.nome_razao }}
                 </td>
                 <td class="text-center">
-                    {{ cliente.data_nascimento_criacao }}
-                </td>
-                <td class="text-center">
-                    {{ cliente.endereco.cidade.descricao }} - {{ cliente.endereco.cidade.estado.descricao }}
+                    {{ cliente.data_nascimento_criacao|date:"d/m/Y" }}
                 </td>
             </tr>
             {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+
+<script>
+    $(document).ready(function () {
+        console.log('tabela cliente');
+        
+        $('.mask-cpf').mask('000.000.000-00');
+        $('.mask-cnpj').mask('00.000.000/0000-00');
+
+    });
+</script>
