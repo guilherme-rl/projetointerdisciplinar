@@ -98,21 +98,21 @@
         $.validator.messages.required = 'Campo obrigatório';
 
         $.validator.addMethod('valido', function (value, element) {
-            
+            var valido = true;
             value = value.replace(/[^\w]+/g, '');
 
             if (value !== "") {
                 if (value.length == 14) {
-                    //valido = validarCNPJ(value);
-                    return true;
+                    valido = validarCNPJ(value);
                 }
                 else if (value.length == 11) {
-                    //valido = validaCPF(value);
-                    return true;
+                    valido = validaCPF(value);
+                } else {
+                    valido = false;
                 }
             }
 
-            return false;
+            return valido;
         }, 'CNPJ/CPF inválido');
 
         $('#form-cliente').validate({
