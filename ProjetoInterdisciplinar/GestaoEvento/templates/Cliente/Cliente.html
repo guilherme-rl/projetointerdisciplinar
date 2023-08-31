@@ -32,7 +32,7 @@
                 </div>
 
                 <div id="conteudo">
-                    {% include "Cliente/Tabela.html" %}
+                    {% comment %} {% include "Cliente/Tabela.html" %} {% endcomment %}
                 </div>
             </div>
     </div>
@@ -65,7 +65,20 @@
             });
             $('#modal-container').modal('show');
         });
+
+        atualizarTabelaCliente();
     });
+
+    function atualizarTabelaCliente() {
+
+        $.ajax({
+            url: '{% url "TabelaClientes" %}',
+            method: 'GET',
+            success: function (resposta) {
+                $('#conteudo').html(resposta);
+            }
+        });
+    }
 </script>
 
 {% endblock %}

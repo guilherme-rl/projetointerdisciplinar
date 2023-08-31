@@ -31,6 +31,7 @@ urlpatterns = [
     path('cliente/', views.IndexCliente, name='Cliente'),
     path('modalnovocliente/', views.ModalNovoCliente, name='ModalNovoCliente'),
     path('novocliente/', views.NovoCliente, name='NovoCliente'),
+    path('tabelaclientes/', views.TabelaClientes, name='TabelaClientes'),
 
     path('prestador/', views.IndexPrestador, name='Prestador'),
     path('modalnovoprestador/', views.ModalNovoPrestador, name='ModalNovoPrestador'),

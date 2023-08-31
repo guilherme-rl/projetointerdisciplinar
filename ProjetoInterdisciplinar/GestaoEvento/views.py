@@ -31,14 +31,24 @@ def Contato(request):
 
 # region Cliente 
 def IndexCliente(request):
-    
-    clientes = Entidade.objects.filter(tipo='C')
 
     return render(
         request,
         'Cliente/Cliente.html',
         {
             'title':'Cliente',
+        }
+    )
+    
+    
+def TabelaClientes(request):
+    
+    clientes = Entidade.objects.filter(tipo='C')
+    
+    return render(
+        request,
+        'Cliente/Tabela.html',
+        {
             'clientes': clientes
         }
     )
