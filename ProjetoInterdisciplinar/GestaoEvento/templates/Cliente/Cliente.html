@@ -6,7 +6,7 @@
     <div class="row mb-3">
         <div class="col-md-12">
             <h2 class="dsh-title">{{ title }}</h2>
-            <a href="#" class="btn btn-primary btn-novo-cliente"><i class="fa fa-plus" aria-hidden="true"></i> NOVO</a>
+            <a href="#" class="btn btn-primary btn-novo"><i class="fa fa-plus" aria-hidden="true"></i> NOVO</a>
         </div>
     </div>
 </div>
@@ -43,7 +43,7 @@
     $(document).ready(function () {
         console.log('Script index cliente');
 
-        $('.btn-novo-cliente').click(function (e) {
+        $('.btn-novo').click(function (e) {
             e.preventDefault();
             console.log('click novo cliente');
 
@@ -56,6 +56,32 @@
                 $.ajax({
                     url: '{% url "ModalNovoCliente" %}',
                     method: 'GET',
+                    success: function (resposta) {
+                        $('#modal-container .modal-content').css("height", "auto");
+                        $('#modal-container .modal-content').html(resposta);
+                    }
+                });
+                $('#modal-container').off('shown.bs.modal');
+            });
+            $('#modal-container').modal('show');
+        });
+
+        $(document).off('click', '.btn-excluir');
+        $(document).on('click', '.btn-excluir', function (e) {
+            e.preventDefault();
+
+            var id = $(this).attr('data-id');
+
+            $('#modal-container .modal-content').css("width", "500px");
+            $('#modal-container .modal-content').css("height", "290px");
+            $('#modal-container').off('shown.bs.modal');
+            $('#modal-container').on('shown.bs.modal', function () {
+                $.ajax({
+                    url: '{% url "ModalExcluirCliente" %}',
+                    method: 'GET',
+                    data: {
+                        id: id,
+                    },
                     success: function (resposta) {
                         $('#modal-container .modal-content').css("height", "auto");
                         $('#modal-container .modal-content').html(resposta);

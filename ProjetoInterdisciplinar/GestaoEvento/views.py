@@ -1,5 +1,6 @@
 from datetime import datetime
-from django.db import transaction, connection, models
+from django.db import transaction, connection
+from django.db.models import F, Q, Sum
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from GestaoEvento.models import *
@@ -43,7 +44,7 @@ def IndexCliente(request):
     
 def TabelaClientes(request):
     
-    clientes = Entidade.objects.filter(tipo='C')
+    clientes = Entidade.objects.filter(Q(tipo='C') & Q(excluido=False))
     
     return render(
         request,
@@ -62,7 +63,21 @@ def ModalNovoCliente(request):
     )
 
 
-def NovoCliente(request):
+def ModalExcluirCliente(request):
+    
+    cliente_id = request.GET.get('id')
+    cliente = Entidade.objects.get(pk=cliente_id)
+
+    return render(
+        request,
+        'Cliente/ModalExcluir.html',
+        {
+            'cliente': cliente
+        }
+    )
+
+
+def SalvarCliente(request):
     try:
         with transaction.atomic():
             

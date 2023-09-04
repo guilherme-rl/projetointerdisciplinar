@@ -1,65 +1,23 @@
 ﻿
 <div class="modal-header">
-    <h4 class="modal-title">Cadastro de Cliente</h4>
+    <h4 class="modal-title">Excluir Cliente</h4>
     <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
 </div>
 
 <div class="modal-body">
-    <form action="/salvarcliente/" method="post" id="form-cliente">
+    <form action="/excluircliente/" method="post" id="form-excluir-cliente">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label class="form-label">Nome/Razão Social</label>
-                    <input type="text" class="form-control" name="nome" id="nome" value="" />
+                    <label>Confirma a exclusão do cliente?</label>
                 </div>
             </div>
         </div>
         <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-12">
                 <div class="form-group">
-                    <label class="form-label">CPF/CNPJ</label>
-                    <input type="text" class="form-control" name="cpf_cnpj" id="cpf_cnpj" value="" />
-                </div>
-            </div>
-            <div class="col-md-4">
-                <div class="form-group">
-                    <label class="form-label">Data Nascimento/Criação</label>
-                    <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="" />
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-9">
-                <div class="form-group">
-                    <label class="form-label">Endereço</label>
-                    <input type="text" class="form-control" name="endereco" id="endereco" value="" />
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="form-group">
-                    <label class="form-label">CEP</label>
-                    <input type="text" class="form-control" name="cep" id="cep" value="" />
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-5">
-                <div class="form-group">
-                    <label class="form-label">Bairro</label>
-                    <input type="text" class="form-control" name="bairro" id="bairro" value="" />
-                </div>
-            </div>
-            <div class="col-md-5">
-                <div class="form-group">
-                    <label class="form-label">Cidade</label>
-                    <input type="text" class="form-control" name="cidade" id="cidade" value="" />
-                </div>
-            </div>
-            <div class="col-md-2">
-                <div class="form-group">
-                    <label class="form-label">Estado</label>
-                    <input type="text" class="form-control" name="estado" id="estado" maxlength="2" value="" />
+                    <label>Nome/Razão Social: {{ cliente.nome_razao }}</label>
                 </div>
             </div>
         </div>
@@ -68,7 +26,7 @@
 
 <div class="modal-footer">
     <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
-    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-cliente" />
+    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-cliente" />
     
 </div>
 
