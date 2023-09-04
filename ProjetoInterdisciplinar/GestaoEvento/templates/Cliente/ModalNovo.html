@@ -166,8 +166,10 @@
                     success: function (resp) {
                         //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                         
-                        $('#modal-container').modal('hide');
-                        atualizarTabelaCliente();
+                        if (resp.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaCliente();
+                        }
                     }
                 });
             }

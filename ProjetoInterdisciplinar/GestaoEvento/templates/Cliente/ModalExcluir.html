@@ -7,6 +7,7 @@
 <div class="modal-body">
     <form action="/excluircliente/" method="post" id="form-excluir-cliente">
         {% csrf_token %}
+        <input type="hidden" id="cliente-id" name="id" value="{{ cliente.id }}" />
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -37,98 +38,34 @@
     $(document).ready(function () {
         console.log('Document ready modal cliente');
 
-        $('#cep').mask('00000-000');
-
-        $('#cpf_cnpj').focus(function () {
-            console.log('focus cpf/cnpj');
-            $(this).unmask();
-        });
-
-        $('#cpf_cnpj').blur(function () {
-            valor = $(this).val().replace(/[^\d]+/g, '')
-            if (valor.length == 11){
-                $(this).mask('000.000.000-00');
-            } else if (valor.length == 14) {
-                $(this).mask('00.000.000/0000-00');
-            }
-        })
-
-        $.validator.messages.required = 'Campo obrigatório';
-
-        $.validator.addMethod('valido', function (value, element) {
-            var valido = true;
-            value = value.replace(/[^\w]+/g, '');
-
-            if (value !== "") {
-                if (value.length == 14) {
-                    valido = validarCNPJ(value);
-                }
-                else if (value.length == 11) {
-                    valido = validaCPF(value);
-                } else {
-                    valido = false;
-                }
-            }
-
-            return valido;
-        }, 'CNPJ/CPF inválido');
-
-        $('#form-cliente').validate({
-            rules: {
-                'nome': {
-                    required: true,
-                    minlength: 3,
-                },
-                'cpf_cnpj': {
-                    required: true,
-                    valido: true,
-                },
-                'data_nasc': {
-                    required: true,
-                },
-                'endereco': {
-                    required: true,
-                },
-                'bairro': {
-                    required: true,
-                },
-                'cidade': {
-                    required: true,
-                },
-                'estado': {
-                    required: true,
-                },
-            },
-        });
-
-        $('#form-cliente').submit(function (e) {
+        $('#form-excluir-cliente').submit(function (e) {
             e.preventDefault();
 
             var form = $(this);
-
-            if (form.valid()) {
-                $.ajax({
-                    url: form.attr('action'),
-                    type: 'POST',
-                    data: form.serialize(),
-                    beforeSend: function () {
-                        $('#btn-salvar').val('Aguarde...');
-                        $('#btn-salvar').attr('disabled', true);
-                        //$('#submited').val(true);
-                    },
-                    complete: function () {
-                        $('#btn-salvar').val('Salvar');
-                        $('#btn-salvar').attr('disabled', false);
-                        //$('#submited').val(false);
-                    },
-                    success: function (resp) {
-                        //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
-                        
+            
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                beforeSend: function () {
+                    $('#btn-salvar').val('Aguarde...');
+                    $('#btn-salvar').attr('disabled', true);
+                    //$('#submited').val(true);
+                },
+                complete: function () {
+                    $('#btn-salvar').val('Excluir');
+                    $('#btn-salvar').attr('disabled', false);
+                    //$('#submited').val(false);
+                },
+                success: function (resp) {
+                    //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
+                    
+                    if (resp.sucesso) {
                         $('#modal-container').modal('hide');
                         atualizarTabelaCliente();
                     }
-                });
-            }
+                }
+            });
         })
     });
 </script>
