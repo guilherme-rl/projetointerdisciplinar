@@ -47,10 +47,10 @@
             e.preventDefault();
             console.log('click novo cliente');
 
-            //var loading = $('#modal-loading').clone().css('display', 'block');
-            //$('#modal-container .modal-content').html(loading);
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
             $('#modal-container .modal-content').css("width", "900px");
-            $('#modal-container .modal-content').css("height", "290px");
+            $('#modal-container .modal-content').css("height", "494px");
             $('#modal-container').off('shown.bs.modal');
             $('#modal-container').on('shown.bs.modal', function () {
                 $.ajax({
@@ -72,6 +72,8 @@
 
             var id = $(this).attr('data-id');
 
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
             $('#modal-container .modal-content').css("width", "500px");
             $('#modal-container .modal-content').css("height", "242px");
             $('#modal-container').off('shown.bs.modal');

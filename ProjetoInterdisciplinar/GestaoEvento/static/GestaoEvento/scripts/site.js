@@ -1,3 +1,12 @@
+$(document).ready(function () {
+    console.log('site.js');
+
+    $('#modal-container, #modal-container-2').on('hidden.bs.modal', function () {
+        $(this).find('.modal-content').html('');
+    });
+});
+
+
 function validaCPF(cpf) {
     var numeros, digitos, soma, i, resultado, digitos_iguais;
     digitos_iguais = 1;

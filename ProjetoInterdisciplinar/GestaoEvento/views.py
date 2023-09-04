@@ -104,10 +104,31 @@ def SalvarCliente(request):
             
             novo_cliente.save()
 
-            return JsonResponse({'success': True})
+            return JsonResponse({'sucesso': True})
     
     except Exception as e:
         print(e)
+        
+        return JsonResponse({'sucesso': False})
+        
+
+def ExcluirCliente(request):
+    
+    try:
+        with transaction.atomic():
+            
+            cliente_id = request.POST.get('id')
+            cliente = Entidade.objects.get(pk=cliente_id)
+            
+            cliente.excluido = True
+            
+            cliente.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 
