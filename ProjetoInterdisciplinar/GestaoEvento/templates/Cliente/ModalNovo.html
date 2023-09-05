@@ -5,7 +5,7 @@
 </div>
 
 <div class="modal-body">
-    <form action="/novocliente/" method="post" id="form-cliente">
+    <form action="/salvarcliente/" method="post" id="form-cliente">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-12">
@@ -166,8 +166,10 @@
                     success: function (resp) {
                         //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                         
-                        $('#modal-container').modal('hide');
-                        atualizarTabelaCliente();
+                        if (resp.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaCliente();
+                        }
                     }
                 });
             }
