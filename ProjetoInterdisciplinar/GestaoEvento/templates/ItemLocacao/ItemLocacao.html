@@ -21,6 +21,10 @@
                         <input type="text" class="form-control" id="search" name="search" value="{{ search }}">
                     </div>
                 </div>
+                <!--<div class="form-group col-md-4" id="div-periodo">
+                        <label>Período: </label>
+                        <input type="text" class="form-control" id="periodo" name="periodo" value="{{ periodo }}" data-date="{{ periodo }}">
+                    </div>-->
                 <div class="row mb-3">
                     <div class="form-group col-md-2">
                         <input type="button" class="form-control btn btn-primary" id="btn-search" value="Filtrar">
@@ -28,14 +32,13 @@
                 </div>
 
                 <div id="conteudo">
-                    {% include "ItemLocacao/Tabela.html" %}
+                    {% comment %} {% include "ItemLocacao/Tabela.html" %} {% endcomment %}
                 </div>
             </div>
     </div>
 </div>
 
-{% load static %}
-<script src="{% static 'GestaoEvento/scripts/jquery-3.7.0.js' %}"></script>
+
 <script>
     $(document).ready(function () {
         console.log('Script index item locacao');
@@ -44,10 +47,10 @@
             e.preventDefault();
             console.log('click novo item locacao');
 
-            //var loading = $('#modal-loading').clone().css('display', 'block');
-            //$('#modal-container .modal-content').html(loading);
-            $('#modal-container .modal-content').css("width", "600px");
-            $('#modal-container .modal-content').css("height", "290px");
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
+            $('#modal-container .modal-content').css("width", "900pxpx");
+            $('#modal-container .modal-content').css("height", "497px");
             $('#modal-container').off('shown.bs.modal');
             $('#modal-container').on('shown.bs.modal', function () {
                 $.ajax({
@@ -61,8 +64,50 @@
                 $('#modal-container').off('shown.bs.modal');
             });
             $('#modal-container').modal('show');
-        })
+        });
+    
+        $(document).off('click', '.btn-excluir');
+        $(document).on('click', '.btn-excluir', function (e) {
+            e.preventDefault();
+
+            var id = $(this).attr('data-id');
+
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
+            $('#modal-container .modal-content').css("width", "500px");
+            $('#modal-container .modal-content').css("height", "242px");
+            $('#modal-container').off('shown.bs.modal');
+            $('#modal-container').on('shown.bs.modal', function () {
+                $.ajax({
+                    url: '{% url "ModalExcluirItemLocacao" %}',
+                    method: 'GET',
+                    data: {
+                        id: id,
+                    },
+                    success: function (resposta) {
+                        $('#modal-container .modal-content').css("height", "auto");
+                        $('#modal-container .modal-content').html(resposta);
+                    }
+                });
+                $('#modal-container').off('shown.bs.modal');
+            });
+            $('#modal-container').modal('show');
+        });
+
+        atualizarTabelaItensLocacao();
     });
+
+    function atualizarTabelaItensLocacao() {
+
+        $.ajax({
+            url: '{% url "tabelaitemLocacao" %}',
+            method: 'GET',
+            success: function (resposta) {
+                $('#conteudo').html(resposta);
+            }
+        });
+    }
 </script>
 
 {% endblock %}
+

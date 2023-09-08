@@ -192,30 +192,62 @@ def NovoUsuario(request):
 
 # region ItemLocacao
 def IndexItemLocacao(request):
-    
-    itens_locacao = ItemLocacao.objects.all()
-
     return render(
         request,
         'ItemLocacao/ItemLocacao.html',
         {
-            'title':'Itens de Locação',
-            'itenslocacao': itens_locacao
+            'title': 'Itens de Locação',
+        }
+    )
+
+def TabelaItensLocacao(request):
+
+    itens_locacao = ItemLocacao.objects.all()
+
+    return render(
+        request,
+        'itemLocacao/TabelaLocacao.html',
+        {
+            'itens_locacao': itens_locacao,
         }
     )
 
 
 def ModalNovoItemLocacao(request):
-
+    
     return render(
         request,
-        'ItemLocacao/ModalNovo.html',
+        'ItemLocacao/ModalNovoItemLocacao.html',
     )
 
 
-def NovoItemLocacao(request):
+def ModalExcluirItemLocacao(request, item_id):
 
-    return JsonResponse({'success': True})
+    item_locacao = request.Get.get(ItemLocacao, pk=item_id)
+
+    return render(
+        request,
+        'itemLocacao/ModalExcluirItemLocacao.html',
+        {
+            'item_locacao': item_locacao,
+        }
+    )
+
+def SalvarItemLocacao(request):
+    try:
+        return JsonResponse({'sucesso': True})
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e)})
+
+def ExcluirItemLocacao(request, item_id):
+    try:
+        return JsonResponse({'sucesso': True})
+
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e)})
 
 # endregion
 

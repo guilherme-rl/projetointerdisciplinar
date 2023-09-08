@@ -8,22 +8,24 @@
     <form action="/novoitemlocacao/" method="post" id="form-item-locacao">
         {% csrf_token %}
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-3">
                 <div class="form-group">
-                    <label class="form-label">Descrição</label>
-                    <input type="text" class="form-control" name="descricao" value="" />
+                    <label class="form-label">Locação</label>
+                    <input type="text" class="form-control" name="locacao"  id = "locacao" value="" />
                 </div>
             </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
+        <div class="col-md-6">
                 <div class="form-group">
-                    <label class="form-label">Custo Unidade</label>
-                    <input type="text" class="form-control" name="custo-unidade" value="" placeholder="0,00"  />
+                    <label class="form-label">Custo da Unidade</label>
+                    <input type="text" class="form-control" name="custo-da-unidade" value="" placeholder="0,00"  />
                 </div>
             </div>
+        </div class="col-md-3">
+        <div class="form-group">
+            <label class="form-label">Item Locação</label>
+            <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="" />
         </div>
-    </form>
+    </div>
 </div>
 
 <div class="modal-footer">

@@ -43,9 +43,12 @@ urlpatterns = [
     path('modalnovousuario/', views.ModalNovoUsuario, name='ModalNovoUsuario'),
     path('novousuario/', views.NovoUsuario, name='NovoUsuario'),
 
-    path('itemlocacao/', views.IndexItemLocacao, name='ItemLocacao'),
-    path('modalnovoitemlocacao/', views.ModalNovoItemLocacao, name='ModalNovoItemLocacao'),
-    path('novoitemlocacao/', views.NovoItemLocacao, name='NovoItemLocacao'),
+    path('itemLocacao/', views.IndexItemLocacao, name='ItemLocacao'),
+    path('modalitemlocacao/', views.ModalNovoItemLocacao, name='ModalNovoItemLocacao'),
+    path('modalexcluirItemLocacao/', views.ModalExcluirItemLocacao, name='ModalExcluirItemLocacao'),
+    path('salvarItemLocacao/', views.SalvarItemLocacao, name='SalvarItemLocacao'),
+    path('excluirItemLocacao/', views.ExcluirItemLocacao, name='ExcluirItemLocacao'),
+    path('tabelaitemLocacao/', views.TabelaItensLocacao, name='tabelaitemLocacao'),
 
     path('unidademedida/', views.IndexUnidadeMedida, name='UnidadeMedida'),
     path('modalnovounidademedida/', views.ModalNovoUnidadeMedida, name='ModalNovoUnidadeMedida'),
