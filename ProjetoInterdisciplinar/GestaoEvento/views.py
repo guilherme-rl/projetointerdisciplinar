@@ -1,5 +1,6 @@
 from datetime import datetime
-from django.db import transaction, connection, models
+from django.db import transaction, connection
+from django.db.models import F, Q, Sum
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from GestaoEvento.models import *
@@ -43,7 +44,7 @@ def IndexCliente(request):
     
 def TabelaClientes(request):
     
-    clientes = Entidade.objects.filter(tipo='C')
+    clientes = Entidade.objects.filter(Q(tipo='C') & Q(excluido=False))
     
     return render(
         request,
@@ -62,7 +63,21 @@ def ModalNovoCliente(request):
     )
 
 
-def NovoCliente(request):
+def ModalExcluirCliente(request):
+    
+    cliente_id = request.GET.get('id')
+    cliente = Entidade.objects.get(pk=cliente_id)
+
+    return render(
+        request,
+        'Cliente/ModalExcluir.html',
+        {
+            'cliente': cliente
+        }
+    )
+
+
+def SalvarCliente(request):
     try:
         with transaction.atomic():
             
@@ -89,10 +104,31 @@ def NovoCliente(request):
             
             novo_cliente.save()
 
-            return JsonResponse({'success': True})
+            return JsonResponse({'sucesso': True})
     
     except Exception as e:
         print(e)
+        
+        return JsonResponse({'sucesso': False})
+        
+
+def ExcluirCliente(request):
+    
+    try:
+        with transaction.atomic():
+            
+            cliente_id = request.POST.get('id')
+            cliente = Entidade.objects.get(pk=cliente_id)
+            
+            cliente.excluido = True
+            
+            cliente.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 

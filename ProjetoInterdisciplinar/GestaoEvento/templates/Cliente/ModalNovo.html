@@ -5,29 +5,29 @@
 </div>
 
 <div class="modal-body">
-    <form action="/novocliente/" method="post" id="form-cliente">
+    <form action="/salvarcliente/" method="post" id="form-cliente">
         {% csrf_token %}
         <div class="row">
-            <div class="col-md-12">
-                <div class="form-group">
-                    <label class="form-label">Nome/Razão Social</label>
-                    <input type="text" class="form-control" name="nome" id="nome" value="" />
-                </div>
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-4">
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="form-label">CPF/CNPJ</label>
                     <input type="text" class="form-control" name="cpf_cnpj" id="cpf_cnpj" value="" />
                 </div>
             </div>
-            <div class="col-md-4">
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Nome/Razão Social</label>
+                    <input type="text" class="form-control" name="nome" id="nome" value="" />
+                </div>
+            </div>
+            <div class="col-md-3">
                 <div class="form-group">
                     <label class="form-label">Data Nascimento/Criação</label>
                     <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="" />
                 </div>
             </div>
+        </div>
+        <div class="row">
         </div>
         <div class="row">
             <div class="col-md-9">
@@ -166,8 +166,10 @@
                     success: function (resp) {
                         //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                         
-                        $('#modal-container').modal('hide');
-                        atualizarTabelaCliente();
+                        if (resp.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaCliente();
+                        }
                     }
                 });
             }
