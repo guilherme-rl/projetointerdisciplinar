@@ -86,11 +86,21 @@ WSGI_APPLICATION = 'ProjetoInterdisciplinar.wsgi.application'
 #         'PORT': '5432',
 #     }
 # }
+# DATABASES = {
+#    'default': {
+#        'ENGINE': 'django.db.backends.sqlite3',
+#        'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+#    }
+# }
 DATABASES = {
-   'default': {
-       'ENGINE': 'django.db.backends.sqlite3',
-       'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
-   }
+    'default': {
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'GestaoEventos',
+        'USER': 'root',
+        'PASSWORD': 'pass',
+        'HOST': 'localhost',
+        'PORT': '3306',
+    }
 }
 
 # Password validation

@@ -4,6 +4,7 @@ from django.db.models import F, Q, Sum
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from GestaoEvento.models import *
+import json
 import re
 
 # Create your views here.
@@ -44,13 +45,19 @@ def IndexCliente(request):
     
 def TabelaClientes(request):
     
+    busca = request.POST.get('busca')
+    
     clientes = Entidade.objects.filter(Q(tipo='C') & Q(excluido=False))
+    
+    if busca:
+        clientes = clientes.filter(nome_razao__icontains=busca)
     
     return render(
         request,
         'Cliente/Tabela.html',
         {
-            'clientes': clientes
+            'clientes': clientes,
+            'busca': busca,
         }
     )
 
@@ -95,7 +102,7 @@ def SalvarCliente(request):
             novo_cliente.save()
             
             novo_cliente.endereco.create(
-                cep = request.POST.get('cep') if request.POST.get('cep') else '',
+                cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else '',
                 bairro = request.POST.get('bairro'),
                 complemento = request.POST.get('endereco'),
                 cidade = request.POST.get('cidade'),
@@ -392,3 +399,39 @@ def NovoContrato(request):
     return JsonResponse({'success': True})
 
 # endregion
+
+def BuscarEntidadePorCpf(request):
+    
+    try:
+        entidade = Entidade.objects.get(cpf_cnpj=request.GET.get('cpf_cnpj'))
+        
+        dict_entidade = {
+            'nome_razao': entidade.nome_razao,
+            'data_nascimento_criacao': datetime.strftime(entidade.data_nascimento_criacao, '%d/%m/%Y'),
+            'cpf_cnpj': entidade.cpf_cnpj,
+            'tipo': entidade.tipo,
+            'excluido': entidade.excluido,
+            'descricao_servico': entidade.descricao_servico,
+        }
+        
+        convert1 = json.dumps(dict_entidade)
+        #convert2 = json.dumps(entidade)
+    
+        return JsonResponse({'sucesso': True, 'entidade': convert1})
+    
+    except Exception as e:
+        
+        return JsonResponse({'sucesso': False})
+
+
+def VerificaEntidade(request):
+    
+    try:
+        consulta = Entidade.objects.filter(Q(cpf_cnpj=request.GET.get('cpf_cnpj')) & Q(excluido=False)).exists()
+    
+        return JsonResponse({'sucesso': consulta})
+    
+    except Exception as e:
+        
+        return JsonResponse({'sucesso': False})
+

@@ -18,7 +18,7 @@
                 <div class="row mb-3" style="margin-top: 10px;">
                     <div class="form-group col-md-4">
                         <label>Pesquisa: </label>
-                        <input type="text" class="form-control" id="search" name="search" value="{{ search }}">
+                        <input type="text" class="form-control" id="busca" name="busca" value="{{ busca }}">
                     </div>
                     <!--<div class="form-group col-md-4" id="div-periodo">
                         <label>Período: </label>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="form-group col-md-2">
-                        <input type="button" class="form-control btn btn-primary" id="btn-search" value="Filtrar">
+                        <input type="button" class="form-control btn btn-primary" id="btn-busca" value="Filtrar">
                     </div>
                 </div>
 
@@ -94,14 +94,27 @@
             $('#modal-container').modal('show');
         });
 
+        $('#btn-busca').click(function (e) {
+            e.preventDefault();
+
+            atualizarTabelaCliente();
+        })
+
         atualizarTabelaCliente();
     });
 
     function atualizarTabelaCliente() {
 
+        var busca = $('#busca').val();
+        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+
         $.ajax({
             url: '{% url "TabelaClientes" %}',
-            method: 'GET',
+            method: 'POST',
+            data: {
+                busca: busca,
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+            },
             success: function (resposta) {
                 $('#conteudo').html(resposta);
             }

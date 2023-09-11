@@ -39,6 +39,7 @@ function validaCPF(cpf) {
         return false;
 }
 
+
 function validarCNPJ(cnpj) {
     cnpj = cnpj.replace(/[^\d]+/g, '');
 
@@ -92,10 +93,59 @@ function validarCNPJ(cnpj) {
 
 }
 
+
 function validarEmail(email) {
     // Regex para validar o formato de um email
     const regex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/;
 
     // Retorna verdadeiro se o email corresponde à regex
     return regex.test(email);
+}
+
+
+function buscarEntidadePorCpf(cpf_cnpj) {
+
+    var retorno;
+    
+    $.ajax({
+        url: '/buscarentidadeporcpf/',
+        type: 'GET',
+        data: { cpf_cnpj: cpf_cnpj},
+        async: false,
+        success: function (resposta) {
+            
+            if (resposta.sucesso = true)
+                retorno = JSON.parse(resposta.entidade);
+            else
+                retorno = false;
+        }
+    });
+
+    return retorno;
+}
+
+
+function preencherDadosEntidade(entidade) {
+
+    $('#nome').val(entidade.nome_razao);
+    $('#data_nasc').val(entidade.data_nascimento_criacao);
+}
+
+
+function verificaEntidade(cpf_cnpj){
+
+    var retorno;
+    
+    $.ajax({
+        url: '/verificaentidade/',
+        type: 'GET',
+        data: { cpf_cnpj: cpf_cnpj},
+        async: false,
+        success: function (resposta) {
+            
+            retorno = resposta.sucesso
+        }
+    });
+
+    return retorno;
 }

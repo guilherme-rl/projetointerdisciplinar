@@ -70,4 +70,7 @@ urlpatterns = [
     path('contrato/', views.IndexContrato, name='Contrato'),
     path('modalnovocontrato/', views.ModalNovoContrato, name='ModalNovoContrato'),
     path('novocontrato/', views.NovoContrato, name='NovoContrato'),
+    
+    path('buscarentidadeporcpf/', views.BuscarEntidadePorCpf, name='BuscarEntidadePorCpf'),
+    path('verificaentidade/', views.VerificaEntidade, name='VerificaEntidade'),
 ]

@@ -79,6 +79,8 @@
     $(document).ready(function () {
         console.log('Document ready modal cliente');
 
+        $('#cpf_cnpj').focus();
+
         $('#cep').mask('00000-000');
 
         $('#cpf_cnpj').focus(function () {
@@ -88,10 +90,20 @@
 
         $('#cpf_cnpj').blur(function () {
             valor = $(this).val().replace(/[^\d]+/g, '')
-            if (valor.length == 11){
-                $(this).mask('000.000.000-00');
-            } else if (valor.length == 14) {
-                $(this).mask('00.000.000/0000-00');
+            
+            if (valor.length == 11 || valor.length == 14) {
+                
+                /*var consulta = buscarEntidadePorCpf(valor);
+
+                if (consulta) {
+                    preencherDadosEntidade(consulta);
+                }*/
+
+                if (valor.length == 11){
+                    $(this).mask('000.000.000-00');
+                } else if (valor.length == 14) {
+                    $(this).mask('00.000.000/0000-00');
+                }
             }
         })
 
@@ -115,7 +127,22 @@
             return valido;
         }, 'CNPJ/CPF inválido');
 
+        $.validator.addMethod('existe', function (value, element) {
+            console.log('Validando cliente existente')
+            var valido = true;
+            value = value.replace(/[^\w]+/g, '');
+
+            if (value !== "") {
+                if (value.length == 14 || value.length == 11) {
+                    valido = !verificaEntidade(value);
+                }
+            }
+
+            return valido;
+        }, 'CNPJ/CPF já existe');
+
         $('#form-cliente').validate({
+            onkeyup: false,
             rules: {
                 'nome': {
                     required: true,
@@ -124,6 +151,7 @@
                 'cpf_cnpj': {
                     required: true,
                     valido: true,
+                    existe: true,
                 },
                 'data_nasc': {
                     required: true,
@@ -163,10 +191,10 @@
                         $('#btn-salvar').attr('disabled', false);
                         //$('#submited').val(false);
                     },
-                    success: function (resp) {
-                        //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
                         
-                        if (resp.sucesso) {
+                        if (resposta.sucesso) {
                             $('#modal-container').modal('hide');
                             atualizarTabelaCliente();
                         }
