@@ -62,11 +62,11 @@ def TabelaClientes(request):
     )
 
 
-def ModalNovoCliente(request):
+def ModalCliente(request):
 
     return render(
         request,
-        'Cliente/ModalNovo.html',
+        'Cliente/ModalCliente.html',
     )
 
 

@@ -29,7 +29,7 @@ urlpatterns = [
     path('contato/', views.Contato, name='Contato'),
 
     path('cliente/', views.IndexCliente, name='Cliente'),
-    path('modalnovocliente/', views.ModalNovoCliente, name='ModalNovoCliente'),
+    path('modalcliente/', views.ModalCliente, name='ModalCliente'),
     path('modalexcluircliente/', views.ModalExcluirCliente, name='ModalExcluirCliente'),
     path('salvarcliente/', views.SalvarCliente, name='SalvarCliente'),
     path('excluircliente/', views.ExcluirCliente, name='ExcluirCliente'),
