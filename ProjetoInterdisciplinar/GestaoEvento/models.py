@@ -29,6 +29,8 @@ class Endereco(models.Model):
     complemento = models.CharField(max_length=200)
     cidade = models.CharField(max_length=200, default='')
     estado = models.CharField(max_length=200, default='')
+    excluido = models.BooleanField(default=False)
+    principal = models.BooleanField(default=False)
 
 
 class Email(models.Model):
