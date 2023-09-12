@@ -63,10 +63,25 @@ def TabelaClientes(request):
 
 
 def ModalCliente(request):
+    
+    id = request.GET.get('id')
+    cliente = Entidade()
+    data_formatada = ''
+    endereco_principal = Endereco()
+    
+    if id:
+        cliente = Entidade.objects.get(id=id)
+        data_formatada = cliente.data_nascimento_criacao.strftime('%Y-%m-%d')
+        endereco_principal = cliente.endereco.get(principal=True)
 
     return render(
         request,
         'Cliente/ModalCliente.html',
+        {
+            'cliente': cliente,
+            'data_formatada': data_formatada,
+            'endereco_principal': endereco_principal,
+        }
     )
 
 
@@ -88,28 +103,45 @@ def SalvarCliente(request):
     try:
         with transaction.atomic():
             
+            id = request.POST.get('id')
             data = datetime.strptime(request.POST.get('data_nasc'), '%Y-%m-%d')
+            cliente = None
             
-            cpf = request.POST.get('cpf_cnpj')
-            cpf = re.sub(r'[^0-9]', '', cpf)
+            if id != 'None':
+                cliente = Entidade.objects.get(id=id)
+                cliente.nome_razao = request.POST.get('nome')
+                cliente.data_nascimento_criacao = data
+                
+                endereco = cliente.endereco.get(principal=True)
+                endereco.cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else ''
+                endereco.bairro = request.POST.get('bairro')
+                endereco.complemento = request.POST.get('endereco')
+                endereco.cidade = request.POST.get('cidade')
+                endereco.estado = request.POST.get('estado').upper()
+                
+                endereco.save()
+                
+            else:
+                cpf = request.POST.get('cpf_cnpj')
+                cpf = re.sub(r'[^0-9]', '', cpf)
+                cliente = Entidade(
+                    nome_razao = request.POST.get('nome'),
+                    cpf_cnpj = cpf,
+                    data_nascimento_criacao = data,
+                    tipo = 'C',
+                )
+                cliente.save()
+                
+                cliente.endereco.create(
+                    cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else '',
+                    bairro = request.POST.get('bairro'),
+                    complemento = request.POST.get('endereco'),
+                    cidade = request.POST.get('cidade'),
+                    estado = request.POST.get('estado').upper(),
+                    principal = True,
+                )
             
-            novo_cliente = Entidade(
-                nome_razao = request.POST.get('nome'),
-                cpf_cnpj = cpf,
-                data_nascimento_criacao = data,
-                tipo = 'C',
-            )
-            novo_cliente.save()
-            
-            novo_cliente.endereco.create(
-                cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else '',
-                bairro = request.POST.get('bairro'),
-                complemento = request.POST.get('endereco'),
-                cidade = request.POST.get('cidade'),
-                estado = request.POST.get('estado').upper(),
-            )
-            
-            novo_cliente.save()
+            cliente.save()
 
             return JsonResponse({'sucesso': True})
     
@@ -424,7 +456,7 @@ def BuscarEntidadePorCpf(request):
         return JsonResponse({'sucesso': False})
 
 
-def VerificaEntidade(request):
+def VerificaEntidadeExistente(request):
     
     try:
         consulta = Entidade.objects.filter(Q(cpf_cnpj=request.GET.get('cpf_cnpj')) & Q(excluido=False)).exists()

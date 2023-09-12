@@ -72,5 +72,5 @@ urlpatterns = [
     path('novocontrato/', views.NovoContrato, name='NovoContrato'),
     
     path('buscarentidadeporcpf/', views.BuscarEntidadePorCpf, name='BuscarEntidadePorCpf'),
-    path('verificaentidade/', views.VerificaEntidade, name='VerificaEntidade'),
+    path('verificaentidade/', views.VerificaEntidadeExistente, name='VerificaEntidade'),
 ]

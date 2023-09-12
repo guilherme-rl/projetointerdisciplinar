@@ -109,6 +109,10 @@
         --bs-btn-disabled-bg: #d3c7b6;
         --bs-btn-disabled-border-color: #d3c7b6;
     }
+
+    .form-control:disabled {
+        --bs-secondary-bg: #f0cfa2;
+    }
 }
 
 

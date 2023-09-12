@@ -7,23 +7,24 @@
 <div class="modal-body">
     <form action="/salvarcliente/" method="post" id="form-cliente">
         {% csrf_token %}
+        <input type="hidden" id="cliente-id" name="id" value="{{ cliente.id }}" />
         <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="form-label">CPF/CNPJ</label>
-                    <input type="text" class="form-control" name="cpf_cnpj" id="cpf_cnpj" value="" />
+                    <input type="text" class="form-control" name="cpf_cnpj" id="cpf_cnpj" value="{{ cliente.cpf_cnpj }}" />
                 </div>
             </div>
             <div class="col-md-6">
                 <div class="form-group">
                     <label class="form-label">Nome/Razão Social</label>
-                    <input type="text" class="form-control" name="nome" id="nome" value="" />
+                    <input type="text" class="form-control" name="nome" id="nome" value="{{ cliente.nome_razao }}" />
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="form-label">Data Nascimento/Criação</label>
-                    <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="" />
+                    <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="{{ data_formatada }}" />
                 </div>
             </div>
         </div>
@@ -33,13 +34,13 @@
             <div class="col-md-9">
                 <div class="form-group">
                     <label class="form-label">Endereço</label>
-                    <input type="text" class="form-control" name="endereco" id="endereco" value="" />
+                    <input type="text" class="form-control" name="endereco" id="endereco" value="{{ endereco_principal.complemento }}" />
                 </div>
             </div>
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="form-label">CEP</label>
-                    <input type="text" class="form-control" name="cep" id="cep" value="" />
+                    <input type="text" class="form-control" name="cep" id="cep" value="{{ endereco_principal.cep }}" />
                 </div>
             </div>
         </div>
@@ -47,19 +48,19 @@
             <div class="col-md-5">
                 <div class="form-group">
                     <label class="form-label">Bairro</label>
-                    <input type="text" class="form-control" name="bairro" id="bairro" value="" />
+                    <input type="text" class="form-control" name="bairro" id="bairro" value="{{ endereco_principal.bairro }}" />
                 </div>
             </div>
             <div class="col-md-5">
                 <div class="form-group">
                     <label class="form-label">Cidade</label>
-                    <input type="text" class="form-control" name="cidade" id="cidade" value="" />
+                    <input type="text" class="form-control" name="cidade" id="cidade" value="{{ endereco_principal.cidade }}" />
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label class="form-label">Estado</label>
-                    <input type="text" class="form-control" name="estado" id="estado" maxlength="2" value="" />
+                    <input type="text" class="form-control" name="estado" id="estado" maxlength="2" value="{{ endereco_principal.estado }}" />
                 </div>
             </div>
         </div>
@@ -110,10 +111,11 @@
         $.validator.messages.required = 'Campo obrigatório';
 
         $.validator.addMethod('valido', function (value, element) {
+            console.log('Validando cpf');
             var valido = true;
             value = value.replace(/[^\w]+/g, '');
 
-            if (value !== "") {
+            if (value !== "" && !$(element).prop('disabled')) {
                 if (value.length == 14) {
                     valido = validarCNPJ(value);
                 }
@@ -128,11 +130,11 @@
         }, 'CNPJ/CPF inválido');
 
         $.validator.addMethod('existe', function (value, element) {
-            console.log('Validando cliente existente')
+            console.log('Validando cliente existente');
             var valido = true;
             value = value.replace(/[^\w]+/g, '');
 
-            if (value !== "") {
+            if (value !== "" && !$(element).prop('disabled')) {
                 if (value.length == 14 || value.length == 11) {
                     valido = !verificaEntidade(value);
                 }
@@ -201,6 +203,12 @@
                     }
                 });
             }
-        })
+        });
+
+        var cliente_id = $('#cliente-id').val();
+        if ($('#cliente-id').val() != 'None') {
+            $('#cpf_cnpj').prop('disabled', true);
+            $('#cpf_cnpj, #cep').trigger('blur');
+        }
     });
 </script>
