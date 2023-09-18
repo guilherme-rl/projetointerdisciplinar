@@ -30,8 +30,9 @@ urlpatterns = [
 
     path('cliente/', views.IndexCliente, name='Cliente'),
     path('modalcliente/', views.ModalCliente, name='ModalCliente'),
-    path('modalexcluircliente/', views.ModalExcluirCliente, name='ModalExcluirCliente'),
     path('salvarcliente/', views.SalvarCliente, name='SalvarCliente'),
+    path('modaldetalhescliente/', views.ModalDetalhesCliente, name='ModalDetalhesCliente'),
+    path('modalexcluircliente/', views.ModalExcluirCliente, name='ModalExcluirCliente'),
     path('excluircliente/', views.ExcluirCliente, name='ExcluirCliente'),
     path('tabelaclientes/', views.TabelaClientes, name='TabelaClientes'),
 

@@ -94,6 +94,32 @@
             $('#modal-container').modal('show');
         });
 
+        $(document).off('click', '.detalhes-cliente');
+        $(document).on('click', '.detalhes-cliente', function (e) {
+            e.preventDefault();
+
+            var id = $(this).attr('data-id');
+
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
+            $('#modal-container .modal-content').css("width", "850px");
+            $('#modal-container .modal-content').css("height", "411px");
+            $('#modal-container').off('shown.bs.modal');
+            $('#modal-container').on('shown.bs.modal', function () {
+                $.ajax({
+                    url: '{% url "ModalDetalhesCliente" %}',
+                    method: 'GET',
+                    data: { id: id },
+                    success: function (resposta) {
+                        $('#modal-container .modal-content').css("height", "auto");
+                        $('#modal-container .modal-content').html(resposta);
+                    }
+                });
+                $('#modal-container').off('shown.bs.modal');
+            });
+            $('#modal-container').modal('show');
+        });
+
         $(document).off('click', '.btn-excluir');
         $(document).on('click', '.btn-excluir', function (e) {
             e.preventDefault();

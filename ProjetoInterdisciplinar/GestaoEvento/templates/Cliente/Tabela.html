@@ -30,7 +30,9 @@
                     {% endif %}
                 </td>
                 <td class="">
-                    {{ cliente.nome_razao }}
+                    <a href="#" class="detalhes-cliente" data-id="{{ cliente.id }}" >
+                        {{ cliente.nome_razao }}
+                    </a>
                 </td>
                 <td class="text-center">
                     {{ cliente.data_nascimento_criacao|date:"d/m/Y" }}

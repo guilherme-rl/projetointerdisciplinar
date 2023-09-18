@@ -85,6 +85,32 @@ def ModalCliente(request):
     )
 
 
+def ModalDetalhesCliente(request):
+    
+    cliente_id = request.GET.get('id')
+    cliente = Entidade.objects.get(pk=cliente_id)
+    data_formatada = cliente.data_nascimento_criacao.strftime('%d/%m/%Y')
+    endereco_principal = cliente.endereco.get(principal=True)
+    cep_formatado = f'{endereco_principal.cep[:5]}-{endereco_principal.cep[5:]}'
+    cpf_cnpj_formatado = ''
+    if (len(cliente.cpf_cnpj) == 11):
+        cpf_cnpj_formatado = f'{cliente.cpf_cnpj[:3]}.{cliente.cpf_cnpj[3:6]}.{cliente.cpf_cnpj[6:9]}-{cliente.cpf_cnpj[9:]}'
+    else:
+        cpf_cnpj_formatado = f'{cliente.cpf_cnpj[:2]}.{cliente.cpf_cnpj[2:5:1]}.{cliente.cpf_cnpj[5:8]}/{cliente.cpf_cnpj[8:12]}-{cliente.cpf_cnpj[12:]}'
+
+    return render(
+        request,
+        'Cliente/ModalDetalhesCliente.html',
+        {
+            'cliente': cliente,
+            'data_formatada': data_formatada,
+            'endereco_principal': endereco_principal,
+            'cpf_cnpj_formatado': cpf_cnpj_formatado,
+            'cep_formatado': cep_formatado,
+        }
+    )
+
+
 def ModalExcluirCliente(request):
     
     cliente_id = request.GET.get('id')
@@ -92,7 +118,7 @@ def ModalExcluirCliente(request):
 
     return render(
         request,
-        'Cliente/ModalExcluir.html',
+        'Cliente/ModalExcluirCliente.html',
         {
             'cliente': cliente
         }
@@ -467,3 +493,6 @@ def VerificaEntidadeExistente(request):
         
         return JsonResponse({'sucesso': False})
 
+
+# todo: Adicionar inclusão de telefone e e-mail
+# todo: 
