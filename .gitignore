@@ -362,6 +362,3 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
-
-ProjetoInterdisciplinar/db.sqlite3
-ProjetoInterdisciplinar/ProjetoInterdisciplinar/settings.py
