@@ -1,0 +1,26 @@
+
+<div class="modal-header">
+    <h4 class="modal-title">Excluir Prestador</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/excluirprestador/" method="post" id="form-excluir-prestador">
+        {% csrf_token %}
+        <input type="hidden" id="prestador-id" name="id" value="{{ prestador.id }}" />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Confirma a exclusão do Prestador?</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Nome/Razão Social: {{ prestador.nome_razao }}</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>

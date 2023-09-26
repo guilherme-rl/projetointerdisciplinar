@@ -135,14 +135,61 @@ def ExcluirCliente(request):
 # region Prestador
 def IndexPrestador(request):
     
-    prestadores = Entidade.objects.filter(tipo='P')
 
     return render(
         request,
         'Prestador/Prestador.html',
         {
-            'title':'Prestadores',
-            'prestadores': prestadores
+            'title':'Prestador',
+        }
+    )
+
+
+def SalvarPrestador(request):
+    try:
+        with transaction.atomic():
+            
+            data = datetime.strptime(request.POST.get('data_nasc'), '%Y-%m-%d')
+            
+            cpf = request.POST.get('cpf_cnpj')
+            cpf = re.sub(r'[^0-9]', '', cpf)
+            
+            novo_prestador = Entidade(
+                nome_razao = request.POST.get('nome'),
+                cpf_cnpj = cpf,
+                data_nascimento_criacao = data,
+                tipo = 'P',
+            )
+            novo_prestador.save()
+            
+            novo_prestador.endereco.create(
+                cep = request.POST.get('cep') if request.POST.get('cep') else '',
+                bairro = request.POST.get('bairro'),
+                complemento = request.POST.get('endereco'),
+                cidade = request.POST.get('cidade'),
+                estado = request.POST.get('estado').upper(),
+            )
+            
+            novo_prestador.save()
+
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        
+        return JsonResponse({'sucesso': False})
+        
+
+    
+def TabelaPrestador(request):
+    
+    prestador,= Entidade.objects.filter ((Q(tipo='P')) & Q(excluido=False))
+    
+    return render(
+        request,
+        'Prestador/Tabela.html',
+        {
+            'Prestadores': prestador
         }
     )
 
@@ -155,9 +202,35 @@ def ModalNovoPrestador(request):
     )
 
 
-def NovoPrestador(request):
-
-    return JsonResponse({'success': True})
+def ModalExcluirPrestador(request):
+    
+    prestador_id = request.GET.get('id')
+    prestador = Entidade.objects.get(pk=prestador_id)
+    
+    return render(
+        request,
+        'Prestador/ModalExcluir.html',
+        {
+            'Prestador' : prestador 
+        }
+    )
+def ExcluirPrestador(request):
+    
+    try:
+        with transaction.atomic():
+            
+            prestador_id = request.POST.get('id')
+            prestador = Entidade.objects.get(pk=prestador_id)
+            
+            prestador.excluido = True
+            
+            prestador.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 
