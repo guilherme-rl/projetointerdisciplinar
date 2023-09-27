@@ -116,7 +116,7 @@
             return valido;
         }, 'CNPJ/CPF inválido');
 
-        $('#form-cliente').validate({
+        $('#form-prestador').validate({
             rules: {
                 'nome': {
                     required: true,
@@ -144,7 +144,7 @@
             },
         });
 
-        $('#form-cliente').submit(function (e) {
+        $('#form-prestador').submit(function (e) {
             e.preventDefault();
 
             var form = $(this);
@@ -168,7 +168,7 @@
                         //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                         
                         $('#modal-container').modal('hide');
-                        atualizarTabelaCliente();
+                        atualizarTabelaPrestador();
                     }
                 });
             }

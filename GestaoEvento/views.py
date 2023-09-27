@@ -189,7 +189,7 @@ def TabelaPrestador(request):
         request,
         'Prestador/Tabela.html',
         {
-            'Prestadores': prestador
+            'Prestador': prestador
         }
     )
 

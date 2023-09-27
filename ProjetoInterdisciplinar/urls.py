@@ -37,7 +37,7 @@ urlpatterns = [
 
     path('prestador/', views.IndexPrestador, name='Prestador'),
     path('modalnovoprestador/', views.ModalNovoPrestador, name='ModalNovoPrestador'),
-    path('ModalExcluirPrestador/', views.ModalExcluirPrestador, name='ModalExcluirPrestador'),
+    path('modalexcluirprestador/', views.ModalExcluirPrestador, name='ModalExcluirPrestador'),
     path('excluirprestador/', views.ExcluirPrestador, name='ExcluirPrestador'),
     path('salvarprestador/', views.SalvarPrestador, name='NovoPrestador'),
     path('tabelaprestador/', views.TabelaPrestador, name='TabelaPrestador'),
