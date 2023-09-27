@@ -192,31 +192,86 @@ def NovoUsuario(request):
 
 # region ItemLocacao
 def IndexItemLocacao(request):
-    
-    itens_locacao = ItemLocacao.objects.all()
-
+     
     return render(
         request,
         'ItemLocacao/ItemLocacao.html',
         {
-            'title':'Itens de Locação',
-            'itenslocacao': itens_locacao
+            'title':'Itens_Locacao',
         }
     )
 
+
+def TabelaItemLocacao(request):
+         
+    ItemLocacao = Entidade.objects.filter(Q(tipo='L') & Q(excluido=False))
+ 
+    return render(
+        request,
+        'ItemLocacao/Tabela.html',
+        {
+            'ItemLocacao': ItemLocacao,
+        }
+    )
 
 def ModalNovoItemLocacao(request):
 
     return render(
         request,
         'ItemLocacao/ModalNovo.html',
+    
+    )
+
+def ModalExcluirItemLocacao(request):
+
+    ItemLocacao_id = request.GET.get('id')
+    ItemLocacao = Entidade.objects.get(pk=ItemLocacao_id)
+    
+    return render(
+        request,
+        'ItemLocacao/ModalExluir.html',
+    {
+        'ItemLocacao': ItemLocacao
+    }
     )
 
 
-def NovoItemLocacao(request):
+def SalvarItemLocacao(request):   
+    try:
+        with transaction.atomic():
+         
+            novo_ItemLocacao = Entidade(                
+                descricao = request.POST.get('descriçao'),
+                custo = request.POST.get('custo'),
+                tipo = 'L',
+            )
+            novo_ItemLocacao.save()
+        
+            return JsonResponse({'success': True})
+        
+    except Exception as e :
+        print(e)
 
-    return JsonResponse({'success': True})
+        return JsonResponse({'sucesso': False })
 
+def ExcluirItemLocacao(request):
+
+    try:
+        with transaction.atomic():
+            
+            ItemLocacao_id = request.POST.get('id')
+            ItemLocacao = Entidade.objects.get(pk=ItemLocacao_id)
+           
+            ItemLocacao.excluido = True
+
+            ItemLocacao.save()
+            
+            return JsonResponse ({'sucesso' : True})
+
+    except Exception as e :
+        print (e)
+        return JsonResponse({'sucesso' : False, 'erro' : str(e)})
+    
 # endregion
 
 # region UnidadeMedida
