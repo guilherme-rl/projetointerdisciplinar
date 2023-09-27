@@ -363,4 +363,5 @@ MigrationBackup/
 FodyWeavers.xsd
 
 
-ProjetoInterdisciplinar/db.sqlite3
+db.sqlite3
+ProjetoInterdisciplinar/settings.py
