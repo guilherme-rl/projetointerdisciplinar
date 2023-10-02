@@ -32,8 +32,106 @@
     
 </div>
 
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
 <script>
     $(document).ready(function () {
         console.log('Document ready modal item locacao');
-    });
+
+        $('').focus();
+
+        $('#descricao').mask('');
+
+        $('custo').focus(function () {
+            console.log('focus descricao');
+            $(this).unmask();
+        });
+
+        $('#descricao').blur(function () {
+            valor = $(this).val().replace(/[^\d]+/g, '')
+            
+            if (valor.length == 5 || valor.length == 50) {
+                
+            }
+        })
+
+        $.validator.messages.required = 'Campo obrigatório';
+
+        $.validator.addMethod('valido', function (value, element)
+            console.log('Validando descricao');
+            var valido = true;
+           value = value.replace(/[^\w]+/g, '');
+
+            if (value !== "" && !$(element).prop('disabled')) {
+                if (value.length == 5) {
+                    valido = descricao (value);
+                }
+            }
+
+            return valido;
+        }, 'descricao inválida');
+
+        $.validator.addMethod('existe', function (value, element) {
+            console.log('Validando locacao existente');
+            var valido = true;
+            value = value.replace(/[^\w]+/g, '');
+
+            if (value !== "" && !$(element).prop('disabled')) {
+                if (value.length == 5) {
+                    valido = !verificaEntidade(value);
+                }
+            }
+
+            return valido;
+        }, 'Locação já existe');
+
+        $('#form-locacao').validate({
+            onkeyup: false,
+            rules: {
+                'descricao': {
+                    required: true,
+                    minlength: 3,
+                },
+                'custo': {
+                    required: true,
+                    valido: true,
+                    existe: true,
+                },
+            }     
+        });
+
+        $('#form-locacao').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+        }
+
+            if (form.valid()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    beforeSend: function () {
+                        $('#btn-salvar').val('Aguarde...');
+                        $('#btn-salvar').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-salvar').val('Salvar');
+                        $('#btn-salvar').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resp){
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        if (resp.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaItemlocacao();
+                        }
+                    }                                       
+                });
+
+            }
+    )       
 </script>
