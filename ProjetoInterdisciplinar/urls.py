@@ -44,7 +44,7 @@ urlpatterns = [
     path('novousuario/', views.NovoUsuario, name='NovoUsuario'),
 
     path('itemlocacao/', views.IndexItemLocacao, name='ItemLocacao'),
-    path('novoitemlocacao/', views.ModalNovoItemLocacao, name='ModalNovoItemLocacao'),
+    path('modalnovoitemlocacao/', views.ModalNovoItemLocacao, name='ModalNovoItemLocacao'),
     path('modalexcluirItemLocacao/', views.ModalExcluirItemLocacao, name='ModalExcluirItemLocacao'),
     path('salvaritemlocacao/', views.SalvarItemLocacao, name='SalvarItemLocacao'),
     path('excluirItemLocacao/', views.ExcluirItemLocacao, name='ExcluirItemLocacao'),

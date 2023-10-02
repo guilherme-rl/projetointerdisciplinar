@@ -5,7 +5,7 @@
 </div>
 
 <div class="modal-body">
-    <form action="/novoitemlocacao/" method="post" id="form-item-locacao">
+    <form action="/salvaritemlocacao/" method="post" id="form-item-locacao">
         {% csrf_token %}
         <div class="row">
             <div class="col-md-12">
@@ -127,7 +127,7 @@
                         
                         if (resp.sucesso) {
                             $('#modal-container').modal('hide');
-                            atualizarTabelaItemlocacao();
+                            atualizarTabelaItemLocacao();
                         }
                     }                                       
                 });

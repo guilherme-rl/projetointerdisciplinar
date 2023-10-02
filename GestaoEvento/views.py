@@ -242,7 +242,7 @@ def SalvarItemLocacao(request):
          
             novo_ItemLocacao = Entidade(                
                 descricao = request.POST.get('descriçao'),
-                custo = request.POST.get('custo'),
+                custo_unitario = request.POST.get('custo'),
                 tipo = 'L',
             )
             novo_ItemLocacao.save()
