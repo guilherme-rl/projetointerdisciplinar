@@ -93,6 +93,19 @@ DATABASES = {
    }
 }
 
+
+# Conexão MySql
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.mysql', 
+#         'NAME': 'GestaoEventos',
+#         'USER': 'root',
+#         'PASSWORD': 'pass',
+#         'HOST': 'localhost',
+#         'PORT': '3306',
+#     }
+# }
+
 # Password validation
 # https://docs.djangoproject.com/en/2.1/ref/settings/#auth-password-validators
 AUTH_PASSWORD_VALIDATORS = [

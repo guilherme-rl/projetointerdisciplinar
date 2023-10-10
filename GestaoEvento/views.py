@@ -1,5 +1,6 @@
 from datetime import datetime
-from django.db import transaction, connection, models
+from django.db import transaction, connection
+from django.db.models import F, Q, Sum
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from GestaoEvento.models import *
@@ -43,7 +44,7 @@ def IndexCliente(request):
     
 def TabelaClientes(request):
     
-    clientes = Entidade.objects.filter(tipo='C')
+    clientes = Entidade.objects.filter(Q(tipo='C') & Q(excluido=False))
     
     return render(
         request,
@@ -62,7 +63,21 @@ def ModalNovoCliente(request):
     )
 
 
-def NovoCliente(request):
+def ModalExcluirCliente(request):
+    
+    cliente_id = request.GET.get('id')
+    cliente = Entidade.objects.get(pk=cliente_id)
+
+    return render(
+        request,
+        'Cliente/ModalExcluir.html',
+        {
+            'cliente': cliente
+        }
+    )
+
+
+def SalvarCliente(request):
     try:
         with transaction.atomic():
             
@@ -89,10 +104,31 @@ def NovoCliente(request):
             
             novo_cliente.save()
 
-            return JsonResponse({'success': True})
+            return JsonResponse({'sucesso': True})
     
     except Exception as e:
         print(e)
+        
+        return JsonResponse({'sucesso': False})
+        
+
+def ExcluirCliente(request):
+    
+    try:
+        with transaction.atomic():
+            
+            cliente_id = request.POST.get('id')
+            cliente = Entidade.objects.get(pk=cliente_id)
+            
+            cliente.excluido = True
+            
+            cliente.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 
@@ -156,31 +192,86 @@ def NovoUsuario(request):
 
 # region ItemLocacao
 def IndexItemLocacao(request):
-    
-    itens_locacao = ItemLocacao.objects.all()
-
+     
     return render(
         request,
         'ItemLocacao/ItemLocacao.html',
         {
-            'title':'Itens de Locação',
-            'itenslocacao': itens_locacao
+            'title':'Itens_Locacao',
         }
     )
 
+
+def TabelaItemLocacao(request):
+         
+    ItemLocacao = Entidade.objects.filter(Q(tipo='L') & Q(excluido=False))
+ 
+    return render(
+        request,
+        'ItemLocacao/Tabela.html',
+        {
+            'ItemLocacao': ItemLocacao,
+        }
+    )
 
 def ModalNovoItemLocacao(request):
 
     return render(
         request,
         'ItemLocacao/ModalNovo.html',
+    
+    )
+
+def ModalExcluirItemLocacao(request):
+
+    ItemLocacao_id = request.GET.get('id')
+    ItemLocacao = Entidade.objects.get(pk=ItemLocacao_id)
+    
+    return render(
+        request,
+        'ItemLocacao/ModalExluir.html',
+    {
+        'ItemLocacao': ItemLocacao
+    }
     )
 
 
-def NovoItemLocacao(request):
+def SalvarItemLocacao(request):   
+    try:
+        with transaction.atomic():
+         
+            novo_ItemLocacao = Entidade(                
+                descricao = request.POST.get('descriçao'),
+                custo_unitario = request.POST.get('custo'),
+                tipo = 'L',
+            )
+            novo_ItemLocacao.save()
+        
+            return JsonResponse({'success': True})
+        
+    except Exception as e :
+        print(e)
 
-    return JsonResponse({'success': True})
+        return JsonResponse({'sucesso': False })
 
+def ExcluirItemLocacao(request):
+
+    try:
+        with transaction.atomic():
+            
+            ItemLocacao_id = request.POST.get('id')
+            ItemLocacao = Entidade.objects.get(pk=ItemLocacao_id)
+           
+            ItemLocacao.excluido = True
+
+            ItemLocacao.save()
+            
+            return JsonResponse ({'sucesso' : True})
+
+    except Exception as e :
+        print (e)
+        return JsonResponse({'sucesso' : False, 'erro' : str(e)})
+    
 # endregion
 
 # region UnidadeMedida

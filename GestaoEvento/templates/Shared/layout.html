@@ -62,17 +62,26 @@
     </nav>
 
     <div class="container body-content">
-        <!-- main modal -->
+        <!-- modal principal -->
         <div id="modal-container" class="modal fade" role="dialog" tabindex="-1">
             <div class="modal-dialog" role="document">
                 <div class="modal-content" data-cy="modal"></div>
             </div>
         </div>
 
-        <!-- second modal -->
+        <!-- modal secundária -->
         <div id="modal-container-2" class="modal fade" role="dialog" tabindex="-1" data-type="">
             <div class="modal-dialog" role="document">
                 <div class="modal-content modal-content-2" data-cy="modal-2"></div>
+            </div>
+        </div>
+
+        <!-- modal loading -->
+        <div id="modal-loading" style="display: none; position: relative; top: 50%; left: 49%" >
+            <div class="loading-content">
+                <div style="opacity: 1;" id="loader-form">
+                    <img src="{% static 'GestaoEvento/img/load-transp.gif' %}" alt="Carregando..." style="width: 30px;">
+                </div>
             </div>
         </div>
 
