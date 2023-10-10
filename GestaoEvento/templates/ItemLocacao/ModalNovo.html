@@ -43,10 +43,11 @@
 
         $('#descricao').mask('');
 
-        $('custo').focus(function () {
+        $('custo_unitario').focus(function () {
             console.log('focus descricao');
             $(this).unmask();
         });
+    })
 
         $('#descricao').blur(function () {
             valor = $(this).val().replace(/[^\d]+/g, '')
@@ -58,7 +59,7 @@
 
         $.validator.messages.required = 'Campo obrigatório';
 
-        $.validator.addMethod('valido', function (value, element)
+        $.validator.addMethod('valido', function (value, element){
             console.log('Validando descricao');
             var valido = true;
            value = value.replace(/[^\w]+/g, '');
@@ -87,13 +88,12 @@
         }, 'Locação já existe');
 
         $('#form-locacao').validate({
-            onkeyup: false,
             rules: {
                 'descricao': {
                     required: true,
                     minlength: 3,
                 },
-                'custo': {
+                'custo_unitario': {
                     required: true,
                     valido: true,
                     existe: true,
