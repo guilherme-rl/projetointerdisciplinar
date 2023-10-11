@@ -44,7 +44,7 @@ class Telefone(models.Model):
 class ItemLocacao(models.Model):
     descricao = models.CharField(max_length=200)
     excluido = models.BooleanField(default=False)
-    custo_unitario = models.DecimalField(max_digits=10, decimal_places=2)
+    custo_unitario = models.DecimalField(max_digits=10, decimal_places=2, default= ' ')
 
 class UnidadeMedida(models.Model):
     descricao = models.CharField(max_length=200)
