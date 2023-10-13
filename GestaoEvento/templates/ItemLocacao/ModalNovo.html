@@ -46,7 +46,7 @@
 
         $('').focus();
 
-        $('#descricao').mask('');
+        $('descricao').mask('');
 
         $('custo_unitario').focus(function () {
             console.log('focus descricao');
@@ -54,7 +54,7 @@
         });
     })
 
-        $('#descricao').blur(function () {
+        $('descricao').blur(function () {
             valor = $(this).val().replace(/[^\d]+/g, '')
             
             if (valor.length == 5 || valor.length == 50) {
@@ -73,7 +73,7 @@
                 if (value.length == 5) {
                     valido = descricao (value);
                 }
-            }
+            })
 
             return valido;
         }, 'descricao inválida');
@@ -120,12 +120,12 @@
                     beforeSend: function () {
                         $('#btn-salvar').val('Aguarde...');
                         $('#btn-salvar').attr('disabled', true);
-                        //$('#submited').val(true);
+                        $('#submited').val(true);
                     },
                     complete: function () {
                         $('#btn-salvar').val('Salvar');
                         $('#btn-salvar').attr('disabled', false);
-                        //$('#submited').val(false);
+                        $('#submited').val(false);
                     },
                     success: function (resp){
                         //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
