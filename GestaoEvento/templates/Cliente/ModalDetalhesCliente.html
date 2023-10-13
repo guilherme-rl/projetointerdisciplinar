@@ -1,0 +1,101 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Cliente</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <input type="hidden" id="cliente-id" name="id" value="{{ cliente.id }}" />
+    <div class="row">
+        <div class="col-md-12">
+            <div class="form-group">
+                <label class="form-label fw-bold">Nome/Razão Social</label>
+                <br>
+                {{ cliente.nome_razao }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label fw-bold">CPF/CNPJ</label>
+                <span id="cpf_cnpj">
+                    <br>
+                    {{ cpf_cnpj_formatado }}
+                </span>
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label fw-bold">Data Nascimento/Criação</label>
+                <br>
+                {{ data_formatada }}
+            </div>
+        </div>
+    </div>
+    <div class="row mt-3">
+    </div>
+    <div class="row">
+        <div class="col-md-9">
+            <div class="form-group">
+                <label class="form-label fw-bold">Endereço</label>
+                <br>
+                {{ endereco_principal.complemento }}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="form-label fw-bold">CEP</label>
+                <br>
+                {{ cep_formatado }}
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-4">
+            <div class="form-group">
+                <label class="form-label fw-bold">Bairro</label>
+                <br>
+                {{ endereco_principal.bairro }}
+            </div>
+        </div>
+        <div class="col-md-5">
+            <div class="form-group">
+                <label class="form-label fw-bold">Cidade</label>
+                <br>
+                {{ endereco_principal.cidade }}
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="form-group">
+                <label class="form-label fw-bold">Estado</label>
+                <br>
+                {{ endereco_principal.estado }}
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Fechar</button>  
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+
+        $('#cep').mask('00000-000');
+
+        valor = $('#cpf_cnpj').val().replace(/[^\d]+/g, '')
+        
+        if (valor.length == 11 || valor.length == 14) {
+
+            if (valor.length == 11){
+                $('#cpf_cnpj').mask('000.000.000-00');
+            } else if (valor.length == 14) {
+                $('#cpf_cnpj').mask('00.000.000/0000-00');
+            }
+        }
+    });
+</script>

@@ -86,6 +86,8 @@ WSGI_APPLICATION = 'ProjetoInterdisciplinar.wsgi.application'
 #         'PORT': '5432',
 #     }
 # }
+
+# Conexão SqLite
 DATABASES = {
    'default': {
        'ENGINE': 'django.db.backends.sqlite3',
@@ -93,7 +95,10 @@ DATABASES = {
    }
 }
 
+<<<<<<< HEAD
 
+=======
+>>>>>>> guilherme
 # Conexão MySql
 # DATABASES = {
 #     'default': {

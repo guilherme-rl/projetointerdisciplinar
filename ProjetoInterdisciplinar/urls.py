@@ -29,9 +29,10 @@ urlpatterns = [
     path('contato/', views.Contato, name='Contato'),
 
     path('cliente/', views.IndexCliente, name='Cliente'),
-    path('modalnovocliente/', views.ModalNovoCliente, name='ModalNovoCliente'),
-    path('modalexcluircliente/', views.ModalExcluirCliente, name='ModalExcluirCliente'),
+    path('modalcliente/', views.ModalCliente, name='ModalCliente'),
     path('salvarcliente/', views.SalvarCliente, name='SalvarCliente'),
+    path('modaldetalhescliente/', views.ModalDetalhesCliente, name='ModalDetalhesCliente'),
+    path('modalexcluircliente/', views.ModalExcluirCliente, name='ModalExcluirCliente'),
     path('excluircliente/', views.ExcluirCliente, name='ExcluirCliente'),
     path('tabelaclientes/', views.TabelaClientes, name='TabelaClientes'),
 
@@ -74,4 +75,7 @@ urlpatterns = [
     path('contrato/', views.IndexContrato, name='Contrato'),
     path('modalnovocontrato/', views.ModalNovoContrato, name='ModalNovoContrato'),
     path('novocontrato/', views.NovoContrato, name='NovoContrato'),
+    
+    path('buscarentidadeporcpf/', views.BuscarEntidadePorCpf, name='BuscarEntidadePorCpf'),
+    path('verificaentidade/', views.VerificaEntidadeExistente, name='VerificaEntidade'),
 ]

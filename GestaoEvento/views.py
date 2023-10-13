@@ -4,6 +4,7 @@ from django.db.models import F, Q, Sum
 from django.shortcuts import render
 from django.http import HttpRequest, HttpResponse, JsonResponse
 from GestaoEvento.models import *
+import json
 import re
 
 # Create your views here.
@@ -44,22 +45,69 @@ def IndexCliente(request):
     
 def TabelaClientes(request):
     
+    busca = request.POST.get('busca')
+    
     clientes = Entidade.objects.filter(Q(tipo='C') & Q(excluido=False))
+    
+    if busca:
+        clientes = clientes.filter(nome_razao__icontains=busca)
     
     return render(
         request,
         'Cliente/Tabela.html',
         {
-            'clientes': clientes
+            'clientes': clientes,
+            'busca': busca,
         }
     )
 
 
-def ModalNovoCliente(request):
+def ModalCliente(request):
+    
+    id = request.GET.get('id')
+    cliente = Entidade()
+    data_formatada = ''
+    endereco_principal = Endereco()
+    
+    if id:
+        cliente = Entidade.objects.get(id=id)
+        data_formatada = cliente.data_nascimento_criacao.strftime('%Y-%m-%d')
+        endereco_principal = cliente.endereco.get(principal=True)
 
     return render(
         request,
-        'Cliente/ModalNovo.html',
+        'Cliente/ModalCliente.html',
+        {
+            'cliente': cliente,
+            'data_formatada': data_formatada,
+            'endereco_principal': endereco_principal,
+        }
+    )
+
+
+def ModalDetalhesCliente(request):
+    
+    cliente_id = request.GET.get('id')
+    cliente = Entidade.objects.get(pk=cliente_id)
+    data_formatada = cliente.data_nascimento_criacao.strftime('%d/%m/%Y')
+    endereco_principal = cliente.endereco.get(principal=True)
+    cep_formatado = f'{endereco_principal.cep[:5]}-{endereco_principal.cep[5:]}'
+    cpf_cnpj_formatado = ''
+    if (len(cliente.cpf_cnpj) == 11):
+        cpf_cnpj_formatado = f'{cliente.cpf_cnpj[:3]}.{cliente.cpf_cnpj[3:6]}.{cliente.cpf_cnpj[6:9]}-{cliente.cpf_cnpj[9:]}'
+    else:
+        cpf_cnpj_formatado = f'{cliente.cpf_cnpj[:2]}.{cliente.cpf_cnpj[2:5:1]}.{cliente.cpf_cnpj[5:8]}/{cliente.cpf_cnpj[8:12]}-{cliente.cpf_cnpj[12:]}'
+
+    return render(
+        request,
+        'Cliente/ModalDetalhesCliente.html',
+        {
+            'cliente': cliente,
+            'data_formatada': data_formatada,
+            'endereco_principal': endereco_principal,
+            'cpf_cnpj_formatado': cpf_cnpj_formatado,
+            'cep_formatado': cep_formatado,
+        }
     )
 
 
@@ -70,7 +118,7 @@ def ModalExcluirCliente(request):
 
     return render(
         request,
-        'Cliente/ModalExcluir.html',
+        'Cliente/ModalExcluirCliente.html',
         {
             'cliente': cliente
         }
@@ -81,28 +129,45 @@ def SalvarCliente(request):
     try:
         with transaction.atomic():
             
+            id = request.POST.get('id')
             data = datetime.strptime(request.POST.get('data_nasc'), '%Y-%m-%d')
+            cliente = None
             
-            cpf = request.POST.get('cpf_cnpj')
-            cpf = re.sub(r'[^0-9]', '', cpf)
+            if id != 'None':
+                cliente = Entidade.objects.get(id=id)
+                cliente.nome_razao = request.POST.get('nome')
+                cliente.data_nascimento_criacao = data
+                
+                endereco = cliente.endereco.get(principal=True)
+                endereco.cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else ''
+                endereco.bairro = request.POST.get('bairro')
+                endereco.complemento = request.POST.get('endereco')
+                endereco.cidade = request.POST.get('cidade')
+                endereco.estado = request.POST.get('estado').upper()
+                
+                endereco.save()
+                
+            else:
+                cpf = request.POST.get('cpf_cnpj')
+                cpf = re.sub(r'[^0-9]', '', cpf)
+                cliente = Entidade(
+                    nome_razao = request.POST.get('nome'),
+                    cpf_cnpj = cpf,
+                    data_nascimento_criacao = data,
+                    tipo = 'C',
+                )
+                cliente.save()
+                
+                cliente.endereco.create(
+                    cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else '',
+                    bairro = request.POST.get('bairro'),
+                    complemento = request.POST.get('endereco'),
+                    cidade = request.POST.get('cidade'),
+                    estado = request.POST.get('estado').upper(),
+                    principal = True,
+                )
             
-            novo_cliente = Entidade(
-                nome_razao = request.POST.get('nome'),
-                cpf_cnpj = cpf,
-                data_nascimento_criacao = data,
-                tipo = 'C',
-            )
-            novo_cliente.save()
-            
-            novo_cliente.endereco.create(
-                cep = request.POST.get('cep') if request.POST.get('cep') else '',
-                bairro = request.POST.get('bairro'),
-                complemento = request.POST.get('endereco'),
-                cidade = request.POST.get('cidade'),
-                estado = request.POST.get('estado').upper(),
-            )
-            
-            novo_cliente.save()
+            cliente.save()
 
             return JsonResponse({'sucesso': True})
     
@@ -447,3 +512,42 @@ def NovoContrato(request):
     return JsonResponse({'success': True})
 
 # endregion
+
+def BuscarEntidadePorCpf(request):
+    
+    try:
+        entidade = Entidade.objects.get(cpf_cnpj=request.GET.get('cpf_cnpj'))
+        
+        dict_entidade = {
+            'nome_razao': entidade.nome_razao,
+            'data_nascimento_criacao': datetime.strftime(entidade.data_nascimento_criacao, '%d/%m/%Y'),
+            'cpf_cnpj': entidade.cpf_cnpj,
+            'tipo': entidade.tipo,
+            'excluido': entidade.excluido,
+            'descricao_servico': entidade.descricao_servico,
+        }
+        
+        convert1 = json.dumps(dict_entidade)
+        #convert2 = json.dumps(entidade)
+    
+        return JsonResponse({'sucesso': True, 'entidade': convert1})
+    
+    except Exception as e:
+        
+        return JsonResponse({'sucesso': False})
+
+
+def VerificaEntidadeExistente(request):
+    
+    try:
+        consulta = Entidade.objects.filter(Q(cpf_cnpj=request.GET.get('cpf_cnpj')) & Q(excluido=False)).exists()
+    
+        return JsonResponse({'sucesso': consulta})
+    
+    except Exception as e:
+        
+        return JsonResponse({'sucesso': False})
+
+
+# todo: Adicionar inclusão de telefone e e-mail
+# todo:

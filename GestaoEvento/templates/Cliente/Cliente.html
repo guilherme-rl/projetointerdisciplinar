@@ -18,7 +18,7 @@
                 <div class="row mb-3" style="margin-top: 10px;">
                     <div class="form-group col-md-4">
                         <label>Pesquisa: </label>
-                        <input type="text" class="form-control" id="search" name="search" value="{{ search }}">
+                        <input type="text" class="form-control" id="busca" name="busca" value="{{ busca }}">
                     </div>
                     <!--<div class="form-group col-md-4" id="div-periodo">
                         <label>Período: </label>
@@ -27,7 +27,7 @@
                 </div>
                 <div class="row mb-3">
                     <div class="form-group col-md-2">
-                        <input type="button" class="form-control btn btn-primary" id="btn-search" value="Filtrar">
+                        <input type="button" class="form-control btn btn-primary" id="btn-busca" value="Filtrar">
                     </div>
                 </div>
 
@@ -43,19 +43,73 @@
     $(document).ready(function () {
         console.log('Script index cliente');
 
-        $('.btn-novo').click(function (e) {
+        $(document).off('click', '.btn-novo');
+        $(document).on('click', '.btn-novo', function (e) {
             e.preventDefault();
             console.log('click novo cliente');
+
+            var loading = $('#modal-loading').clone().css('display', 'block'); // Copiando o código do loading
+            $('#modal-container .modal-content').html(loading); // Preenchendo o conteúdo da modal com o loading copiado
+            $('#modal-container .modal-content').css("width", "900px"); // Definindo largura da modal
+            $('#modal-container .modal-content').css("height", "411px"); // Definindo altura da modal
+            $('#modal-container').off('shown.bs.modal');
+            $('#modal-container').on('shown.bs.modal', function () { // Código a ser executado quando o evento de abertura de modal ocorrer
+                $.ajax({ // Chamada da url de abertura da modal
+                    url: '{% url "ModalCliente" %}',
+                    method: 'GET',
+                    success: function (resposta) {
+                        $('#modal-container .modal-content').css("height", "auto"); // Definindo a altura da modal como automático
+                        $('#modal-container .modal-content').html(resposta); // Preenche a modal com o conteúdo de retorno do ajax
+                    }
+                });
+                $('#modal-container').off('shown.bs.modal'); // Abre a modal
+            });
+            $('#modal-container').modal('show');
+        });
+
+        $(document).off('click', '.btn-editar');
+        $(document).on('click', '.btn-editar', function (e) {
+            e.preventDefault();
+            console.log('click editar cliente');
+
+            var id = $(this).attr('data-id');
 
             var loading = $('#modal-loading').clone().css('display', 'block');
             $('#modal-container .modal-content').html(loading);
             $('#modal-container .modal-content').css("width", "900px");
-            $('#modal-container .modal-content').css("height", "494px");
+            $('#modal-container .modal-content').css("height", "411px");
             $('#modal-container').off('shown.bs.modal');
             $('#modal-container').on('shown.bs.modal', function () {
                 $.ajax({
-                    url: '{% url "ModalNovoCliente" %}',
+                    url: '{% url "ModalCliente" %}',
                     method: 'GET',
+                    data: { id: id },
+                    success: function (resposta) {
+                        $('#modal-container .modal-content').css("height", "auto");
+                        $('#modal-container .modal-content').html(resposta);
+                    }
+                });
+                $('#modal-container').off('shown.bs.modal');
+            });
+            $('#modal-container').modal('show');
+        });
+
+        $(document).off('click', '.detalhes-cliente');
+        $(document).on('click', '.detalhes-cliente', function (e) {
+            e.preventDefault();
+
+            var id = $(this).attr('data-id');
+
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
+            $('#modal-container .modal-content').css("width", "850px");
+            $('#modal-container .modal-content').css("height", "411px");
+            $('#modal-container').off('shown.bs.modal');
+            $('#modal-container').on('shown.bs.modal', function () {
+                $.ajax({
+                    url: '{% url "ModalDetalhesCliente" %}',
+                    method: 'GET',
+                    data: { id: id },
                     success: function (resposta) {
                         $('#modal-container .modal-content').css("height", "auto");
                         $('#modal-container .modal-content').html(resposta);
@@ -94,14 +148,27 @@
             $('#modal-container').modal('show');
         });
 
+        $('#btn-busca').click(function (e) {
+            e.preventDefault();
+
+            atualizarTabelaCliente();
+        })
+
         atualizarTabelaCliente();
     });
 
     function atualizarTabelaCliente() {
 
+        var busca = $('#busca').val();
+        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+
         $.ajax({
             url: '{% url "TabelaClientes" %}',
-            method: 'GET',
+            method: 'POST',
+            data: {
+                busca: busca,
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+            },
             success: function (resposta) {
                 $('#conteudo').html(resposta);
             }
