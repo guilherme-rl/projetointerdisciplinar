@@ -1,0 +1,82 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Unidade de Medida</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/salvarunidademedida/" method="post" id="form-unidade-medida">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Sigla</label>
+                    <input type="text" class="form-control" name="sigla" value="" />
+                </div>
+            </div>
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="descricao" value="" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-unidade-medida" />
+    
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal unidade medida');
+
+        $.validator.messages.required = 'Campo obrigatório';
+
+        $('#form-unidade-medida').validate({
+            onkeyup: false,
+            rules: {
+                sigla: 'required',
+                descricao: 'required',
+            },
+        });
+
+        $('#form-unidade-medida').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            if (form.valid()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    beforeSend: function () {
+                        $('#btn-salvar').val('Aguarde...');
+                        $('#btn-salvar').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-salvar').val('Salvar');
+                        $('#btn-salvar').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        if (resposta.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaUnidadeMedida();
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>

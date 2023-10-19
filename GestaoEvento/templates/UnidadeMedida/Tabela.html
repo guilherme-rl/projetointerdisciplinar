@@ -2,25 +2,29 @@
     <thead>
         <tr>
             <th class="text-center" style="width: 150px;">Código</th>
+            <th class="text-center"  style="width: 150px;">Sigla</th>
             <th class="text-left">Descrição</th>
         </tr>
     </thead>
 
     <tbody>
-        {% if unidadesmedida|length == 0 %}
+        {% if unidades_medida|length == 0 %}
         <tr>
             <td class="text-center" colspan="10">
                 Sem itens para serem exibidos
             </td>
         </tr>
         {% else %}
-            {% for unidademedida in unidadesmedida %}
+            {% for unidademedida in unidades_medida %}
             <tr>
                 <td class="text-center">
-                    {{ unidadesmedida.id }}
+                    {{ unidademedida.id }}
+                </td>
+                <td class="text-center">
+                    {{ unidademedida.sigla }}
                 </td>
                 <td class="text-left">
-                    {{ unidadesmedida.descricao }}
+                    {{ unidademedida.descricao }}
                 </td>
             </tr>
             {% endfor %}
