@@ -354,17 +354,50 @@ def IndexUnidadeMedida(request):
     )
 
 
-def ModalNovoUnidadeMedida(request):
-
+def TabelaUnidadeMedida(request):
+    
+    busca = request.POST.get('busca')
+    
+    unidade_medida = UnidadeMedida.objects.all()
+    
+    if busca:
+        unidade_medida = unidade_medida.filter(Q(descricao__icontains=busca) | Q(sigla__icontains=busca))
+    
     return render(
         request,
-        'UnidadeMedida/ModalNovo.html',
+        'UnidadeMedida/Tabela.html',
+        {
+            'unidades_medida': unidade_medida,
+            'busca': busca,
+        }
     )
 
 
-def NovoUnidadeMedida(request):
+def ModalUnidadeMedida(request):
 
-    return JsonResponse({'success': True})
+    return render(
+        request,
+        'UnidadeMedida/ModalUnidadeMedida.html',
+    )
+
+
+def SalvarUnidadeMedida(request):
+    
+    try:
+        with transaction.atomic():
+            unidadeMedida = UnidadeMedida(
+                sigla = request.POST.get('sigla'),
+                descricao = request.POST.get('descricao'),
+            )
+            
+            unidadeMedida.save()
+
+        return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        
+        return JsonResponse({'sucesso': False})
 
 # endregion
 
