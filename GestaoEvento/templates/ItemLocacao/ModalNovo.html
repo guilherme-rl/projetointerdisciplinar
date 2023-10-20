@@ -1,4 +1,4 @@
-
+﻿
 <div class="modal-header">
     <h4 class="modal-title">Cadastro de Itens de Locação</h4>
     <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
@@ -63,7 +63,8 @@
             })
 
             return valido;
-        }, 'descricao inválida');
+        , 'descricao inválida');
+    
 
         $.validator.addMethod('existe', function (value, element) {
             console.log('Validando locacao existente');
