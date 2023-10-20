@@ -1,4 +1,4 @@
-﻿
+
 <div class="modal-header">
     <h4 class="modal-title">Cadastro de Itens de Locação</h4>
     <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
@@ -48,14 +48,6 @@
             $(this).unmask();
         });
     })
-
-        $('descricao').blur(function () {
-            valor = $(this).val().replace(/[^\d]+/g, '')
-            
-            if (valor.length == 5 || valor.length == 50) {
-                
-            }
-        })
 
         $.validator.messages.required = 'Campo obrigatório';
 
