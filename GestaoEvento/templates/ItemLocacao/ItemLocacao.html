@@ -44,8 +44,8 @@
             e.preventDefault();
             console.log('click novo item locacao');
 
-            //var loading = $('#modal-loading').clone().css('display', 'block');
-            //$('#modal-container .modal-content').html(loading);
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
             $('#modal-container .modal-content').css("width", "600px");
             $('#modal-container .modal-content').css("height", "290px");
             $('#modal-container').off('shown.bs.modal');
@@ -67,12 +67,12 @@
     $(document).ready(function () {
         console.log('Script index item locacao');
 
-        $('.btn-novo-item-locacao').click(function (e) {
+        $('.btn-editar-item-locacao').click(function (e) {
             e.preventDefault();
-            console.log('click novo item locacao');
+            console.log('click editar item locacao');
 
-            //var loading = $('#modal-loading').clone().css('display', 'block');
-            //$('#modal-container .modal-content').html(loading);
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
             $('#modal-container .modal-content').css("width", "600px");
             $('#modal-container .modal-content').css("height", "290px");
             $('#modal-container').off('shown.bs.modal');
