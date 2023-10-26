@@ -64,32 +64,86 @@
         })
     });
 
-    $(document).ready(function () {
-        console.log('Script index item locacao');
+    $(document).off('click', '.btn-editar');
+    $(document).on('click', '.btn-editar', function (e) {
+        e.preventDefault();
+        console.log('click editar item locacao');
 
-        $('.btn-editar-item-locacao').click(function (e) {
-            e.preventDefault();
-            console.log('click editar item locacao');
+        var id = $(this).attr('descricao-id');
 
-            var loading = $('#modal-loading').clone().css('display', 'block');
-            $('#modal-container .modal-content').html(loading);
-            $('#modal-container .modal-content').css("width", "600px");
-            $('#modal-container .modal-content').css("height", "290px");
-            $('#modal-container').off('shown.bs.modal');
-            $('#modal-container').on('shown.bs.modal', function () {
-                $.ajax({
-                    url: '{% url "ModalNovoItemLocacao" %}',
-                    method: 'GET',
-                    success: function (resposta) {
-                        $('#modal-container .modal-content').css("height", "auto");
-                        $('#modal-container .modal-content').html(resposta);
-                    }
-                });
-                $('#modal-container').off('shown.bs.modal');
+        var loading = $('#modal-loading').clone().css('display', 'block');
+        $('#modal-container .modal-content').html(loading);
+        $('#modal-container .modal-content').css("width", "900px");
+        $('#modal-container .modal-content').css("height", "411px");
+        $('#modal-container').off('shown.bs.modal');
+        $('#modal-container').on('shown.bs.modal', function () {
+            $.ajax({
+                url: '{% url "ModalNovoItemLocacao" %}',
+                method: 'GET',
+                data: { id: id },
+                success: function (resposta) {
+                    $('#modal-container .modal-content').css("height", "auto");
+                    $('#modal-container .modal-content').html(resposta);
+                }
             });
-            $('#modal-container').modal('show');
-        })
+            $('#modal-container').off('shown.bs.modal');
+        });
+        $('#modal-container').modal('show');
     });
+
+    $(document).off('click', '.btn-excluir');
+    $(document).on('click', '.btn-excluir', function (e) {
+        e.preventDefault();
+ var id = $(this).attr('descricao-id');
+
+        var loading = $('#modal-loading').clone().css('display', 'block');
+        $('#modal-container .modal-content').html(loading);
+        $('#modal-container .modal-content').css("width", "500px");
+        $('#modal-container .modal-content').css("height", "242px");
+        $('#modal-container').off('shown.bs.modal');
+        $('#modal-container').on('shown.bs.modal', function () {
+            $.ajax({
+                url: '{% url "ModalExcluirItemLocacao" %}',
+                method: 'GET',
+                descricao: {
+                    id: id,
+                },
+                success: function (resposta) {
+                    $('#modal-container .modal-content').css("height", "auto");
+                    $('#modal-container .modal-content').html(resposta);
+                }
+            });
+            $('#modal-container').off('shown.bs.modal');
+        });
+        $('#modal-container').modal('show');
+    });
+
+    $('#btn-busca').click(function (e) {
+        e.preventDefault();
+
+        atualizarTabelaitemlocacao();
+    })
+
+    atualizarTabelaitemlocacao();
+
+   
+    function atualizarTabelaCliente() {
+
+        var busca = $('#busca').val();
+        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+
+        $.ajax({
+            url: '{% url "Tabelaitemlocacao" %}',
+            method: 'POST',
+            descricao: {
+                busca: busca,
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+            },
+            success: function (resposta) {
+                $('#conteudo').html(resposta);
+            }
+        });
+    }
 </script>
 
 {% endblock %}
