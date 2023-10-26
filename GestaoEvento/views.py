@@ -267,23 +267,38 @@ def IndexItemLocacao(request):
     )
 
 
-def TabelaItemLocacao(request):
-         
+def TabelaItensLocacao(request):
+
+    busca = request.POST.get('busca')     
+
     ItemLocacao = Entidade.objects.filter(Q(tipo='L') & Q(excluido=False))
- 
+    
+    if busca:
+        itemlocacao = itemlocacao.filter(descricao__icontains=busca)
+    
     return render(
         request,
         'ItemLocacao/Tabela.html',
         {
             'ItemLocacao': ItemLocacao,
+            'busca': busca,
         }
     )
 
 def ModalNovoItemLocacao(request):
+    
+    ItemLocacao = Entidade()
+    descricao = ''
+    custo_unitario = ''
 
     return render(
         request,
         'ItemLocacao/ModalNovo.html',
+        {
+            'itemlocacao' : ItemLocacao,
+            'descricao' : descricao,
+            'custo_unitario' :custo_unitario,
+        }
     
     )
 
@@ -302,17 +317,18 @@ def ModalExcluirItemLocacao(request):
 
 
 def SalvarItemLocacao(request):   
+
     try:
-        with transaction.atomic():
-         
-            novo_ItemLocacao = Entidade(                
-                descricao = request.POST.get('descriçao'),
-                custo_unitario = request.POST.get('custo'),
-                tipo = 'L',
+        with transaction.atomic(): 
+            itemlocacao = ItemLocacao(                
+             descricao = request.POST.get('descricao'),
+             custo_unitario = request.POST.get('custo_unitario'),
+    
             )
-            novo_ItemLocacao.save()
+             
+            itemlocacao.save()
         
-            return JsonResponse({'success': True})
+        return JsonResponse({'success': True})
         
     except Exception as e :
         print(e)

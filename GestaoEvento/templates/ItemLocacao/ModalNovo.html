@@ -39,66 +39,20 @@
     $(document).ready(function () {
         console.log('Document ready modal item locacao');
 
-        $('').focus();
-
-        $('descricao').mask('');
-
-        $('custo_unitario').focus(function () {
-            console.log('focus descricao');
-            $(this).unmask();
-        });
-    })
-
         $.validator.messages.required = 'Campo obrigatório';
 
-        $.validator.addMethod('valido', function (value, element){
-            console.log('Validando descricao');
-            var valido = true;
-           value = value.replace(/[^\w]+/g, '');
-
-            if (value !== "" && !$(element).prop('disabled')) {
-                if (value.length == 5) {
-                    valido = descricao (value);
-                }
-            })
-
-            return valido;
-        , 'descricao inválida');
-    
-
-        $.validator.addMethod('existe', function (value, element) {
-            console.log('Validando locacao existente');
-            var valido = true;
-            value = value.replace(/[^\w]+/g, '');
-
-            if (value !== "" && !$(element).prop('disabled')) {
-                if (value.length == 5) {
-                    valido = !verificaEntidade(value);
-                }
-            }
-
-            return valido;
-        }, 'Locação já existe');
-
-        $('#form-locacao').validate({
+        $('#form-item-locacao').validate({
+            onkeyup: false,
             rules: {
-                'descricao': {
-                    required: true,
-                    minlength: 3,
-                },
-                'custo_unitario': {
-                    required: true,
-                    valido: true,
-                    existe: true,
-                },
-            }     
+                descricao: 'required',
+                custo_unitario: 'required',
+            },
         });
 
         $('#form-locacao').submit(function (e) {
             e.preventDefault();
 
             var form = $(this);
-        }
 
             if (form.valid()) {
                 $.ajax({
@@ -108,12 +62,12 @@
                     beforeSend: function () {
                         $('#btn-salvar').val('Aguarde...');
                         $('#btn-salvar').attr('disabled', true);
-                        $('#submited').val(true);
+                        //$('#submited').val(true);
                     },
                     complete: function () {
                         $('#btn-salvar').val('Salvar');
                         $('#btn-salvar').attr('disabled', false);
-                        $('#submited').val(false);
+                        //$('#submited').val(false);
                     },
                     success: function (resp){
                         //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
@@ -126,5 +80,6 @@
                 });
 
             }
-    )       
+        });
+    });     
 </script>

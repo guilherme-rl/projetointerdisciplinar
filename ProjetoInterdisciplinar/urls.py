@@ -49,7 +49,7 @@ urlpatterns = [
     path('modalexcluirItemLocacao/', views.ModalExcluirItemLocacao, name='ModalExcluirItemLocacao'),
     path('salvaritemlocacao/', views.SalvarItemLocacao, name='SalvarItemLocacao'),
     path('excluirItemLocacao/', views.ExcluirItemLocacao, name='ExcluirItemLocacao'),
-    path('tabelaItemLocacao/', views.TabelaItemLocacao, name='TabelaItemLocacao'),
+    path('tabelaItensLocacao/', views.TabelaItensLocacao, name='TabelaItensLocacao'),
 
 
     path('unidademedida/', views.IndexUnidadeMedida, name='UnidadeMedida'),
