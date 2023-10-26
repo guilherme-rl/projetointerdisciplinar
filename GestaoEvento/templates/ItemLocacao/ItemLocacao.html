@@ -80,7 +80,7 @@
             $.ajax({
                 url: '{% url "ModalNovoItemLocacao" %}',
                 method: 'GET',
-                data: { id: id },
+                descricao: { id: id },
                 success: function (resposta) {
                     $('#modal-container .modal-content').css("height", "auto");
                     $('#modal-container .modal-content').html(resposta);
