@@ -362,5 +362,11 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 
+<<<<<<< HEAD
 db.sqlite3
 ProjetoInterdisciplinar/settings.py
+=======
+
+db.sqlite3
+ProjetoInterdisciplinar/settings.py
+>>>>>>> d53ed7011cf4606a7036a711874d6d8be7abcd19
