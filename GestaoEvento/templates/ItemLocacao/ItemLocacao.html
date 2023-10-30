@@ -53,9 +53,9 @@
                 $.ajax({
                     url: '{% url "ModalNovoItemLocacao" %}',
                     method: 'GET',
-                    success: function (resposta) {
+                    success: function (resp) {
                         $('#modal-container .modal-content').css("height", "auto");
-                        $('#modal-container .modal-content').html(resposta);
+                        $('#modal-container .modal-content').html(resp);
                     }
                 });
                 $('#modal-container').off('shown.bs.modal');
@@ -81,9 +81,9 @@
                 url: '{% url "ModalNovoItemLocacao" %}',
                 method: 'GET',
                 descricao: { id: id },
-                success: function (resposta) {
+                success: function (resp) {
                     $('#modal-container .modal-content').css("height", "auto");
-                    $('#modal-container .modal-content').html(resposta);
+                    $('#modal-container .modal-content').html(resp);
                 }
             });
             $('#modal-container').off('shown.bs.modal');
@@ -108,7 +108,7 @@
                 descricao: {
                     id: id,
                 },
-                success: function (resposta) {
+                success: function (resp) {
                     $('#modal-container .modal-content').css("height", "auto");
                     $('#modal-container .modal-content').html(resposta);
                 }
@@ -127,7 +127,7 @@
     atualizarTabelaitemlocacao();
 
    
-    function atualizarTabelaCliente() {
+    function atualizarTabelaitemlocacao() {
 
         var busca = $('#busca').val();
         var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
@@ -139,8 +139,8 @@
                 busca: busca,
                 csrfmiddlewaretoken: csrfmiddlewaretoken,
             },
-            success: function (resposta) {
-                $('#conteudo').html(resposta);
+            success: function (resp) {
+                $('#conteudo').html(resp);
             }
         });
     }
