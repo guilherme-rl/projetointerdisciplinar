@@ -335,7 +335,7 @@ def IndexItemLocacao(request):
         request,
         'ItemLocacao/ItemLocacao.html',
         {
-            'title':'Itens_Locacao',
+            'title':'Itens Locação',
         }
     )
 
@@ -344,16 +344,16 @@ def TabelaItensLocacao(request):
 
     busca = request.POST.get('busca')     
 
-    ItemLocacao = Entidade.objects.filter(Q(tipo='L') & Q(excluido=False))
+    itemLocacao = ItemLocacao.objects.filter(excluido=False)
     
     if busca:
-        itemlocacao = itemlocacao.filter(descricao__icontains=busca)
+        itemLocacao = itemLocacao.filter(descricao__icontains=busca)
     
     return render(
         request,
         'ItemLocacao/Tabela.html',
         {
-            'ItemLocacao': ItemLocacao,
+            'itens_locacao': itemLocacao,
             'busca': busca,
         }
     )
@@ -396,12 +396,11 @@ def SalvarItemLocacao(request):
             itemlocacao = ItemLocacao(                
              descricao = request.POST.get('descricao'),
              custo_unitario = request.POST.get('custo_unitario'),
-    
             )
              
             itemlocacao.save()
         
-        return JsonResponse({'success': True})
+        return JsonResponse({'sucesso': True})
         
     except Exception as e :
         print(e)

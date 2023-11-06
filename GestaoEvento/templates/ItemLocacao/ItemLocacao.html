@@ -28,7 +28,7 @@
                 </div>
 
                 <div id="conteudo">
-                    {% include "ItemLocacao/Tabela.html" %}
+                    {% comment %} {% include "ItemLocacao/Tabela.html" %} {% endcomment %}
                 </div>
             </div>
     </div>
@@ -94,7 +94,7 @@
     $(document).off('click', '.btn-excluir');
     $(document).on('click', '.btn-excluir', function (e) {
         e.preventDefault();
- var id = $(this).attr('descricao-id');
+        var id = $(this).attr('descricao-id');
 
         var loading = $('#modal-loading').clone().css('display', 'block');
         $('#modal-container .modal-content').html(loading);
@@ -121,21 +121,21 @@
     $('#btn-busca').click(function (e) {
         e.preventDefault();
 
-        atualizarTabelaitemlocacao();
+        atualizarTabelaItemLocacao();
     })
 
-    atualizarTabelaitemlocacao();
+    atualizarTabelaItemLocacao();
 
    
-    function atualizarTabelaitemlocacao() {
+    function atualizarTabelaItemLocacao() {
 
         var busca = $('#busca').val();
-        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
 
         $.ajax({
-            url: '{% url "Tabelaitemlocacao" %}',
+            url: '{% url "TabelaItensLocacao" %}',
             method: 'POST',
-            descricao: {
+            data: {
                 busca: busca,
                 csrfmiddlewaretoken: csrfmiddlewaretoken,
             },

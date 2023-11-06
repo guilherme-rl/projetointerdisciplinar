@@ -160,7 +160,7 @@
     function atualizarTabelaCliente() {
 
         var busca = $('#busca').val();
-        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
 
         $.ajax({
             url: '{% url "TabelaClientes" %}',

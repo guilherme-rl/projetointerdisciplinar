@@ -19,7 +19,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="form-label">Custo Unidade</label>
-                    <input type="text" class="form-control" name="custo-unidade" value="" placeholder="0,00"  />
+                    <input type="text" class="form-control" name="custo_unitario" value="" placeholder="0,00"  />
                 </div>
             </div>
         </div>
@@ -49,7 +49,7 @@
             },
         });
 
-        $('#form-locacao').submit(function (e) {
+        $('#form-item-locacao').submit(function (e) {
             e.preventDefault();
 
             var form = $(this);
@@ -69,10 +69,10 @@
                         $('#btn-salvar').attr('disabled', false);
                         //$('#submited').val(false);
                     },
-                    success: function (resp){
+                    success: function (resposta) {
                         //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
                         
-                        if (resp.sucesso) {
+                        if (resposta.sucesso) {
                             $('#modal-container').modal('hide');
                             atualizarTabelaItemLocacao();
                         }

@@ -8,23 +8,23 @@
     </thead>
 
     <tbody>
-        {% if itenslocacao|length == 0 %}
+        {% if itens_locacao|length == 0 %}
         <tr>
             <td class="text-center" colspan="10">
                 Sem itens para serem exibidos
             </td>
         </tr>
         {% else %}
-            {% for itemlocacao in itenslocacao %}
+            {% for item_locacao in itens_locacao %}
             <tr>
                 <td class="text-center">
-                    {{ itemlocacao.id }}
+                    {{ item_locacao.id }}
                 </td>
                 <td class="text-left">
-                    {{ itemlocacao.descricao }}
+                    {{ item_locacao.descricao }}
                 </td>
                 <td class="text-center">
-                    {{ itemlocacao.custo_unitario }}
+                    {{ item_locacao.custo_unitario }}
                 </td>
             </tr>
             {% endfor %}
