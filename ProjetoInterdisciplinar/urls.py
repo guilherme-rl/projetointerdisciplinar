@@ -49,9 +49,9 @@ urlpatterns = [
 
     path('itemlocacao/', views.IndexItemLocacao, name='ItemLocacao'),
     path('modalnovoitemlocacao/', views.ModalNovoItemLocacao, name='ModalNovoItemLocacao'),
-    path('modalexcluirItemLocacao/', views.ModalExcluirItemLocacao, name='ModalExcluirItemLocacao'),
+    path('modalexcluiritemlocacao/', views.ModalExcluirItemLocacao, name='ModalExcluirItemLocacao'),
     path('salvaritemlocacao/', views.SalvarItemLocacao, name='SalvarItemLocacao'),
-    path('excluirItemLocacao/', views.ExcluirItemLocacao, name='ExcluirItemLocacao'),
+    path('excluiritemlocacao/', views.ExcluirItemLocacao, name='ExcluirItemLocacao'),
     path('tabelaitenslocacao/', views.TabelaItensLocacao, name='TabelaItensLocacao'),
 
 
