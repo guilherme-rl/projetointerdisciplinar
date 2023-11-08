@@ -377,15 +377,21 @@ def ModalNovoItemLocacao(request):
 
 def ModalExcluirItemLocacao(request):
 
-    ItemLocacao_id = request.GET.get('id')
-    ItemLocacao = Entidade.objects.get(pk=ItemLocacao_id)
+    itemlocacao_id = request.GET.get('id')
+    itemlocacao = ItemLocacao.objects.get(pk=itemlocacao_id)
     
     return render(
         request,
         'ItemLocacao/ModalExcluir.html',
+<<<<<<< HEAD
     {
         'ItemLocacao': ItemLocacao
     }
+=======
+        {
+        'itemlocacao': ItemLocacao
+        }
+>>>>>>> 163284210591baf0a306c85ab2008be21b45b6d2
     )
 
 
@@ -412,12 +418,12 @@ def ExcluirItemLocacao(request):
     try:
         with transaction.atomic():
             
-            ItemLocacao_id = request.POST.get('id')
-            ItemLocacao = Entidade.objects.get(pk=ItemLocacao_id)
+            itemlocacao_id = request.POST.get('id')
+            itemlocacao = ItemLocacao.objects.get(pk=itemlocacao_id)
            
-            ItemLocacao.excluido = True
+            itemlocacao.excluido = True
 
-            ItemLocacao.save()
+            itemlocacao.save()
             
             return JsonResponse ({'sucesso' : True})
 
