@@ -1,0 +1,71 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Excluir Unidade de Medida</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/excluirunidademedida/" method="post" id="form-excluir-unidade-medida">
+        {% csrf_token %}
+        <input type="hidden" id="unidade-medida-id" name="id" value="{{ unidade_medida.id }}" />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Confirma a exclusão da unidade de medida?</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Descricao: {{ unidade_medida.descricao }}</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-unidade-medida" />
+    
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal unidade medida');
+
+        $('#form-excluir-unidade-medida').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                beforeSend: function () {
+                    $('#btn-salvar').val('Aguarde...');
+                    $('#btn-salvar').attr('disabled', true);
+                    //$('#submited').val(true);
+                },
+                complete: function () {
+                    $('#btn-salvar').val('Excluir');
+                    $('#btn-salvar').attr('disabled', false);
+                    //$('#submited').val(false);
+                },
+                success: function (resp) {
+                    //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
+                    
+                    if (resp.sucesso) {
+                        $('#modal-container').modal('hide');
+                        atualizarTabelaUnidadeMedida();
+                    }
+                }
+            });
+        })
+    });
+</script>
