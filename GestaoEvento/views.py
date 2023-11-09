@@ -383,9 +383,9 @@ def ModalExcluirItemLocacao(request):
     return render(
         request,
         'ItemLocacao/ModalExcluir.html',
-    {
-        'ItemLocacao': ItemLocacao
-    }
+        {
+        'itemlocacao': itemlocacao
+        }
     )
 
 
@@ -393,6 +393,8 @@ def SalvarItemLocacao(request):
 
     try:
         with transaction.atomic(): 
+
+            id = request.POST.get
             itemlocacao = ItemLocacao(                
              descricao = request.POST.get('descricao'),
              custo_unitario = request.POST.get('custo_unitario'),

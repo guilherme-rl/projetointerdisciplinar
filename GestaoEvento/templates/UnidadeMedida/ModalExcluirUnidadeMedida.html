@@ -1,23 +1,24 @@
+﻿
 <div class="modal-header">
-    <h4 class="modal-title">Excluir Item Locacao</h4>
+    <h4 class="modal-title">Excluir Unidade de Medida</h4>
     <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
 </div>
 
 <div class="modal-body">
-    <form action="/excluiritemlocacao/" method="post" id="form-excluir-item-locacao">
+    <form action="/excluirunidademedida/" method="post" id="form-excluir-unidade-medida">
         {% csrf_token %}
-        <input type="hidden" id="itemLocacao_id" name="id" value="{{itemLocacao.id }}" />
+        <input type="hidden" id="unidade-medida-id" name="id" value="{{ unidade_medida.id }}" />
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label>Confirma a exclusão do Item De Locacao ?</label>
+                    <label>Confirma a exclusão da unidade de medida?</label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label>Descrição : {{ itemlocacao.descricao}}</label>
+                    <label>Descricao: {{ unidade_medida.descricao }}</label>
                 </div>
             </div>
         </div>
@@ -26,7 +27,7 @@
 
 <div class="modal-footer">
     <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
-    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-item-locacao" />
+    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-unidade-medida" />
     
 </div>
 
@@ -35,9 +36,9 @@
 <script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
 <script>
     $(document).ready(function () {
-        console.log('Document ready modal item locacao');
+        console.log('Document ready modal unidade medida');
 
-        $('#form-excluir-item-locacao').submit(function (e) {
+        $('#form-excluir-unidade-medida').submit(function (e) {
             e.preventDefault();
 
             var form = $(this);
@@ -56,12 +57,12 @@
                     $('#btn-salvar').attr('disabled', false);
                     //$('#submited').val(false);
                 },
-                successo: function (resp) {
+                success: function (resp) {
                     //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                     
                     if (resp.sucesso) {
                         $('#modal-container').modal('hide');
-                        atualizarTabelaItemLocacao();
+                        atualizarTabelaUnidadeMedida();
                     }
                 }
             });
