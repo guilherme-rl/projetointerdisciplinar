@@ -7,6 +7,7 @@
 <div class="modal-body">
     <form action="/salvaritemlocacao/" method="post" id="form-item-locacao">
         {% csrf_token %}
+        <input type="hidden" id="item-locacao-id" name="id" value="{{ item_locacao.id }}" />
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
