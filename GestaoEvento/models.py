@@ -51,6 +51,7 @@ class ItemLocacao(models.Model):
 class UnidadeMedida(models.Model):
     descricao = models.CharField(max_length=200)
     sigla = models.CharField(max_length=3, default='')
+    excluido = models.BooleanField(default=False)
     
 
 class Ingrediente(models.Model):

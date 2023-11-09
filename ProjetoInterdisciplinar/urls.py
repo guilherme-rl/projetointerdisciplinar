@@ -58,7 +58,9 @@ urlpatterns = [
     path('unidademedida/', views.IndexUnidadeMedida, name='UnidadeMedida'),
     path('tabelaunidademedida/', views.TabelaUnidadeMedida, name='TabelaUnidadeMedida'),
     path('modalunidademedida/', views.ModalUnidadeMedida, name='ModalUnidadeMedida'),
+    path('modalexcluirunidademedida/', views.ModalExcluirUnidadeMedida, name='ModalExcluirUnidadeMedida'),
     path('salvarunidademedida/', views.SalvarUnidadeMedida, name='SalvarUnidadeMedida'),
+    path('excluirunidademedida/', views.ExcluirUnidadeMedida, name='ExcluirUnidadeMedida'),
 
     path('ingrediente/', views.IndexIngrediente, name='Ingrediente'),
     path('modalnovoingrediente/', views.ModalNovoIngrediente, name='ModalNovoIngrediente'),
