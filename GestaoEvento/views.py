@@ -383,15 +383,9 @@ def ModalExcluirItemLocacao(request):
     return render(
         request,
         'ItemLocacao/ModalExcluir.html',
-<<<<<<< HEAD
-    {
-        'ItemLocacao': ItemLocacao
-    }
-=======
         {
-        'itemlocacao': ItemLocacao
+        'itemlocacao': itemlocacao
         }
->>>>>>> 163284210591baf0a306c85ab2008be21b45b6d2
     )
 
 
@@ -399,6 +393,8 @@ def SalvarItemLocacao(request):
 
     try:
         with transaction.atomic(): 
+
+            id = request.POST.get
             itemlocacao = ItemLocacao(                
              descricao = request.POST.get('descricao'),
              custo_unitario = request.POST.get('custo_unitario'),
@@ -452,7 +448,7 @@ def TabelaUnidadeMedida(request):
     
     busca = request.POST.get('busca')
     
-    unidade_medida = UnidadeMedida.objects.filter(excluido=False)
+    unidade_medida = UnidadeMedida.objects.all()
     
     if busca:
         unidade_medida = unidade_medida.filter(Q(descricao__icontains=busca) | Q(sigla__icontains=busca))
@@ -468,34 +464,10 @@ def TabelaUnidadeMedida(request):
 
 
 def ModalUnidadeMedida(request):
-    
-    id = request.GET.get('id')
-    
-    unidadeMedida = UnidadeMedida()
-    
-    if id:
-        unidadeMedida = UnidadeMedida.objects.get(pk=id)
 
     return render(
         request,
         'UnidadeMedida/ModalUnidadeMedida.html',
-        {
-            'unidade_medida': unidadeMedida,
-        }
-    )
-    
-    
-def ModalExcluirUnidadeMedida(request):
-    
-    id = request.GET.get('id')
-    unidadeMedida = UnidadeMedida.objects.get(pk=id)
-
-    return render(
-        request,
-        'UnidadeMedida/ModalExcluirUnidadeMedida.html',
-        {
-            'unidade_medida': unidadeMedida
-        }
     )
 
 
@@ -503,44 +475,19 @@ def SalvarUnidadeMedida(request):
     
     try:
         with transaction.atomic():
-        
-            id = request.POST.get('id')
+            unidadeMedida = UnidadeMedida(
+                sigla = request.POST.get('sigla'),
+                descricao = request.POST.get('descricao'),
+            )
             
-            unidadeMedida = UnidadeMedida()
-            
-            if id != 'None':
-                unidadeMedida = UnidadeMedida.objects.get(id=id)
-                
-            unidadeMedida.sigla = request.POST.get('sigla')
-            unidadeMedida.descricao = request.POST.get('descricao')
-                
             unidadeMedida.save()
 
-            return JsonResponse({'sucesso': True})
+        return JsonResponse({'sucesso': True})
     
     except Exception as e:
         print(e)
         
         return JsonResponse({'sucesso': False})
-    
-    
-def ExcluirUnidadeMedida(request):
-    
-    try:
-        with transaction.atomic():
-            
-            id = request.POST.get('id')
-            unidadeMedida = UnidadeMedida.objects.get(pk=id)
-            
-            unidadeMedida.excluido = True
-            
-            unidadeMedida.save()
-            
-            return JsonResponse({'sucesso': True})
-    
-    except Exception as e:
-        print(e)
-        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 
