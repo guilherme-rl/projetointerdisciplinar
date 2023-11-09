@@ -7,17 +7,18 @@
 <div class="modal-body">
     <form action="/salvarunidademedida/" method="post" id="form-unidade-medida">
         {% csrf_token %}
+        <input type="hidden" id="unidade-medida-id" name="id" value="{{ unidade_medida.id }}" />
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="form-label">Sigla</label>
-                    <input type="text" class="form-control" name="sigla" value="" />
+                    <input type="text" class="form-control" name="sigla" value="{{ unidade_medida.sigla }}" />
                 </div>
             </div>
             <div class="col-md-8">
                 <div class="form-group">
                     <label class="form-label">Descrição</label>
-                    <input type="text" class="form-control" name="descricao" value="" />
+                    <input type="text" class="form-control" name="descricao" value="{{ unidade_medida.descricao }}" />
                 </div>
             </div>
         </div>
