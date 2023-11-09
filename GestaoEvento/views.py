@@ -383,9 +383,15 @@ def ModalExcluirItemLocacao(request):
     return render(
         request,
         'ItemLocacao/ModalExcluir.html',
+<<<<<<< HEAD
+    {
+        'ItemLocacao': ItemLocacao
+    }
+=======
         {
         'itemlocacao': ItemLocacao
         }
+>>>>>>> 163284210591baf0a306c85ab2008be21b45b6d2
     )
 
 
