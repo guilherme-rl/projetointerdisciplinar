@@ -6,7 +6,7 @@
 <div class="modal-body">
     <form action="/excluiritemlocacao/" method="post" id="form-excluir-item-locacao">
         {% csrf_token %}
-        <input type="hidden" id="itemlocacao-id" name="id" value="{{itemlocacao.id }}" />
+        <input type="hidden" id="itemlocacao_id" name="id" value="{{itemlocacao.id }}" />
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -56,7 +56,7 @@
                     $('#btn-salvar').attr('disabled', false);
                     //$('#submited').val(false);
                 },
-                success: function (resp) {
+                successo: function (resp) {
                     //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                     
                     if (resp.sucesso) {
