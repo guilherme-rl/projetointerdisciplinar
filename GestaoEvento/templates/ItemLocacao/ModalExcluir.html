@@ -4,9 +4,9 @@
 </div>
 
 <div class="modal-body">
-    <form action="/excluirItemLocacao/" method="post" id="form-excluir-Item-Locacao">
+    <form action="/excluiritemlocacao/" method="post" id="form-excluir-item-locacao">
         {% csrf_token %}
-        <input type="hidden" id="itemLocacao_id" name="id" value="{{itemLocacao.id }}" />
+        <input type="hidden" id="itemlocacao-id" name="id" value="{{itemlocacao.id }}" />
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -17,7 +17,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label>Descrição : {{ ItemLocacao.descricao}}</label>
+                    <label>Descrição : {{ itemlocacao.descricao}}</label>
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
 
 <div class="modal-footer">
     <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
-    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-ItemLocacao" />
+    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-item-locacao" />
     
 </div>
 
@@ -35,9 +35,9 @@
 <script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
 <script>
     $(document).ready(function () {
-        console.log('Document ready modal ItemLocacao');
+        console.log('Document ready modal item locacao');
 
-        $('#form-excluir-ItemLocacao').submit(function (e) {
+        $('#form-excluir-item-locacao').submit(function (e) {
             e.preventDefault();
 
             var form = $(this);

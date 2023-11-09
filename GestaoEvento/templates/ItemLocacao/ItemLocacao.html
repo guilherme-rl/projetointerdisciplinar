@@ -67,9 +67,9 @@
     $(document).off('click', '.btn-editar');
     $(document).on('click', '.btn-editar', function (e) {
         e.preventDefault();
-        console.log('click editar item locacao');
 
-        var id = $(this).attr('descricao-id');
+        var id = $(this).attr('data-id');
+
 
         var loading = $('#modal-loading').clone().css('display', 'block');
         $('#modal-container .modal-content').html(loading);
@@ -80,7 +80,7 @@
             $.ajax({
                 url: '{% url "ModalNovoItemLocacao" %}',
                 method: 'GET',
-                descricao: { id: id },
+                data: { id: id },
                 success: function (resp) {
                     $('#modal-container .modal-content').css("height", "auto");
                     $('#modal-container .modal-content').html(resp);
@@ -90,11 +90,12 @@
         });
         $('#modal-container').modal('show');
     });
-
+    
     $(document).off('click', '.btn-excluir');
     $(document).on('click', '.btn-excluir', function (e) {
         e.preventDefault();
-        var id = $(this).attr('descricao-id');
+
+        var id = $(this).attr('data-id');
 
         var loading = $('#modal-loading').clone().css('display', 'block');
         $('#modal-container .modal-content').html(loading);
@@ -105,9 +106,7 @@
             $.ajax({
                 url: '{% url "ModalExcluirItemLocacao" %}',
                 method: 'GET',
-                descricao: {
-                    id: id,
-                },
+                data: { id: id, },
                 success: function (resp) {
                     $('#modal-container .modal-content').css("height", "auto");
                     $('#modal-container .modal-content').html(resposta);
@@ -144,6 +143,7 @@
             }
         });
     }
+    
 </script>
 
 {% endblock %}
