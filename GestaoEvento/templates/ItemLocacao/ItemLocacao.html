@@ -107,7 +107,11 @@
                 url: '{% url "ModalExcluirItemLocacao" %}',
                 method: 'GET',
                 data: { id: id, },
+<<<<<<< HEAD
+                success: function (resp) {
+=======
                 success: function (resposta) {
+>>>>>>> df59556e39e3bd4eefa45066ea453e90ca92e9a4
                     $('#modal-container .modal-content').css("height", "auto");
                     $('#modal-container .modal-content').html(resposta);
                 }
