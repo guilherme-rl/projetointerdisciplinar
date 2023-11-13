@@ -377,15 +377,15 @@ def ModalNovoItemLocacao(request):
 
 def ModalExcluirItemLocacao(request):
 
-    ItemLocacao_id = request.GET.get('id')
-    ItemLocacao = Entidade.objects.get(pk=ItemLocacao_id)
+    itemlocacao_id = request.GET.get('id')
+    itemlocacao = ItemLocacao.objects.get(pk=itemlocacao_id)
     
     return render(
         request,
-        'ItemLocacao/ModalExluir.html',
-    {
-        'ItemLocacao': ItemLocacao
-    }
+        'ItemLocacao/ModalExcluir.html',
+        {
+        'itemlocacao': itemlocacao
+        }
     )
 
 
@@ -393,6 +393,8 @@ def SalvarItemLocacao(request):
 
     try:
         with transaction.atomic(): 
+
+            id = request.POST.get
             itemlocacao = ItemLocacao(                
              descricao = request.POST.get('descricao'),
              custo_unitario = request.POST.get('custo_unitario'),
@@ -412,12 +414,12 @@ def ExcluirItemLocacao(request):
     try:
         with transaction.atomic():
             
-            ItemLocacao_id = request.POST.get('id')
-            ItemLocacao = Entidade.objects.get(pk=ItemLocacao_id)
+            itemlocacao_id = request.POST.get('id')
+            itemlocacao = ItemLocacao.objects.get(pk=itemlocacao_id)
            
-            ItemLocacao.excluido = True
+            itemlocacao.excluido = True
 
-            ItemLocacao.save()
+            itemlocacao.save()
             
             return JsonResponse ({'sucesso' : True})
 
@@ -446,7 +448,7 @@ def TabelaUnidadeMedida(request):
     
     busca = request.POST.get('busca')
     
-    unidade_medida = UnidadeMedida.objects.all()
+    unidade_medida = UnidadeMedida.objects.filter(excluido=False)
     
     if busca:
         unidade_medida = unidade_medida.filter(Q(descricao__icontains=busca) | Q(sigla__icontains=busca))
@@ -462,10 +464,34 @@ def TabelaUnidadeMedida(request):
 
 
 def ModalUnidadeMedida(request):
+    
+    id = request.GET.get('id')
+    
+    unidadeMedida = UnidadeMedida()
+    
+    if id:
+        unidadeMedida = UnidadeMedida.objects.get(pk=id)
 
     return render(
         request,
         'UnidadeMedida/ModalUnidadeMedida.html',
+        {
+            'unidade_medida': unidadeMedida,
+        }
+    )
+    
+    
+def ModalExcluirUnidadeMedida(request):
+    
+    id = request.GET.get('id')
+    unidadeMedida = UnidadeMedida.objects.get(pk=id)
+
+    return render(
+        request,
+        'UnidadeMedida/ModalExcluirUnidadeMedida.html',
+        {
+            'unidade_medida': unidadeMedida
+        }
     )
 
 
@@ -473,19 +499,44 @@ def SalvarUnidadeMedida(request):
     
     try:
         with transaction.atomic():
-            unidadeMedida = UnidadeMedida(
-                sigla = request.POST.get('sigla'),
-                descricao = request.POST.get('descricao'),
-            )
+        
+            id = request.POST.get('id')
             
+            unidadeMedida = UnidadeMedida()
+            
+            if id != 'None':
+                unidadeMedida = UnidadeMedida.objects.get(id=id)
+                
+            unidadeMedida.sigla = request.POST.get('sigla')
+            unidadeMedida.descricao = request.POST.get('descricao')
+                
             unidadeMedida.save()
 
-        return JsonResponse({'sucesso': True})
+            return JsonResponse({'sucesso': True})
     
     except Exception as e:
         print(e)
         
         return JsonResponse({'sucesso': False})
+    
+    
+def ExcluirUnidadeMedida(request):
+    
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            unidadeMedida = UnidadeMedida.objects.get(pk=id)
+            
+            unidadeMedida.excluido = True
+            
+            unidadeMedida.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 

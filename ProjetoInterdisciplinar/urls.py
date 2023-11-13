@@ -49,16 +49,18 @@ urlpatterns = [
 
     path('itemlocacao/', views.IndexItemLocacao, name='ItemLocacao'),
     path('modalnovoitemlocacao/', views.ModalNovoItemLocacao, name='ModalNovoItemLocacao'),
-    path('modalexcluirItemLocacao/', views.ModalExcluirItemLocacao, name='ModalExcluirItemLocacao'),
+    path('modalexcluiritemlocacao/', views.ModalExcluirItemLocacao, name='ModalExcluirItemLocacao'),
     path('salvaritemlocacao/', views.SalvarItemLocacao, name='SalvarItemLocacao'),
-    path('excluirItemLocacao/', views.ExcluirItemLocacao, name='ExcluirItemLocacao'),
+    path('excluiritemlocacao/', views.ExcluirItemLocacao, name='ExcluirItemLocacao'),
     path('tabelaitenslocacao/', views.TabelaItensLocacao, name='TabelaItensLocacao'),
 
 
     path('unidademedida/', views.IndexUnidadeMedida, name='UnidadeMedida'),
     path('tabelaunidademedida/', views.TabelaUnidadeMedida, name='TabelaUnidadeMedida'),
     path('modalunidademedida/', views.ModalUnidadeMedida, name='ModalUnidadeMedida'),
+    path('modalexcluirunidademedida/', views.ModalExcluirUnidadeMedida, name='ModalExcluirUnidadeMedida'),
     path('salvarunidademedida/', views.SalvarUnidadeMedida, name='SalvarUnidadeMedida'),
+    path('excluirunidademedida/', views.ExcluirUnidadeMedida, name='ExcluirUnidadeMedida'),
 
     path('ingrediente/', views.IndexIngrediente, name='Ingrediente'),
     path('modalnovoingrediente/', views.ModalNovoIngrediente, name='ModalNovoIngrediente'),
