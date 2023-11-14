@@ -1,23 +1,23 @@
 <div class="modal-header">
-    <h4 class="modal-title">Excluir Item Locacao</h4>
+    <h4 class="modal-title">Excluir Item de Locação</h4>
     <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
 </div>
 
 <div class="modal-body">
     <form action="/excluiritemlocacao/" method="post" id="form-excluir-item-locacao">
         {% csrf_token %}
-        <input type="hidden" id="itemLocacao-id" name="id" value="{{itemLocacao.id }}" />
+        <input type="hidden" id="item-locacao-id" name="id" value="{{item_locacao.id }}" />
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label>Confirma a exclusão do Item De Locacao ?</label>
+                    <label>Confirma a exclusão do Item De  Locação ?</label>
                 </div>
             </div>
         </div>
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label>Descrição : {{ itemlocacao.descricao}}</label>
+                    <label>Descrição : {{ item_locacao.descricao}}</label>
                 </div>
             </div>
         </div>
