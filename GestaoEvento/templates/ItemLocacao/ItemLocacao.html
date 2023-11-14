@@ -20,6 +20,10 @@
                         <label>Pesquisa: </label>
                         <input type="text" class="form-control" id="busca" name="busca" value="{{ busca }}">
                     </div>
+                    <!--<div class="form-group col-md-4" id="div-periodo">
+                        <label>Período: </label>
+                        <input type="text" class="form-control" id="periodo" name="periodo" value="{{ periodo }}" data-date="{{ periodo }}">
+                    </div>-->
                 </div>
                 <div class="row mb-3">
                     <div class="form-group col-md-2">
@@ -33,6 +37,7 @@
             </div>
     </div>
 </div>
+
 
 {% load static %}
 <script src="{% static 'GestaoEvento/scripts/jquery-3.7.0.js' %}"></script>
@@ -107,11 +112,7 @@
                 url: '{% url "ModalExcluirItemLocacao" %}',
                 method: 'GET',
                 data: { id: id, },
-<<<<<<< HEAD
                 success: function (resp) {
-=======
-                success: function (resposta) {
->>>>>>> df59556e39e3bd4eefa45066ea453e90ca92e9a4
                     $('#modal-container .modal-content').css("height", "auto");
                     $('#modal-container .modal-content').html(resposta);
                 }
