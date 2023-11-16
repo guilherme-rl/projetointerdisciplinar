@@ -331,11 +331,14 @@ def NovoUsuario(request):
 # region ItemLocacao
 def IndexItemLocacao(request):
      
+    itemlocacao = ItemLocacao.objects.all()
+
     return render(
         request,
         'ItemLocacao/ItemLocacao.html',
         {
             'title':'Itens Locação',
+            'itenslocacao': itemlocacao
         }
     )
 
@@ -344,41 +347,44 @@ def TabelaItensLocacao(request):
 
     busca = request.POST.get('busca')     
 
-    itemLocacao = ItemLocacao.objects.filter(excluido=False)
+    itemlocacao = ItemLocacao.objects.filter(excluido=False)
     
     if busca:
-        itemLocacao = itemLocacao.filter(descricao__icontains=busca)
+        itemlocacao = itemlocacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
     
+
     return render(
         request,
         'ItemLocacao/Tabela.html',
         {
-            'itens_locacao': itemLocacao,
+            'itens_locacao': itemlocacao,
             'busca': busca,
         }
     )
 
 def ModalNovoItemLocacao(request):
     
-    ItemLocacao = Entidade()
-    descricao = ''
-    custo_unitario = ''
+    id =request.GET.get('id')
+    
+    itemlocacao = ItemLocacao()
+
+    if id:
+        itemlocacao = ItemLocacao.objects.get(pk=id)
+        
 
     return render(
         request,
         'ItemLocacao/ModalNovo.html',
         {
-            'itemlocacao' : ItemLocacao,
-            'descricao' : descricao,
-            'custo_unitario' :custo_unitario,
+            'itemlocacao' : itemlocacao,
         }
     
     )
 
 def ModalExcluirItemLocacao(request):
 
-    itemlocacao_id = request.GET.get('id')
-    itemlocacao = ItemLocacao.objects.get(pk=itemlocacao_id)
+    id = request.GET.get('id')
+    itemlocacao = ItemLocacao.objects.get(pk=id)
     
     return render(
         request,
@@ -394,12 +400,18 @@ def SalvarItemLocacao(request):
     try:
         with transaction.atomic(): 
 
-            id = request.POST.get
-            itemlocacao = ItemLocacao(                
-             descricao = request.POST.get('descricao'),
-             custo_unitario = request.POST.get('custo_unitario'),
-            )
-             
+            id = request.POST.get('id')
+
+            itemlocacao = ItemLocacao(
+            
+                descricao = request.POST.get('descricao'),
+                custo_unitario = request.POST.get('custo_unitario'),
+            )    
+
+            if id  != 'None':     
+                itemlocacao = ItemLocacao.objects.get(id=id)
+            
+    
             itemlocacao.save()
         
         return JsonResponse({'sucesso': True})
@@ -414,8 +426,8 @@ def ExcluirItemLocacao(request):
     try:
         with transaction.atomic():
             
-            itemlocacao_id = request.POST.get('id')
-            itemlocacao = ItemLocacao.objects.get(pk=itemlocacao_id)
+            id = request.POST.get('id')
+            itemlocacao= ItemLocacao.objects.get(pk=id)
            
             itemlocacao.excluido = True
 
