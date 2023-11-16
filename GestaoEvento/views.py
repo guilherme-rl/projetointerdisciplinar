@@ -480,7 +480,6 @@ def ModalUnidadeMedida(request):
             'unidade_medida': unidadeMedida,
         }
     )
-
 def ModalExcluirUnidadeMedida(request):
     
     id = request.GET.get('id')

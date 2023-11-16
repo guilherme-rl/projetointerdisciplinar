@@ -34,6 +34,7 @@
     </div>
 </div>
 
+
 {% load static %}
 <script src="{% static 'GestaoEvento/scripts/jquery-3.7.0.js' %}"></script>
 <script>
@@ -61,7 +62,6 @@
                 $('#modal-container').off('shown.bs.modal');
             });
             $('#modal-container').modal('show');
-        })
     });
 
     $(document).off('click', '.btn-editar');
@@ -107,11 +107,7 @@
                 url: '{% url "ModalExcluirItemLocacao" %}',
                 method: 'GET',
                 data: { id: id, },
-<<<<<<< HEAD
                 success: function (resp) {
-=======
-                success: function (resposta) {
->>>>>>> df59556e39e3bd4eefa45066ea453e90ca92e9a4
                     $('#modal-container .modal-content').css("height", "auto");
                     $('#modal-container .modal-content').html(resposta);
                 }
@@ -128,6 +124,7 @@
     })
 
     atualizarTabelaItemLocacao();
+   });
 
    
     function atualizarTabelaItemLocacao() {
@@ -142,8 +139,8 @@
                 busca: busca,
                 csrfmiddlewaretoken: csrfmiddlewaretoken,
             },
-            success: function (resp) {
-                $('#conteudo').html(resp);
+            success: function (resposta) {
+                $('#conteudo').html(resposta);
             }
         });
     }
