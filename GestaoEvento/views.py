@@ -533,6 +533,7 @@ def TabelaUnidadeMedida(request):
     )
 
 
+
 def ModalUnidadeMedida(request):
     
     id = request.GET.get('id')
@@ -549,8 +550,6 @@ def ModalUnidadeMedida(request):
             'unidade_medida': unidadeMedida,
         }
     )
-    
-    
 def ModalExcluirUnidadeMedida(request):
     
     id = request.GET.get('id')
@@ -588,7 +587,6 @@ def SalvarUnidadeMedida(request):
         print(e)
         
         return JsonResponse({'sucesso': False})
-    
     
 def ExcluirUnidadeMedida(request):
     
