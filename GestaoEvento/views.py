@@ -402,18 +402,18 @@ def SalvarItemLocacao(request):
 
             id = request.POST.get('id')
 
-            itemlocacao = ItemLocacao(
+            itemlocacao = ItemLocacao()
             
-                descricao = request.POST.get('descricao'),
-                custo_unitario = request.POST.get('custo_unitario'),
-            )    
+            itemlocacao.descricao = request.POST.get('descricao'),
+            itemlocacao.custo_unitario = request.POST.get('custo_unitario'),
+        
 
-            if id  != 'None':     
+            if id:     
                 itemlocacao = ItemLocacao.objects.get(id=id)
             
     
             itemlocacao.save()
-        
+    
         return JsonResponse({'sucesso': True})
         
     except Exception as e :
