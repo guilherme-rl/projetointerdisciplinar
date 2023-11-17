@@ -24,3 +24,48 @@
         </div>
     </form>
 </div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-cliente" />
+    
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal prestador');
+
+        $('#form-excluir-prestador').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                beforeSend: function () {
+                    $('#btn-salvar').val('Aguarde...');
+                    $('#btn-salvar').attr('disabled', true);
+                    //$('#submited').val(true);
+                },
+                complete: function () {
+                    $('#btn-salvar').val('Excluir');
+                    $('#btn-salvar').attr('disabled', false);
+                    //$('#submited').val(false);
+                },
+                success: function (resp) {
+                    //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
+                    
+                    if (resp.sucesso) {
+                        $('#modal-container').modal('hide');
+                        atualizarTabelaPrestador();
+                    }
+                }
+            });
+        })
+    });
+</script>

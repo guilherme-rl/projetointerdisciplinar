@@ -214,28 +214,45 @@ def SalvarPrestador(request):
     try:
         with transaction.atomic():
             
+            id = request.POST.get('id')
             data = datetime.strptime(request.POST.get('data_nasc'), '%Y-%m-%d')
+            prestador = None
             
-            cpf = request.POST.get('cpf_cnpj')
-            cpf = re.sub(r'[^0-9]', '', cpf)
+            if id != 'None':
+                prestador = Entidade.objects.get(id=id)
+                prestador.nome_razao = request.POST.get('nome')
+                prestador.data_nascimento_criacao = data
+                
+                endereco = prestador.endereco.get(principal=True)
+                endereco.cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else ''
+                endereco.bairro = request.POST.get('bairro')
+                endereco.complemento = request.POST.get('endereco')
+                endereco.cidade = request.POST.get('cidade')
+                endereco.estado = request.POST.get('estado').upper()
+                
+                endereco.save()
+                
+            else:
+                cpf = request.POST.get('cpf_cnpj')
+                cpf = re.sub(r'[^0-9]', '', cpf)
+                prestador = Entidade(
+                    nome_razao = request.POST.get('nome'),
+                    cpf_cnpj = cpf,
+                    data_nascimento_criacao = data,
+                    tipo = 'P',
+                )
+                prestador.save()
+                
+                prestador.endereco.create(
+                    cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else '',
+                    bairro = request.POST.get('bairro'),
+                    complemento = request.POST.get('endereco'),
+                    cidade = request.POST.get('cidade'),
+                    estado = request.POST.get('estado').upper(),
+                    principal = True,
+                )
             
-            novo_prestador = Entidade(
-                nome_razao = request.POST.get('nome'),
-                cpf_cnpj = cpf,
-                data_nascimento_criacao = data,
-                tipo = 'P',
-            )
-            novo_prestador.save()
-            
-            novo_prestador.endereco.create(
-                cep = request.POST.get('cep') if request.POST.get('cep') else '',
-                bairro = request.POST.get('bairro'),
-                complemento = request.POST.get('endereco'),
-                cidade = request.POST.get('cidade'),
-                estado = request.POST.get('estado').upper(),
-            )
-            
-            novo_prestador.save()
+            prestador.save()
 
             return JsonResponse({'sucesso': True})
     
@@ -246,26 +263,67 @@ def SalvarPrestador(request):
         
 
     
-def TabelaPrestador(request):
+def TabelaPrestadores(request):
     
-    prestador,= Entidade.objects.filter ((Q(tipo='P')) & Q(excluido=False))
+    busca = request.POST.get('busca')
+
+    prestadores= Entidade.objects.filter ((Q(tipo='P')) & Q(excluido=False))
     
     return render(
         request,
         'Prestador/Tabela.html',
         {
-            'Prestador': prestador
+            'Prestadoes': prestadores,
+             'busca': busca,
         }
     )
 
 
 def ModalNovoPrestador(request):
 
+    id = request.GET.get('id')
+    prestador = Entidade()
+    data_formatada = ''
+    endereco_principal = Endereco()
+    
+    if id:
+        prestador = Entidade.objects.get(id=id)
+        data_formatada = prestador.data_nascimento_criacao.strftime('%Y-%m-%d')
+        endereco_principal = prestador.endereco.get(principal=True)
     return render(
         request,
         'Prestador/ModalNovo.html',
+        {
+            'prestador': prestador,
+            'data_formatada': data_formatada,
+            'endereco_principal': endereco_principal,
+        }
     )
 
+def ModalDetalhesPrestador(request):
+    
+    prestador_id = request.GET.get('id')
+    prestador = Entidade.objects.get(pk=prestador_id)
+    data_formatada = prestador.data_nascimento_criacao.strftime('%d/%m/%Y')
+    endereco_principal = prestador.endereco.get(principal=True)
+    cep_formatado = f'{endereco_principal.cep[:5]}-{endereco_principal.cep[5:]}'
+    cpf_cnpj_formatado = ''
+    if (len(prestador.cpf_cnpj) == 11):
+        cpf_cnpj_formatado = f'{prestador.cpf_cnpj[:3]}.{prestador.cpf_cnpj[3:6]}.{prestador.cpf_cnpj[6:9]}-{prestador.cpf_cnpj[9:]}'
+    else:
+        cpf_cnpj_formatado = f'{prestador.cpf_cnpj[:2]}.{prestador.cpf_cnpj[2:5:1]}.{prestador.cpf_cnpj[5:8]}/{prestador.cpf_cnpj[8:12]}-{prestador.cpf_cnpj[12:]}'
+
+    return render(
+        request,
+        'Prestador/ModalDetalhesPrestador.html',
+        {
+            'prestador': prestador,
+            'data_formatada': data_formatada,
+            'endereco_principal': endereco_principal,
+            'cpf_cnpj_formatado': cpf_cnpj_formatado,
+            'cep_formatado': cep_formatado,
+        }
+    )
 
 def ModalExcluirPrestador(request):
     
