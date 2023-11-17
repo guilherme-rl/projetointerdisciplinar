@@ -461,15 +461,14 @@ def SalvarItemLocacao(request):
             id = request.POST.get('id')
 
             itemlocacao = ItemLocacao()
-            
-            itemlocacao.descricao = request.POST.get('descricao'),
-            itemlocacao.custo_unitario = request.POST.get('custo_unitario'),
-        
 
             if id:     
                 itemlocacao = ItemLocacao.objects.get(id=id)
-            
-    
+
+            itemlocacao.descricao = request.POST.get('descricao')
+            itemlocacao.custo_unitario = request.POST.get('custo_unitario')
+        
+
             itemlocacao.save()
     
         return JsonResponse({'sucesso': True})
