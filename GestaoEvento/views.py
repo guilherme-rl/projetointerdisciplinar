@@ -287,14 +287,14 @@ def NovoItemLocacao(request):
 # region UnidadeMedida
 def IndexUnidadeMedida(request):
     
-    unidades_medida = UnidadeMedida.objects.all()
+    # unidades_medida = UnidadeMedida.objects.all()
 
     return render(
         request,
         'UnidadeMedida/UnidadeMedida.html',
         {
             'title':'Unidades de Medida',
-            'unidadesmedida': unidades_medida
+            # 'unidadesmedida': unidades_medida
         }
     )
 
@@ -398,29 +398,88 @@ def ExcluirUnidadeMedida(request):
 # region Ingrediente
 def IndexIngrediente(request):
     
-    ingredientes = Ingrediente.objects.all()
+    # ingredientes = Ingrediente.objects.all()
 
     return render(
         request,
         'Ingrediente/Ingrediente.html',
         {
             'title':'Ingredientes',
-            'ingredientes': ingredientes
+            # 'ingredientes': ingredientes
+        }
+    )
+    
+    
+def TabelaIngrediente(request):
+    
+    busca = request.POST.get('busca')
+    
+    ingredientes = Ingrediente.objects.filter(excluido=False)
+    
+    if busca:
+        ingrediente = ingrediente.filter(Q(descricao__icontains=busca) | Q(unidade_medida__descricao=busca))
+    
+    return render(
+        request,
+        'Ingrediente/Tabela.html',
+        {
+            'ingredientes': ingredientes,
+            'busca': busca,
         }
     )
 
 
-def ModalNovoIngrediente(request):
+def ModalIngrediente(request):
+    
+    unidadesMedida = list(UnidadeMedida.objects.filter(excluido=False))
+    
+    id = request.GET.get('id')
+    
+    ingrediente = Ingrediente()
+    ingrediente.custo_unidade = ''
+    
+    if id:
+        ingrediente = Ingrediente.get(pk=id)
+    
+    dados = {}
+    
+    for item in unidadesMedida:
+        dados[item.id] = item.sigla
 
     return render(
         request,
-        'Ingrediente/ModalNovo.html',
+        'Ingrediente/ModalIngrediente.html',
+        {
+            'unidades_medida': dados,
+            'ingrediente': ingrediente,
+        },
     )
 
 
-def NovoIngrediente(request):
+def SalvarIngrediente(request):
 
-    return JsonResponse({'success': True})
+    try:
+        with transaction.atomic():
+        
+            id = request.POST.get('id')
+            
+            ingrediente = Ingrediente()
+            
+            if id != 'None':
+                ingrediente = Ingrediente.objects.get(pk=id)
+                
+            ingrediente.descricao = request.POST.get('descricao')
+            ingrediente.unidade_medida_id = request.POST.get('unidade-medida')
+            ingrediente.custo_unidade = request.POST.get('custo-unidade')
+                
+            ingrediente.save()
+
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        
+        return JsonResponse({'sucesso': False})
 
 # endregion
 
