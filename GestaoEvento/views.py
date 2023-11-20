@@ -389,14 +389,14 @@ def NovoUsuario(request):
 # region ItemLocacao
 def IndexItemLocacao(request):
      
-    itemlocacao = ItemLocacao.objects.all()
+    item_locacao = ItemLocacao.objects.all()
 
     return render(
         request,
         'ItemLocacao/ItemLocacao.html',
         {
             'title':'Itens Locação',
-            'itenslocacao': itemlocacao
+            'itenslocacao': item_locacao
         }
     )
 
@@ -405,17 +405,17 @@ def TabelaItensLocacao(request):
 
     busca = request.POST.get('busca')     
 
-    itemlocacao = ItemLocacao.objects.filter(excluido=False)
+    item_locacao = ItemLocacao.objects.filter(excluido=False)
     
     if busca:
-        itemlocacao = itemlocacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
+        item_locacao = item_locacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
     
 
     return render(
         request,
         'ItemLocacao/Tabela.html',
         {
-            'itens_locacao': itemlocacao,
+            'itens_locacao': item_locacao,
             'busca': busca,
         }
     )
@@ -448,7 +448,7 @@ def ModalExcluirItemLocacao(request):
         request,
         'ItemLocacao/ModalExcluir.html',
         {
-        'itemlocacao': itemlocacao
+        'item_locacao': itemlocacao
         }
     )
 
@@ -462,7 +462,7 @@ def SalvarItemLocacao(request):
 
             itemlocacao = ItemLocacao()
 
-            if id:     
+            if id != 'None':     
                 itemlocacao = ItemLocacao.objects.get(id=id)
 
             itemlocacao.descricao = request.POST.get('descricao')
