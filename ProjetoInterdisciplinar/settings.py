@@ -100,9 +100,9 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql', 
         'NAME': 'GestaoEventos',
-        'USER': 'admin',
-        'PASSWORD': 'Sicoob@123',
-        'HOST': '10.151.8.44',
+        'USER': 'root',
+        'PASSWORD': 'pass',
+        'HOST': 'localhost',
         'PORT': '3306',
     }
 }
