@@ -28,7 +28,7 @@
                 </div>
 
                 <div id="conteudo">
-                    {% include "Ingrediente/Tabela.html" %}
+                    {% comment %} {% include "Ingrediente/Tabela.html" %} {% endcomment %}
                 </div>
             </div>
     </div>
@@ -44,14 +44,14 @@
             e.preventDefault();
             console.log('click novo ingrediente');
 
-            //var loading = $('#modal-loading').clone().css('display', 'block');
-            //$('#modal-container .modal-content').html(loading);
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
             $('#modal-container .modal-content').css("width", "700px");
             $('#modal-container .modal-content').css("height", "290px");
             $('#modal-container').off('shown.bs.modal');
             $('#modal-container').on('shown.bs.modal', function () {
                 $.ajax({
-                    url: '{% url "ModalNovoIngrediente" %}',
+                    url: '{% url "ModalIngrediente" %}',
                     method: 'GET',
                     success: function (resposta) {
                         $('#modal-container .modal-content').css("height", "auto");
@@ -61,8 +61,28 @@
                 $('#modal-container').off('shown.bs.modal');
             });
             $('#modal-container').modal('show');
-        })
+        });
+
+        atualizarTabelaIngrediente()
     });
+
+    function atualizarTabelaIngrediente() {
+
+        var busca = $('#busca').val();
+        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+
+        $.ajax({
+            url: '{% url "TabelaIngrediente" %}',
+            method: 'POST',
+            data: {
+                busca: busca,
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+            },
+            success: function (resposta) {
+                $('#conteudo').html(resposta);
+            }
+        });
+    }
 </script>
 
 {% endblock %}
