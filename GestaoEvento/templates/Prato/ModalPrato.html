@@ -18,7 +18,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label class="form-label">Rendimento</label>
-                    <input type="number" class="form-control" name="rendimento" value="" />
+                    <input type="number" class="form-control" id="rendimento" name="rendimento" min="0" value="" />
                 </div>
             </div>
         </div>
@@ -44,12 +44,12 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label class="form-label">Quantidade</label>
-                    <input type="text" class="form-control" name="quantidade" value="" placeholder="0,00" />
+                    <input type="text" class="form-control" id="quantidade" name="quantidade" value="" placeholder="0,00" />
                 </div>
             </div>
-            <div class="col-md-2" style="align-self: end;">
+            <div class="col-md-2" style="">
                 <div class="form-group">
-                    <input type="button" value="Adicionar" class="btn btn-primary" id="btn-add-ingrediente" style="width: 100%;" />
+                    <input type="button" value="Adicionar" class="btn btn-primary" id="btn-add-ingrediente" style="width: 100%; margin-top: 32px;" />
                 </div>
             </div>
         </div>
@@ -96,39 +96,57 @@
         console.log('Document ready modal prato');
 
 
+        $.validator.messages.required = 'Obrigatório';
+
+
+        $('#form-prato').validate({
+            onkeyup: false,
+            rules: {
+                descricao: 'required',
+                rendimento: {
+                    required: true,
+                },
+                quantidade: 'required',
+            },
+        });
+
+
         $(document).off('click', '#btn-add-ingrediente');
         $(document).on('click', '#btn-add-ingrediente', function (e) {
 
-            var id = $('#select-ingrediente').val();
-            var index = $('#tabela-ingredientes tbody tr').length;
-            var quantidade = $('[name="quantidade"]').val();
-            var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
+            if ($('#quantidade').valid()) {
 
-            $.ajax({
-                url: '{% url "AdicionarIngredientePrato" %}',
-                type: 'POST',
-                data: {
-                    id: id,
-                    index: index,
-                    quantidade: quantidade,
-                    csrfmiddlewaretoken: csrfmiddlewaretoken,
-                },
-                beforeSend: function () {
-                    $('#btn-add-ingrediente').val('Aguarde...');
-                    $('#btn-add-ingrediente').attr('disabled', true);
-                    //$('#submited').val(true);
-                },
-                complete: function () {
-                    $('#btn-add-ingrediente').val('Adicionar');
-                    $('#btn-add-ingrediente').attr('disabled', false);
-                    //$('#submited').val(false);
-                },
-                success: function (resposta) {
-                    //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
-                    
-                    $('#tabela-ingredientes tbody').append(resposta);
-                }
-            });
+                var id = $('#select-ingrediente').val();
+                var index = $('#tabela-ingredientes tbody tr').length;
+                var quantidade = $('#quantidade').val();
+                var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
+
+                $.ajax({
+                    url: '{% url "AdicionarIngredientePrato" %}',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        index: index,
+                        quantidade: quantidade,
+                        csrfmiddlewaretoken: csrfmiddlewaretoken,
+                    },
+                    beforeSend: function () {
+                        $('#btn-add-ingrediente').val('Aguarde...');
+                        $('#btn-add-ingrediente').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-add-ingrediente').val('Adicionar');
+                        $('#btn-add-ingrediente').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        $('#tabela-ingredientes tbody').append(resposta);
+                    }
+                });
+            }
         });
 
         $(document).off('click', '.btn-excluir-ingrediente');
@@ -139,18 +157,20 @@
         });
 
 
-        $('#form-unidade-medida').validate({
-            onkeyup: false,
-            rules: {
-                sigla: 'required',
-                descricao: 'required',
-            },
+        $(document).off('blur', '#rendimento, #quantidade');
+        $(document).on('blur', '#rendimento, #quantidade', function (e) {
+
+            if ($(this).val() != '' && $(this).val() == 0) {
+                $(this).val('');
+            }
         });
 
         $('#form-prato').submit(function (e) {
             e.preventDefault();
 
             var form = $(this);
+
+            $( "#quantidade" ).rules( "remove" );
 
             if (form.valid()) {
                 $.ajax({
@@ -176,6 +196,10 @@
                         }
                     }
                 });
+            } else {
+                $( "#quantidade" ).rules( "add", {
+                    required: true,
+                  });
             }
         });
     });
