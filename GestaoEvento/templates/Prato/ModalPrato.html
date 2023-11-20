@@ -1,0 +1,182 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Prato</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body" id="modal-prato">
+    <form action="/salvarprato/" method="post" id="form-prato">
+        {% csrf_token %}
+        <input type="hidden" id="prato-id" name="id" value="{{ prato.id }}" />
+        <div class="row">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="descricao" value="" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">Rendimento</label>
+                    <input type="number" class="form-control" name="rendimento" value="" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label">Observação</label>
+                    <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label">Ingrediente</label>
+                    <select class="form-select" id="select-ingrediente" aria-label="Selecione o ingrediente">
+                        {% for chave, valor in ingredientes.items %}
+                        <option value="{{ chave }}">{{ valor }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">Quantidade</label>
+                    <input type="text" class="form-control" name="quantidade" value="" placeholder="0,00" />
+                </div>
+            </div>
+            <div class="col-md-2" style="align-self: end;">
+                <div class="form-group">
+                    <input type="button" value="Adicionar" class="btn btn-primary" id="btn-add-ingrediente" style="width: 100%;" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <table class="table" id="tabela-ingredientes" >
+                    <thead>
+                        <tr>
+                            <th>Ingrediente</th>
+                            <th class="text-center" style="width: 90px;">C.U.</th>
+                            <th class="text-center" style="width: 90px;">Qtd</th>
+                            <th class="text-center" style="width: 90px;">Total</th>
+                            <th class="text-center" style="width: 50px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% comment %} {% include "Prato/ItemIngrediente.html" with index="0" %}
+                        {% include "Prato/ItemIngrediente.html" with index="1" %} {% endcomment %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td class="text-end" colspan="2">Total</td>
+                            <td class="text-end">0,00</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-prato" />
+    
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal prato');
+
+
+        $(document).off('click', '#btn-add-ingrediente');
+        $(document).on('click', '#btn-add-ingrediente', function (e) {
+
+            var id = $('#select-ingrediente').val();
+            var index = $('#tabela-ingredientes tbody tr').length;
+            var quantidade = $('[name="quantidade"]').val();
+            var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
+
+            $.ajax({
+                url: '{% url "AdicionarIngredientePrato" %}',
+                type: 'POST',
+                data: {
+                    id: id,
+                    index: index,
+                    quantidade: quantidade,
+                    csrfmiddlewaretoken: csrfmiddlewaretoken,
+                },
+                beforeSend: function () {
+                    $('#btn-add-ingrediente').val('Aguarde...');
+                    $('#btn-add-ingrediente').attr('disabled', true);
+                    //$('#submited').val(true);
+                },
+                complete: function () {
+                    $('#btn-add-ingrediente').val('Adicionar');
+                    $('#btn-add-ingrediente').attr('disabled', false);
+                    //$('#submited').val(false);
+                },
+                success: function (resposta) {
+                    //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                    
+                    $('#tabela-ingredientes tbody').append(resposta);
+                }
+            });
+        });
+
+        $(document).off('click', '.btn-excluir-ingrediente');
+        $(document).on('click', '.btn-excluir-ingrediente', function (e) {
+
+            $(this).parents('tr').css('display', 'none');
+            $(this).parents('tr').find('.deletado').val('True');
+        });
+
+
+        $('#form-unidade-medida').validate({
+            onkeyup: false,
+            rules: {
+                sigla: 'required',
+                descricao: 'required',
+            },
+        });
+
+        $('#form-prato').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            if (form.valid()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    beforeSend: function () {
+                        $('#btn-salvar').val('Aguarde...');
+                        $('#btn-salvar').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-salvar').val('Salvar');
+                        $('#btn-salvar').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        if (resposta.sucesso) {
+                            $('#modal-container').modal('hide');
+                            //atualizarTabelaPrato();
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>

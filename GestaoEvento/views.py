@@ -498,15 +498,46 @@ def IndexPrato(request):
     )
 
 
-def ModalNovoPrato(request):
+def ModalPrato(request):
+    
+    ingredientes = list(Ingrediente.objects.filter(excluido=False))
 
+    dados = {}
+    
+    for item in ingredientes:
+        dados[item.id] = item.descricao
+        
     return render(
         request,
-        'Prato/ModalNovo.html',
+        'Prato/ModalPrato.html',
+        {
+            'ingredientes': dados,
+        },
+    )
+    
+    
+def AdicionarIngredientePrato(request):
+    
+    id = request.POST.get('id')
+    index = request.POST.get('index')
+    quantidade = request.POST.get('quantidade')
+    
+    ingrediente = Ingrediente.objects.get(pk=id)
+    
+    return render(
+        request,
+        'Prato/ItemIngrediente.html',
+        {
+            'ingrediente': ingrediente,
+            'index': index,
+            'quantidade': quantidade,
+        },
     )
 
 
-def NovoPrato(request):
+def SalvarPrato(request):
+    
+    teste = ""
 
     return JsonResponse({'success': True})
 

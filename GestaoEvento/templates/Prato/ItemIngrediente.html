@@ -1,0 +1,50 @@
+{% comment %} <div class="row row-ingrediente">
+    <div class="col-md-7">
+        <div class="form-group flex align-items-center">
+            <input type="hidden" id="item-ingrediente-id" name="ingrediente-id" value="{{ ingrediente.id }}" />
+            <input type="text" class="form-control flex-1" name="ingrediente-descricao" value="" />
+            <input type="hidden" class="deletado" name="ingrediente-id" value="{{ False }}" />
+            <a href="#" class="btn btn-xs btn-inline del-email red" title="Deletar" tabindex="-1" data-id="@ViewBag.Id" data-cy="btn-del-email"><i class="far fa-trash-alt"></i></a>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group flex align-items-center">
+            <input type="text" class="form-control flex-1" name="ingrediente-quantidade" value="" />
+            <a href="#" class="btn btn-xs btn-inline del-email red" title="Deletar" tabindex="-1" data-id="@ViewBag.Id" data-cy="btn-del-email"><i class="far fa-trash-alt"></i></a>
+        </div>
+    </div>
+    <div class="col-md-2">
+        <div class="form-group flex align-items-center">
+            <input type="text" class="form-control flex-1" name="ingrediente-custo-unitario" value="" />
+            <a href="#" class="btn btn-xs btn-inline del-email red" title="Deletar" tabindex="-1" data-id="@ViewBag.Id" data-cy="btn-del-email"><i class="far fa-trash-alt"></i></a>
+        </div>
+    </div>
+    <div class="col-md-1">
+        <div class="form-group flex align-items-center">
+            <input type="text" class="form-control flex-1" name="ingrediente-custo-total" value="" />
+            <a href="#" class="btn btn-xs btn-inline del-email red" title="Deletar" tabindex="-1" data-id="@ViewBag.Id" data-cy="btn-del-email"><i class="far fa-trash-alt"></i></a>
+        </div>
+    </div>
+</div> {% endcomment %}
+
+<tr>
+    <input type="hidden" id="item-ingrediente-id" name="ingrediente[{{ index }}].id" value="{{ ingrediente.id }}" />
+    <input type="hidden" class="deletado" name="ingrediente[{{ index }}].deletado" value="{{ False }}" />
+    <td>
+        <input type="text" class="form-control" name="ingrediente[{{ index }}].descricao" value="{{ ingrediente.descricao }}" placeholder="-" style="width: 100%;" readonly />
+    </td>
+    <td class="text-center">
+        <input type="text" class="form-control" name="ingrediente[{{ index }}].custo_unitario" value="{{ ingrediente.custo_unitario }}" placeholder="0,00" style="width: 90px; text-align: center;" readonly />
+    </td>
+    <td class="text-center">
+        <input type="text" class="form-control" name="ingrediente[{{ index }}].quantidade" value="{{ quantidade }}" placeholder="0,00" style="width: 90px; text-align: center;" />
+    </td>
+    <td class="text-center">
+        <input type="text" class="form-control" name="ingrediente[{{ index }}].custo_total" value="" placeholder="0,00" style="width: 90px; text-align: center;" readonly />
+    </td>
+    </td><td class="text-center">
+        <a href="#" class="btn vermelho btn-excluir-ingrediente" data-id="" style="padding: 5px;" >
+            <i class="bi bi-trash3" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Excluir" ></i>
+        </a>
+    </td>
+</tr>
