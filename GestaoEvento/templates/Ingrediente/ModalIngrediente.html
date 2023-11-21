@@ -1,0 +1,95 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Ingrediente</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/salvaringrediente/" method="post" id="form-ingrediente">
+        {% csrf_token %}
+        <input type="hidden" id="ingrediente-id" name="id" value="{{ ingrediente.id }}" />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="descricao" value="{{ ingrediente.descricao }}" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Unidade Medida</label>
+                    <select class="form-select" name="unidade-medida" aria-label="Selecione a Unidade de Medida">
+                        {% for chave, valor in unidades_medida.items %}
+                        <option value="{{ chave }}">{{ valor }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Custo por Unidade Medida</label>
+                    <input type="text" class="form-control" name="custo-unidade" value="{{ ingrediente.custo_unidade }}" placeholder="0,00" />
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-ingrediente" />
+    
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal ingrediente');
+
+        $.validator.messages.required = 'Campo obrigatório';
+
+        $('#form-ingrediente').validate({
+            onkeyup: false,
+            rules: {
+                descricao: 'required',
+                'custo-unidade': 'required',
+            },
+        });
+
+        $('#form-ingrediente').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            if (form.valid()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    beforeSend: function () {
+                        $('#btn-salvar').val('Aguarde...');
+                        $('#btn-salvar').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-salvar').val('Salvar');
+                        $('#btn-salvar').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        if (resposta.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaIngrediente();
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
