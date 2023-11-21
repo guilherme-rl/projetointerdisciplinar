@@ -12,14 +12,14 @@
             <div class="col-md-10">
                 <div class="form-group">
                     <label class="form-label">Descrição</label>
-                    <input type="text" class="form-control" name="descricao" value="" />
+                    <input type="text" class="form-control" name="descricao" value="{{ itemlocacao.descricao }}" />
                 </div>
             </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="form-label">Custo Unidade</label>
-                    <input type="text" class="form-control" name="custo_unitario" value="" placeholder="0,00"  />
+                    <input type="text" class="form-control" name="custo_unitario" value="{{ itemlocacao.custo_unitario }}" placeholder="0,00"  />
                 </div>
             </div>
         </div>
