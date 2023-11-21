@@ -405,17 +405,17 @@ def TabelaItensLocacao(request):
 
     busca = request.POST.get('busca')     
 
-    item_locacao = ItemLocacao.objects.filter(excluido=False)
+    itemlocacao = ItemLocacao.objects.filter(excluido=False)
     
     if busca:
-        item_locacao = item_locacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
+        itemlocacao = itemlocacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
     
 
     return render(
         request,
         'ItemLocacao/Tabela.html',
         {
-            'itens_locacao': item_locacao,
+            'itens_locacao': itemlocacao,
             'busca': busca,
         }
     )
@@ -462,7 +462,7 @@ def SalvarItemLocacao(request):
 
             itemlocacao = ItemLocacao()
 
-            if id != 'None':     
+            if id:     
                 itemlocacao = ItemLocacao.objects.get(id=id)
 
             itemlocacao.descricao = request.POST.get('descricao')

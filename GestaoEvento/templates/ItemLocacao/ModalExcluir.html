@@ -7,7 +7,7 @@
 <div class="modal-body">
     <form action="/excluiritemlocacao/" method="post" id="form-excluir-item-locacao">
         {% csrf_token %}
-        <input type="hidden" id="item-locacao-id" name="id" value="{{item_locacao.id }}" />
+        <input type="hidden" id="itemlocacao-id" name="id" value="{{itemlocacao.id }}" />
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
@@ -18,7 +18,7 @@
         <div class="row">
             <div class="col-md-12">
                 <div class="form-group">
-                    <label>Descrição : {{ item_locacao.descricao}}</label>
+                    <label>Descrição : {{itemlocacao.descricao}}</label>
                 </div>
             </div>
         </div>
