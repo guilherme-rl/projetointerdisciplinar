@@ -462,7 +462,7 @@ def SalvarItemLocacao(request):
 
             itemlocacao = ItemLocacao()
 
-            if id != 'None':     
+            if id:     
                 itemlocacao = ItemLocacao.objects.get(id=id)
 
             itemlocacao.descricao = request.POST.get('descricao')
