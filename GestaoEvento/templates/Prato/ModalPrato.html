@@ -73,7 +73,7 @@
                         <tr>
                             <td colspan="2"></td>
                             <td class="text-end" colspan="2">Total</td>
-                            <td class="text-end">0,00</td>
+                            <td class="text-end" id="total-prato">0,00</td>
                         </tr>
                     </tfoot>
                 </table>
@@ -144,6 +144,8 @@
                         //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
                         
                         $('#tabela-ingredientes tbody').append(resposta);
+
+                        AtualizarTotalTabelaIngrediente();
                     }
                 });
             }
@@ -203,4 +205,20 @@
             }
         });
     });
+
+    function AtualizarTotalTabelaIngrediente() {
+
+        var total = 0;
+        
+        $('#tabela-ingredientes tbody tr').each(function (index, value) {
+            if ($(value).find('.deletado').val()) {
+                let custo = parseFloat($(value).find('.ingrediente-custo-unitario').val());
+                let quantidade = parseFloat($(value).find('.ingrediente-quantidade').val());
+
+                total += custo * quantidade;
+            }
+        });
+
+        $('#total-prato').text(parseFloat(total));
+    }
 </script>

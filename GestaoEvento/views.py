@@ -436,7 +436,7 @@ def ModalIngrediente(request):
     id = request.GET.get('id')
     
     ingrediente = Ingrediente()
-    ingrediente.custo_unidade = ''
+    ingrediente.custo_unitario = ''
     
     if id:
         ingrediente = Ingrediente.get(pk=id)
@@ -470,7 +470,7 @@ def SalvarIngrediente(request):
                 
             ingrediente.descricao = request.POST.get('descricao')
             ingrediente.unidade_medida_id = request.POST.get('unidade-medida')
-            ingrediente.custo_unidade = request.POST.get('custo-unidade')
+            ingrediente.custo_unitario = request.POST.get('custo-unidade')
                 
             ingrediente.save()
 
@@ -524,6 +524,8 @@ def AdicionarIngredientePrato(request):
     
     ingrediente = Ingrediente.objects.get(pk=id)
     
+    total = float(ingrediente.custo_unitario) * float(quantidade)
+    
     return render(
         request,
         'Prato/ItemIngrediente.html',
@@ -531,6 +533,7 @@ def AdicionarIngredientePrato(request):
             'ingrediente': ingrediente,
             'index': index,
             'quantidade': quantidade,
+            'total': total,
         },
     )
 
