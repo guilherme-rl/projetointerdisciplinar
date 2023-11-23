@@ -56,7 +56,7 @@ class UnidadeMedida(models.Model):
 
 class Ingrediente(models.Model):
     unidade_medida = models.ForeignKey(UnidadeMedida, on_delete=models.CASCADE)
-    custo_unidade = models.DecimalField(max_digits=10, decimal_places=2)
+    custo_unitario = models.DecimalField(max_digits=10, decimal_places=2)
     descricao = models.CharField(max_length=200)
     excluido = models.BooleanField(default=False)
 

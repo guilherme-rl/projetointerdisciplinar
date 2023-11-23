@@ -648,7 +648,7 @@ def ModalIngrediente(request):
     id = request.GET.get('id')
     
     ingrediente = Ingrediente()
-    ingrediente.custo_unidade = ''
+    ingrediente.custo_unitario = ''
     
     if id:
         ingrediente = Ingrediente.get(pk=id)
@@ -682,7 +682,7 @@ def SalvarIngrediente(request):
                 
             ingrediente.descricao = request.POST.get('descricao')
             ingrediente.unidade_medida_id = request.POST.get('unidade-medida')
-            ingrediente.custo_unidade = request.POST.get('custo-unidade')
+            ingrediente.custo_unitario = request.POST.get('custo-unidade')
                 
             ingrediente.save()
 
@@ -710,15 +710,49 @@ def IndexPrato(request):
     )
 
 
-def ModalNovoPrato(request):
+def ModalPrato(request):
+    
+    ingredientes = list(Ingrediente.objects.filter(excluido=False))
 
+    dados = {}
+    
+    for item in ingredientes:
+        dados[item.id] = item.descricao
+        
     return render(
         request,
-        'Prato/ModalNovo.html',
+        'Prato/ModalPrato.html',
+        {
+            'ingredientes': dados,
+        },
+    )
+    
+    
+def AdicionarIngredientePrato(request):
+    
+    id = request.POST.get('id')
+    index = request.POST.get('index')
+    quantidade = request.POST.get('quantidade')
+    
+    ingrediente = Ingrediente.objects.get(pk=id)
+    
+    total = float(ingrediente.custo_unitario) * float(quantidade)
+    
+    return render(
+        request,
+        'Prato/ItemIngrediente.html',
+        {
+            'ingrediente': ingrediente,
+            'index': index,
+            'quantidade': quantidade,
+            'total': total,
+        },
     )
 
 
-def NovoPrato(request):
+def SalvarPrato(request):
+    
+    teste = ""
 
     return JsonResponse({'success': True})
 
