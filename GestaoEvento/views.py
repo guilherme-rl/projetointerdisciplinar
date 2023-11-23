@@ -408,7 +408,7 @@ def TabelaItensLocacao(request):
     itemlocacao = ItemLocacao.objects.filter(excluido=False)
     
     if busca:
-        itemlocacao = itemlocacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
+        itemlocacao = ItemLocacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
     
 
     return render(
@@ -448,7 +448,7 @@ def ModalExcluirItemLocacao(request):
         request,
         'ItemLocacao/ModalExcluir.html',
         {
-        'item_locacao': itemlocacao
+        'itemlocacao': itemlocacao
         }
     )
 
