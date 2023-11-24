@@ -97,7 +97,6 @@
     $(document).ready(function () {
         console.log('Document ready modal prato');
 
-
         $.validator.messages.required = 'Obrigatório';
 
 
@@ -117,7 +116,10 @@
             dropdownParent: $('#modal-container .modal-content'),
         });
 
-        $('.mask-quantidade').mask('###.###.##0,000', {reverse: true});
+        $('.mask-quantidade').mask('###.###.##0,000', {
+            reverse: true,
+            selectOnFocus: true,
+        });
 
 
         $(document).off('click', '#btn-add-ingrediente');
@@ -184,10 +186,16 @@
         $(document).on('blur', '.mask-quantidade', function (e) {
 
             let valor = $(this).val();
-            if (valor.indexOf(',') < 0) {
+            valor = parseFloat(valor.replace(',','.'));
+            /*if (valor.indexOf(',') < 0) {
                 valor += ',000';
                 $(this).val(valor);
-            }
+            }*/
+            $(this).val((valor).toLocaleString(
+            undefined, // leave undefined to use the visitor's browser 
+                       // locale or a string like 'en-US' to override it.
+            { minimumFractionDigits: 3 }
+        ));
         });
 
 
@@ -235,7 +243,7 @@
                         
                         if (resposta.sucesso) {
                             $('#modal-container').modal('hide');
-                            //atualizarTabelaPrato();
+                            atualizarTabelaPrato();
                         }
                     }
                 });

@@ -496,7 +496,33 @@ def IndexPrato(request):
             'pratos': pratos
         }
     )
-
+    
+    
+def TabelaPrato(request):
+    
+    busca = request.POST.get('busca')
+    
+    pratos = Prato.objects.filter(excluido=False)
+    
+    if busca:
+        pratos = pratos.filter(Q(descricao__icontains=busca))
+        
+    lista_pratos = list(pratos)
+    
+    lista_pratos = pratos.all().annotate(custo_total=Sum(
+            F('pratoingredienteaux__quantidade') *
+            F('pratoingredienteaux__ingrediente__custo_unitario')
+        ))
+    
+    return render(
+        request,
+        'Prato/Tabela.html',
+        {
+            'pratos': lista_pratos,
+            'busca': busca,
+        }
+    )
+    
 
 def ModalPrato(request):
     
@@ -540,9 +566,48 @@ def AdicionarIngredientePrato(request):
 
 def SalvarPrato(request):
     
-    teste = ""
-
-    return JsonResponse({'success': True})
+    try:
+        with transaction.atomic():
+            
+            descricao = request.POST.get('descricao')
+            rendimento = request.POST.get('rendimento')
+            # prato.observacao = request.POST.get('observacao')
+            
+            prato = Prato(
+                descricao= descricao,
+                rendimento= rendimento,
+            )
+            
+            prato.save()
+            
+            ingredientes = []
+            count = 0
+            
+            while True:
+                deletado = request.POST.get(f'ingrediente[{count}].deletado')
+                if deletado == None:
+                    break
+                
+                if deletado == 'False':
+                    id = request.POST.get(f'ingrediente[{count}].id')
+                    quantidade = request.POST.get(f'ingrediente[{count}].quantidade')
+                    quantidade = float(quantidade.replace(',', '.'))
+                    
+                    aux = PratoIngredienteAux(
+                        prato_id= prato.id,
+                        ingrediente_id = id,
+                        quantidade= quantidade,
+                    )
+                    
+                    aux.save()
+                
+                count += 1
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 

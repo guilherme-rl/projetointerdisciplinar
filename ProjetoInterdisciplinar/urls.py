@@ -61,6 +61,7 @@ urlpatterns = [
     path('salvaringrediente/', views.SalvarIngrediente, name='SalvarIngrediente'),
 
     path('prato/', views.IndexPrato, name='Prato'),
+    path('tabelaprato/', views.TabelaPrato, name='TabelaPrato'),
     path('modalprato/', views.ModalPrato, name='ModalPrato'),
     path('salvarprato/', views.SalvarPrato, name='SalvarPrato'),
     path('adicionaringredienteprato/', views.AdicionarIngredientePrato, name='AdicionarIngredientePrato'),
