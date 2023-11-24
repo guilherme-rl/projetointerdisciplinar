@@ -389,14 +389,14 @@ def NovoUsuario(request):
 # region ItemLocacao
 def IndexItemLocacao(request):
      
-    item_locacao = ItemLocacao.objects.all()
+    itemlocacao = ItemLocacao.objects.all()
 
     return render(
         request,
         'ItemLocacao/ItemLocacao.html',
         {
             'title':'Itens Locação',
-            'itenslocacao': item_locacao
+            'itenslocacao': itemlocacao
         }
     )
 
