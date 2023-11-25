@@ -408,7 +408,7 @@ def TabelaItensLocacao(request):
     itemlocacao = ItemLocacao.objects.filter(excluido=False)
     
     if busca:
-        itemlocacao = itemlocacao.filter(descricao__icontains=busca)
+        itemlocacao = itemlocacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
     
 
     return render(
