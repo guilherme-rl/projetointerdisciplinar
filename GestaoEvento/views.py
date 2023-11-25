@@ -209,65 +209,14 @@ def IndexPrestador(request):
         }
     )
 
-
-def SalvarPrestador(request):
-    try:
-        with transaction.atomic():
-            
-            id = request.POST.get('id')
-            data = datetime.strptime(request.POST.get('data_nasc'), '%Y-%m-%d')
-            prestador = None
-            
-            if id != 'None':
-                prestador = Entidade.objects.get(id=id)
-                prestador.nome_razao = request.POST.get('nome')
-                prestador.data_nascimento_criacao = data
-                
-                endereco = prestador.endereco.get(principal=True)
-                endereco.cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else ''
-                endereco.bairro = request.POST.get('bairro')
-                endereco.complemento = request.POST.get('endereco')
-                endereco.cidade = request.POST.get('cidade')
-                endereco.estado = request.POST.get('estado').upper()
-                
-                endereco.save()
-                
-            else:
-                cpf = request.POST.get('cpf_cnpj')
-                cpf = re.sub(r'[^0-9]', '', cpf)
-                prestador = Entidade(
-                    nome_razao = request.POST.get('nome'),
-                    cpf_cnpj = cpf,
-                    data_nascimento_criacao = data,
-                    tipo = 'P',
-                )
-                prestador.save()
-                
-                prestador.endereco.create(
-                    cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else '',
-                    bairro = request.POST.get('bairro'),
-                    complemento = request.POST.get('endereco'),
-                    cidade = request.POST.get('cidade'),
-                    estado = request.POST.get('estado').upper(),
-                    principal = True,
-                )
-            
-            prestador.save()
-
-            return JsonResponse({'sucesso': True})
-    
-    except Exception as e:
-        print(e)
-        
-        return JsonResponse({'sucesso': False})
-        
-
-    
 def TabelaPrestadores(request):
     
     busca = request.POST.get('busca')
 
     prestadores= Entidade.objects.filter ((Q(tipo='P')) & Q(excluido=False))
+    
+    if busca: 
+        prestadores = prestadores.filter(nome_razao__icontains=busca)
     
     return render(
         request,
@@ -334,9 +283,64 @@ def ModalExcluirPrestador(request):
         request,
         'Prestador/ModalExcluir.html',
         {
-            'Prestador' : prestador 
+            'prestador': prestador 
         }
     )
+
+
+def SalvarPrestador(request):
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            data = datetime.strptime(request.POST.get('data_nasc'), '%Y-%m-%d')
+            prestador = None
+            
+            if id != 'None':
+                prestador = Entidade.objects.get(id=id)
+                prestador.nome_razao = request.POST.get('nome')
+                prestador.data_nascimento_criacao = data
+                
+                endereco = prestador.endereco.get(principal=True)
+                endereco.cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else ''
+                endereco.bairro = request.POST.get('bairro')
+                endereco.complemento = request.POST.get('endereco')
+                endereco.cidade = request.POST.get('cidade')
+                endereco.estado = request.POST.get('estado').upper()
+                
+                endereco.save()
+                
+            else:
+                cpf = request.POST.get('cpf_cnpj')
+                cpf = re.sub(r'[^0-9]', '', cpf)
+                prestador = Entidade(
+                    nome_razao = request.POST.get('nome'),
+                    cpf_cnpj = cpf,
+                    data_nascimento_criacao = data,
+                    tipo = 'P',
+                )
+                prestador.save()
+                
+                prestador.endereco.create(
+                    cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else '',
+                    bairro = request.POST.get('bairro'),
+                    complemento = request.POST.get('endereco'),
+                    cidade = request.POST.get('cidade'),
+                    estado = request.POST.get('estado').upper(),
+                    principal = True,
+                )
+            
+            prestador.save()
+
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        
+        return JsonResponse({'sucesso': False})
+        
+
+
 def ExcluirPrestador(request):
     
     try:
