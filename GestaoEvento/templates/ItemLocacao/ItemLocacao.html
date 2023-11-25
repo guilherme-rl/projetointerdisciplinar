@@ -108,7 +108,7 @@
         $('#modal-container').off('shown.bs.modal');
         $('#modal-container').on('shown.bs.modal', function () {
             $.ajax({
-                url: '{% url "ExcluirItemLocacao" %}',
+                url: '{% url "ModalExcluirItemLocacao" %}',
                 method: 'GET',
                 data: { 
                     id: id, 
