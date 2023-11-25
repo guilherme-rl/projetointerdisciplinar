@@ -448,7 +448,7 @@ def ModalExcluirItemLocacao(request):
         request,
         'ItemLocacao/ModalExcluir.html',
         {
-            'itemlocacao': itemlocacao
+        'itemlocacao': itemlocacao
         }
     )
 
