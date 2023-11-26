@@ -12,13 +12,13 @@
             <div class="col-md-10">
                 <div class="form-group">
                     <label class="form-label">Descrição</label>
-                    <input type="text" class="form-control" name="descricao" value="" />
+                    <input type="text" class="form-control" name="descricao" value="{{ prato.descricao }}" />
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label class="form-label">Rendimento</label>
-                    <input type="number" class="form-control" id="rendimento" name="rendimento" min="0" value="" />
+                    <input type="number" class="form-control" id="rendimento" name="rendimento" min="0" value="{{ prato.rendimento }}" />
                 </div>
             </div>
         </div>
@@ -26,7 +26,7 @@
             <div class="col-md-12">
                 <div class="form-group">
                     <label class="form-label">Observação</label>
-                    <textarea class="form-control" id="observacao" name="observacao" rows="3"></textarea>
+                    <textarea class="form-control" id="observacao" name="observacao" rows="3" value="{{ prato.observacao }}"></textarea>
                 </div>
             </div>
         </div>
@@ -66,8 +66,13 @@
                         </tr>
                     </thead>
                     <tbody>
-                        {% comment %} {% include "Prato/ItemIngrediente.html" with index="0" %}
-                        {% include "Prato/ItemIngrediente.html" with index="1" %} {% endcomment %}
+                        {% if ingredientes_prato|length > 0 %}
+                            {% for item in ingredientes_prato %}
+                                {% with contador=forloop.counter0 %}
+                                {% include "Prato/ItemIngrediente.html" with index=contador quantidade=item.quantidade ingrediente=item.ingrediente total=item.total %}
+                                {% endwith %}
+                            {% endfor %}
+                        {% endif %}
                     </tbody>
                     <tfoot>
                         <tr>
@@ -253,6 +258,8 @@
                   });
             }
         });
+
+        AtualizarTotalTabelaIngrediente();
     });
 
     function AtualizarTotalTabelaIngrediente() {

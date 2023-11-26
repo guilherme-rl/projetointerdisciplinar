@@ -526,11 +526,21 @@ def TabelaPrato(request):
 
 def ModalPrato(request):
     
-    ingredientes = list(Ingrediente.objects.filter(excluido=False))
+    id = request.GET.get('id')
+    prato = Prato()
+    ingredientes_prato = []
+    
+    if id:
+        prato = Prato.objects.get(pk=id)
+        ingredientes_prato = list(prato.pratoingredienteaux_set.all())
+        for item in ingredientes_prato:
+            item.total = item.quantidade * item.ingrediente.custo_unitario
+    
+    lista_ingredientes = list(Ingrediente.objects.filter(excluido=False))
 
     dados = {}
     
-    for item in ingredientes:
+    for item in lista_ingredientes:
         dados[item.id] = item.descricao
         
     return render(
@@ -538,6 +548,8 @@ def ModalPrato(request):
         'Prato/ModalPrato.html',
         {
             'ingredientes': dados,
+            'prato': prato,
+            'ingredientes_prato': ingredientes_prato
         },
     )
     
@@ -571,22 +583,19 @@ def SalvarPrato(request):
             
             descricao = request.POST.get('descricao')
             rendimento = request.POST.get('rendimento')
-            # prato.observacao = request.POST.get('observacao')
+            observacao = request.POST.get('observacao')
             
             prato = Prato(
                 descricao= descricao,
                 rendimento= rendimento,
+                observacao= observacao,
             )
             
             prato.save()
             
-            ingredientes = []
             count = 0
-            
-            while True:
-                deletado = request.POST.get(f'ingrediente[{count}].deletado')
-                if deletado == None:
-                    break
+            deletado = request.POST.get(f'ingrediente[{count}].deletado')
+            while deletado != None:
                 
                 if deletado == 'False':
                     id = request.POST.get(f'ingrediente[{count}].id')
@@ -602,6 +611,7 @@ def SalvarPrato(request):
                     aux.save()
                 
                 count += 1
+                deletado = request.POST.get(f'ingrediente[{count}].deletado')
             
             return JsonResponse({'sucesso': True})
     
