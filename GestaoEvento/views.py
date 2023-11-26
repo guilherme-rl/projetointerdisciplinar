@@ -470,7 +470,8 @@ def SalvarIngrediente(request):
                 
             ingrediente.descricao = request.POST.get('descricao')
             ingrediente.unidade_medida_id = request.POST.get('unidade-medida')
-            ingrediente.custo_unitario = request.POST.get('custo-unidade')
+            ingrediente.custo_unitario = float(request.POST.get('custo-unidade').replace(',', '.'))
+            
                 
             ingrediente.save()
 
