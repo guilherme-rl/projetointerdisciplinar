@@ -417,7 +417,7 @@ def TabelaIngrediente(request):
     ingredientes = Ingrediente.objects.filter(excluido=False)
     
     if busca:
-        ingrediente = ingrediente.filter(Q(descricao__icontains=busca) | Q(unidade_medida__descricao=busca))
+        ingredientes = ingredientes.filter(Q(descricao__icontains=busca) | Q(unidade_medida__descricao=busca))
     
     return render(
         request,
@@ -432,6 +432,9 @@ def TabelaIngrediente(request):
 def ModalIngrediente(request):
     
     unidadesMedida = list(UnidadeMedida.objects.filter(excluido=False))
+    dados = {}
+    for item in unidadesMedida:
+        dados[item.id] = item.sigla
     
     id = request.GET.get('id')
     
@@ -440,11 +443,7 @@ def ModalIngrediente(request):
     
     if id:
         ingrediente = Ingrediente.objects.get(pk=id)
-    
-    dados = {}
-    
-    for item in unidadesMedida:
-        dados[item.id] = item.sigla
+
 
     return render(
         request,
@@ -703,15 +702,83 @@ def IndexOrcamento(request):
     )
 
 
-def ModalNovoOrcamento(request):
+def TabelaOrcamento(request):
 
+    busca = request.POST.get('busca')
+    
+    orcamentos = Orcamento.objects.filter(excluido=False)
+    
+    if busca:
+        orcamentos = orcamentos.filter(Q(descricao__icontains=busca))
+    
     return render(
         request,
-        'Orcamento/ModalNovo.html',
+        'Orcamento/Tabela.html',
+        {
+            'orcamentos': orcamentos,
+            'busca': busca,
+        }
     )
 
 
-def NovoOrcamento(request):
+def ModalOrcamento(request):
+    
+    lista_clientes = list(Entidade.objects.filter(Q(excluido=False) | Q(tipo='C')))
+    clientes = {}
+    for item in lista_clientes:
+        clientes[item.id] = item.nome_razao
+    
+    lista_pratos = list(Prato.objects.filter(Q(excluido=False)))
+    pratos = {}
+    for item in lista_pratos:
+        pratos[item.id] = item.descricao
+
+    return render(
+        request,
+        'Orcamento/ModalOrcamento.html',
+        {
+            'clientes': clientes,
+            'pratos': pratos,
+        },
+    )
+
+
+def ModalExcluirOrcamento(request):
+
+    return JsonResponse({'success': True})
+
+
+def AdicionarPratoOrcamento(request):
+    
+    id = request.POST.get('id')
+    index = request.POST.get('index')
+    pessoas = request.POST.get('pessoas')
+    
+    prato = Prato.objects.get(pk=id)
+    # prato.custo = 0
+    
+    quantidade = float(pessoas) / float(prato.rendimento)
+    
+    # for item in prato.pratoingredienteaux_set.all():
+    #     prato.custo += item.quantidade * item.ingrediente.custo_unitario
+    
+    return render(
+        request,
+        'Orcamento/ItemPrato.html',
+        {
+            'prato': prato,
+            'index': index,
+            'quantidade': quantidade,
+        },
+    )
+
+
+def SalvarOrcamento(request):
+
+    return JsonResponse({'success': True})
+
+
+def ExcluirOrcamento(request):
 
     return JsonResponse({'success': True})
 

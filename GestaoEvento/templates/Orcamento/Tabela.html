@@ -1,9 +1,11 @@
 <table class="table">
     <thead>
         <tr>
-            <th class="text-center">Código</th>
-            <th class="text-center">Qtd. Pessoas</th>
-            <th class="text-center">Data do Evento</th>
+            <th class="text-center" style="width: 150px;">Código</th>
+            <th class="text-left">Cliente</th>
+            <th class="text-center" style="width: 150px;">Qtd. Pessoas</th>
+            <th class="text-center" style="width: 150px;">Data do Evento</th>
+            <th class="" style="width: 100px;" ></th>
         </tr>
     </thead>
 
@@ -18,13 +20,16 @@
             {% for orcamento in orcamentos %}
             <tr>
                 <td class="text-center">
-                    {{ orcamentos.cpf_cnpj }}
+                    {{ orcamento.id }}
+                </td>
+                <td class="text-left">
+                    {{ orcamentos.cliente.nome_razao }}
                 </td>
                 <td class="text-center">
-                    {{ orcamentos.nome_razao }}
+                    {{ orcamentos.quantidade_pessoas }}
                 </td>
                 <td class="text-center">
-                    {{ orcamentos.data_nascimento_criacao }}
+                    {{ orcamentos.data_evento }}
                 </td>
             </tr>
             {% endfor %}
