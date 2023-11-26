@@ -57,10 +57,10 @@
                     $('#btn-salvar').attr('disabled', false);
                     //$('#submited').val(false);
                 },
-                success: function (resp) {
+                success: function (resposta) {
                     //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                     
-                    if (resp.sucess) {
+                    if (resposta.sucesso) {
                         $('#modal-container').modal('hide');
                         atualizarTabelaItemLocacao();
                     }
