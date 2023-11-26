@@ -213,7 +213,7 @@ def TabelaPrestadores(request):
     
     busca = request.POST.get('busca')
 
-    prestadores= Entidade.objects.filter ((Q(tipo='P')) & Q(excluido=False))
+    prestadores = Entidade.objects.filter ((Q(tipo='P')) & Q(excluido=False))
     
     if busca: 
         prestadores = prestadores.filter(nome_razao__icontains=busca)
@@ -222,7 +222,7 @@ def TabelaPrestadores(request):
         request,
         'Prestador/Tabela.html',
         {
-            'Prestadoes': prestadores,
+            'prestadores': prestadores,
              'busca': busca,
         }
     )

@@ -20,7 +20,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="form-label">CPF/CNPJ</label>
-                    <input type="text" class="form-control" name="cpf" value="{{ prestador.cpf_cnpj }}" />
+                    <input type="text" class="form-control" name="cpf_cnpj" value="{{ prestador.cpf_cnpj }}" />
                 </div>
             </div>
             <div class="col-md-3">
@@ -34,7 +34,7 @@
             <div class="col-md-9">
                 <div class="form-group">
                     <label class="form-label">Endereço</label>
-                    <input type="text" class="form-control" name="cpf" value="{{ endereco_principal.cep }}" />
+                    <input type="text" class="form-control" name="endereco" value="{{ endereco_principal.cep }}" />
                 </div>
             </div>
             <div class="col-md-3">
@@ -68,7 +68,7 @@
                 <div class="col-md-8">
                     <div class="form-group">
                         <label class="form-label">Descrição do serviço</label>
-                        <input type="text" class="form-control" name="descricao-servico" value="{{ prestador.descricao}}" />
+                        <input type="text" class="form-control" name="descricao_servico" value="{{ prestador.descricao}}" />
                     </div>
                 </div>
             </div>
@@ -200,10 +200,10 @@
                         $('#btn-salvar').attr('disabled', false);
                         //$('#submited').val(false);
                     },
-                    success: function (resp) {
+                    success: function (resposta) {
                         //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                        
-                        if (resp.sucess) {
+                        if (resposta.sucesso) {
                         $('#modal-container').modal('hide');
                         atualizarTabelaPrestador();
                     }
@@ -214,7 +214,7 @@
     });
 
         var prestador_id = $('#prestador-id').val();
-        if ($('#cprestador-id').val() != 'None') {
+        if ($('#prestador-id').val() != 'None') {
             $('#cpf_cnpj').prop('disabled', true);
             $('#cpf_cnpj, #cep').trigger('blur');
         }
