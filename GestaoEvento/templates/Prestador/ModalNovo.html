@@ -26,7 +26,7 @@
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="form-label">Data Nascimento/Criação</label>
-                    <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="{{ data_formatada.dataformatada }}" />
+                    <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="{{ data_formatada }}" />
                 </div>
             </div>
         </div>
@@ -54,22 +54,12 @@
                 <div class="form-group">
                     <label class="form-label">Cidade</label>
                        <input type="text" class="form-control" name="cidade" value="{{ endereco_principal.cidade }}" />
-                    </select>
                 </div>
             </div>
             <div class="col-md-2">
                 <div class="form-group">
                     <label class="form-label">Estado</label>
                         <input type="text" class="form-control" name="estado"  id="estado" maxlength="2" value="{{ endereco_principal.estado }}" />
-                    </select>
-                </div>
-            </div>
-            <div class="row">
-                <div class="col-md-8">
-                    <div class="form-group">
-                        <label class="form-label">Descrição do serviço</label>
-                        <input type="text" class="form-control" name="descricao_servico" value="{{ prestador.descricao}}" />
-                    </div>
                 </div>
             </div>
         </div>

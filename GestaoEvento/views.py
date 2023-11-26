@@ -200,12 +200,14 @@ def ExcluirCliente(request):
 # region Prestador
 def IndexPrestador(request):
     
+    prestadores = Entidade.objects.all()
 
     return render(
         request,
         'Prestador/Prestador.html',
         {
             'title':'Prestador',
+            'prestadores': prestadores
         }
     )
 
@@ -251,8 +253,8 @@ def ModalNovoPrestador(request):
 
 def ModalDetalhesPrestador(request):
     
-    prestador_id = request.GET.get('id')
-    prestador = Entidade.objects.get(pk=prestador_id)
+    id = request.GET.get('id')
+    prestador = Entidade.objects.get(pk=id)
     data_formatada = prestador.data_nascimento_criacao.strftime('%d/%m/%Y')
     endereco_principal = prestador.endereco.get(principal=True)
     cep_formatado = f'{endereco_principal.cep[:5]}-{endereco_principal.cep[5:]}'
@@ -276,8 +278,8 @@ def ModalDetalhesPrestador(request):
 
 def ModalExcluirPrestador(request):
     
-    prestador_id = request.GET.get('id')
-    prestador = Entidade.objects.get(pk=prestador_id)
+    id = request.GET.get('id')
+    prestador = Entidade.objects.get(pk=id)
     
     return render(
         request,
@@ -346,8 +348,8 @@ def ExcluirPrestador(request):
     try:
         with transaction.atomic():
             
-            prestador_id = request.POST.get('id')
-            prestador = Entidade.objects.get(pk=prestador_id)
+            id = request.POST.get('id')
+            prestador = Entidade.objects.get(pk=id)
             
             prestador.excluido = True
             
