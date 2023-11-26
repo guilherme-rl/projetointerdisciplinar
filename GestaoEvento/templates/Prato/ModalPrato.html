@@ -18,7 +18,7 @@
             <div class="col-md-2">
                 <div class="form-group">
                     <label class="form-label">Rendimento</label>
-                    <input type="number" class="form-control" id="rendimento" name="rendimento" min="0" value="{{ prato.rendimento }}" />
+                    <input type="text" class="form-control" id="rendimento" name="rendimento" min="0" value="{{ prato.rendimento|floatformat:0 }}" />
                 </div>
             </div>
         </div>

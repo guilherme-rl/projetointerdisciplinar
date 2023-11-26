@@ -628,15 +628,19 @@ def SalvarPrato(request):
     try:
         with transaction.atomic():
             
-            descricao = request.POST.get('descricao')
-            rendimento = request.POST.get('rendimento')
-            observacao = request.POST.get('observacao')
+            id = request.POST.get('id')
             
-            prato = Prato(
-                descricao= descricao,
-                rendimento= rendimento,
-                observacao= observacao,
-            )
+            prato = Prato()
+            
+            if id != 'None':
+                prato = Prato.objects.get(pk=id)
+                for item in prato.pratoingredienteaux_set.all():
+                    ingrediente = Ingrediente.objects.get(pk=item.ingrediente.id)
+                    prato.ingredientes.remove(ingrediente)
+            
+            prato.descricao = request.POST.get('descricao')
+            prato.rendimento = request.POST.get('rendimento')
+            prato.observacao = request.POST.get('observacao')
             
             prato.save()
             
