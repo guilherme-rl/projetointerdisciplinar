@@ -439,7 +439,7 @@ def ModalIngrediente(request):
     ingrediente.custo_unitario = ''
     
     if id:
-        ingrediente = Ingrediente.get(pk=id)
+        ingrediente = Ingrediente.objects.get(pk=id)
     
     dados = {}
     
@@ -453,6 +453,20 @@ def ModalIngrediente(request):
             'unidades_medida': dados,
             'ingrediente': ingrediente,
         },
+    )
+    
+    
+def ModalExcluirIngrediente(request):
+    
+    id = request.GET.get('id')
+    ingrediente = Ingrediente.objects.get(pk=id)
+
+    return render(
+        request,
+        'Ingrediente/ModalExcluirIngrediente.html',
+        {
+            'ingrediente': ingrediente
+        }
     )
 
 
@@ -481,6 +495,25 @@ def SalvarIngrediente(request):
         print(e)
         
         return JsonResponse({'sucesso': False})
+    
+    
+def ExcluirIngrediente(request):
+    
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            ingrediente = Ingrediente.objects.get(pk=id)
+            
+            ingrediente.excluido = True
+            
+            ingrediente.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 

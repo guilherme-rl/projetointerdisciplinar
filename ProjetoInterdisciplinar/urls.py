@@ -58,6 +58,8 @@ urlpatterns = [
     path('ingrediente/', views.IndexIngrediente, name='Ingrediente'),
     path('tabelaingrediente/', views.TabelaIngrediente, name='TabelaIngrediente'),
     path('modalingrediente/', views.ModalIngrediente, name='ModalIngrediente'),
+    path('modalexcluiringrediente/', views.ModalExcluirIngrediente, name='ModalExcluirIngrediente'),
+    path('excluiringrediente/', views.ExcluirIngrediente, name='ExcluirIngrediente'),
     path('salvaringrediente/', views.SalvarIngrediente, name='SalvarIngrediente'),
 
     path('prato/', views.IndexPrato, name='Prato'),
