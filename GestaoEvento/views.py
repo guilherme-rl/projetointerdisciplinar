@@ -553,6 +553,20 @@ def ModalPrato(request):
         },
     )
     
+
+def ModalExcluirPrato(request):
+    
+    id = request.GET.get('id')
+    prato = Prato.objects.get(pk=id)
+
+    return render(
+        request,
+        'Prato/ModalExcluirPrato.html',
+        {
+            'prato': prato
+        }
+    )
+    
     
 def AdicionarIngredientePrato(request):
     
@@ -612,6 +626,25 @@ def SalvarPrato(request):
                 
                 count += 1
                 deletado = request.POST.get(f'ingrediente[{count}].deletado')
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
+    
+    
+def ExcluirPrato(request):
+    
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            prato = Prato.objects.get(pk=id)
+            
+            prato.excluido = True
+            
+            prato.save()
             
             return JsonResponse({'sucesso': True})
     

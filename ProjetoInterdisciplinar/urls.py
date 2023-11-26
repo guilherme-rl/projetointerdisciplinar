@@ -63,6 +63,8 @@ urlpatterns = [
     path('prato/', views.IndexPrato, name='Prato'),
     path('tabelaprato/', views.TabelaPrato, name='TabelaPrato'),
     path('modalprato/', views.ModalPrato, name='ModalPrato'),
+    path('modalexcluirprato/', views.ModalExcluirPrato, name='ModalExcluirPrato'),
+    path('excluirprato/', views.ExcluirPrato, name='ExcluirPrato'),
     path('salvarprato/', views.SalvarPrato, name='SalvarPrato'),
     path('adicionaringredienteprato/', views.AdicionarIngredientePrato, name='AdicionarIngredientePrato'),
 
