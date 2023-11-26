@@ -412,7 +412,7 @@ def TabelaItensLocacao(request):
     itemlocacao = ItemLocacao.objects.filter(excluido=False)
     
     if busca:
-        itemlocacao = itemlocacao.filter(Q(descricao__icontains=busca) | Q(id__icontains=busca))
+        itemlocacao = itemlocacao.filter(Q(descricao__icontains=busca) | Q(custo_unitario__icontains=busca))
     
 
     return render(
@@ -466,7 +466,7 @@ def SalvarItemLocacao(request):
 
             itemlocacao = ItemLocacao()
 
-            if id:     
+            if id != 'None':     
                 itemlocacao = ItemLocacao.objects.get(id=id)
 
             itemlocacao.descricao = request.POST.get('descricao')
