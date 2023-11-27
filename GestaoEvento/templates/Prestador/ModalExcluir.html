@@ -27,7 +27,7 @@
 
 <div class="modal-footer">
     <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
-    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-cliente" />
+    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir-prestador" />
     
 </div>
 
@@ -57,10 +57,10 @@
                     $('#btn-salvar').attr('disabled', false);
                     //$('#submited').val(false);
                 },
-                success: function (resp) {
+                success: function (resposta) {
                     //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
                     
-                    if (resp.sucess) {
+                    if (resposta.sucesso) {
                         $('#modal-container').modal('hide');
                         atualizarTabelaPrestador();
                     }
