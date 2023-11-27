@@ -28,7 +28,7 @@
                 </div>
 
                 <div id="conteudo">
-                    {% include "Orcamento/Tabela.html" %}
+                    {% comment %} {% include "Orcamento/Tabela.html" %} {% endcomment %}
                 </div>
             </div>
     </div>
@@ -40,18 +40,19 @@
     $(document).ready(function () {
         console.log('Script index orcamento');
 
-        $('.btn-novo-orcamento').click(function (e) {
+        $(document).off('click', '.btn-novo-orcamento');
+        $(document).on('click', '.btn-novo-orcamento', function (e) {
             e.preventDefault();
             console.log('click novo orcamento');
 
             //var loading = $('#modal-loading').clone().css('display', 'block');
             //$('#modal-container .modal-content').html(loading);
-            $('#modal-container .modal-content').css("width", "900px");
+            $('#modal-container .modal-content').css("width", "1000px");
             $('#modal-container .modal-content').css("height", "290px");
             $('#modal-container').off('shown.bs.modal');
             $('#modal-container').on('shown.bs.modal', function () {
                 $.ajax({
-                    url: '{% url "ModalNovoOrcamento" %}',
+                    url: '{% url "ModalOrcamento" %}',
                     method: 'GET',
                     success: function (resposta) {
                         $('#modal-container .modal-content').css("height", "auto");
@@ -61,8 +62,28 @@
                 $('#modal-container').off('shown.bs.modal');
             });
             $('#modal-container').modal('show');
-        })
+        });
+
+        atualizarTabelaOrcamento();
     });
+
+    function atualizarTabelaOrcamento() {
+
+        var busca = $('#busca').val();
+        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val()
+
+        $.ajax({
+            url: '{% url "TabelaOrcamento" %}',
+            method: 'POST',
+            data: {
+                busca: busca,
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+            },
+            success: function (resposta) {
+                $('#conteudo').html(resposta);
+            }
+        });
+    }
 </script>
 
 {% endblock %}

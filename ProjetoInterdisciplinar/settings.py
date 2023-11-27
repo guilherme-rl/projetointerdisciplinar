@@ -90,8 +90,18 @@ WSGI_APPLICATION = 'ProjetoInterdisciplinar.wsgi.application'
 # Conexão SqLite
 DATABASES = {
     'default': {
+<<<<<<< HEAD
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(BASE_DIR, 'db.sqlite3'),
+=======
+        'ENGINE': 'django.db.backends.mysql', 
+        'NAME': 'GestaoEventos',
+        'USER': 'root',
+        'PASSWORD': 'pass',
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'TIME_ZONE': 'America/Sao_Paulo',
+>>>>>>> 3ed5c7cb64067ce576e3fb5e144b297e6f9164a5
     }
  }
 

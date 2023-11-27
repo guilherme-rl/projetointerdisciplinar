@@ -28,7 +28,6 @@
                 </div>
 
                 <div id="conteudo">
-                    {% comment %} {% include "Ingrediente/Tabela.html" %} {% endcomment %}
                 </div>
             </div>
     </div>
@@ -40,7 +39,8 @@
     $(document).ready(function () {
         console.log('Script index ingrediente');
 
-        $('.btn-novo-ingrediente').click(function (e) {
+        $(document).off('click', '.btn-novo-ingrediente');
+        $(document).on('click', '.btn-novo-ingrediente', function (e) {
             e.preventDefault();
             console.log('click novo ingrediente');
 
@@ -53,6 +53,61 @@
                 $.ajax({
                     url: '{% url "ModalIngrediente" %}',
                     method: 'GET',
+                    success: function (resposta) {
+                        $('#modal-container .modal-content').css("height", "auto");
+                        $('#modal-container .modal-content').html(resposta);
+                    }
+                });
+                $('#modal-container').off('shown.bs.modal');
+            });
+            $('#modal-container').modal('show');
+        });
+
+        $(document).off('click', '.btn-editar');
+        $(document).on('click', '.btn-editar', function (e) {
+            e.preventDefault();
+            console.log('click editar ingrediente');
+
+            var id = $(this).attr('data-id');
+
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
+            $('#modal-container .modal-content').css("width", "800px");
+            $('#modal-container .modal-content').css("height", "620px");
+            $('#modal-container').off('shown.bs.modal');
+            $('#modal-container').on('shown.bs.modal', function () {
+                $.ajax({
+                    url: '{% url "ModalIngrediente" %}',
+                    method: 'GET',
+                    data: { id: id },
+                    success: function (resposta) {
+                        $('#modal-container .modal-content').css("height", "auto");
+                        $('#modal-container .modal-content').html(resposta);
+                    }
+                });
+                $('#modal-container').off('shown.bs.modal');
+            });
+            $('#modal-container').modal('show');
+        });
+
+        $(document).off('click', '.btn-excluir');
+        $(document).on('click', '.btn-excluir', function (e) {
+            e.preventDefault();
+
+            var id = $(this).attr('data-id');
+
+            var loading = $('#modal-loading').clone().css('display', 'block');
+            $('#modal-container .modal-content').html(loading);
+            $('#modal-container .modal-content').css("width", "500px");
+            $('#modal-container .modal-content').css("height", "242px");
+            $('#modal-container').off('shown.bs.modal');
+            $('#modal-container').on('shown.bs.modal', function () {
+                $.ajax({
+                    url: '{% url "ModalExcluirIngrediente" %}',
+                    method: 'GET',
+                    data: {
+                        id: id,
+                    },
                     success: function (resposta) {
                         $('#modal-container .modal-content').css("height", "auto");
                         $('#modal-container .modal-content').html(resposta);

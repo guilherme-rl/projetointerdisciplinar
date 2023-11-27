@@ -30,7 +30,7 @@
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="form-label">Custo por Unidade Medida</label>
-                    <input type="text" class="form-control" name="custo-unidade" value="{{ ingrediente.custo_unitario }}" placeholder="0,00" />
+                    <input type="text" class="form-control mask-valor" name="custo-unidade" value="{{ ingrediente.custo_unitario }}" placeholder="0,00" />
                 </div>
             </div>
         </div>
@@ -46,6 +46,7 @@
 {% load static %}
 <script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
 <script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/select2-4.1.0/select2.js' %}"></script>
 <script>
     $(document).ready(function () {
         console.log('Document ready modal ingrediente');
@@ -58,6 +59,15 @@
                 descricao: 'required',
                 'custo-unidade': 'required',
             },
+        });
+
+        $('.mask-valor').mask('###.###.##0,00', {
+            reverse: true,
+            selectOnFocus: true,
+        });
+
+        $('.form-select').select2({
+            dropdownParent: $('#modal-container .modal-content'),
         });
 
         $('#form-ingrediente').submit(function (e) {

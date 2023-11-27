@@ -1,0 +1,221 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Orçamento</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/salvarorcamento/" method="post" id="form-orcamento">
+        {% csrf_token %}
+        <div class="row">
+            <div class="col-md-9">
+                <div class="form-group">
+                    <label class="form-label">Selecione o Cliente</label>
+                    <select class="form-select" name="orcamento" aria-label="Selecione o Cliente">
+                        {% for chave, valor in clientes.items %}
+                        <option value="{{ chave }}">{{ valor }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-3">
+                <div class="form-group">
+                    <label class="form-label">Quantidade de Pessoas</label>
+                    <input type="text" class="form-control" id="pessoas" name="quantidade-pessoas" value="" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label">Selecione os Pratos</label>
+                    <select class="form-select" id="select-prato" name="prato" aria-label="Selecione os Pratos" >
+                        {% for chave, valor in pratos.items %}
+                        <option value="{{ chave }}">{{ valor }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-4" style="">
+                <div class="form-group">
+                    <input type="button" value="Adicionar prato" class="btn btn-primary" id="btn-add-prato" style="width: 100%; margin-top: 32px;" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <table class="table" id="tabela-pratos" >
+                    <thead>
+                        <tr>
+                            <th class="text-left">Descrição</th>
+                            {% comment %} <th class="text-center" style="width: 120px;">Custo receita</th> {% endcomment %}
+                            <th class="text-center" style="width: 120px;">Rendimento</th>
+                            <th class="text-center" style="width: 130px;">Qtd necessária</th>
+                            <th class="" style="width: 50px;" ></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% comment %} {% if ingredientes_prato|length > 0 %}
+                            {% for item in ingredientes_prato %}
+                                {% with contador=forloop.counter0 %}
+                                {% include "Prato/ItemIngrediente.html" with index=contador quantidade=item.quantidade ingrediente=item.ingrediente total=item.total %}
+                                {% endwith %}
+                            {% endfor %}
+                        {% endif %} {% endcomment %}
+                    </tbody>
+                    <tfoot>
+                        {% comment %} <tr>
+                            <td colspan="2"></td>
+                            <td class="text-center" >Total</td>
+                            <td class="text-center" id="total-prato">0,00</td>
+                            <td colspan="2"></td>
+                        </tr> {% endcomment %}
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+        {% comment %} <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Selecione os Itens de Locação</label>
+                    <select class="form-select multiple-select" name="item-locacao" aria-label="Selecione os Itens de Locação" multiple="multiple">
+                        <option value="1">Item de locação 1</option>
+                        <option value="2">Item de locação 2</option>
+                        <option value="3">Item de locação 3</option>
+                    </select>
+                </div>
+            </div>
+        </div> {% endcomment %}
+        {% comment %} <div class="row mt-3">
+            <div class="col-md-4">
+                <div class="form-group">
+                    <label class="form-label">Selecione os Prestadores</label>
+                    <select class="form-select multiple-select" name="prestador" aria-label="Selecione os Prestadores" multiple="multiple">
+                        <option value="1">Prestador 1</option>
+                        <option value="2">Prestador 2</option>
+                        <option value="3">Prestador 3</option>
+                    </select>
+                </div>
+            </div>
+        </div> {% endcomment %}
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-orcamento" />
+
+</div>
+
+<div class="row mt-3" style="padding-left: 15px; padding-right: 15px" >
+    <div class="col-md-12">
+        <h5 class="mt-3">Estimativa dos ingredientes</h5>
+    </div>
+</div>
+<div class="row" style="padding-left: 15px; padding-right: 15px" >
+    <div class="col-md-12" id="conteudo-detalhes">
+    </div>
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/multiple-select.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/select2-4.1.0/select2.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal orcamento');
+
+        $.validator.messages.required = 'Obrigatório';
+
+        $('#form-orcamento').validate({
+            onkeyup: false,
+            rules: {
+                'quantidade-pessoas': {
+                    required: true,
+                },
+            },
+        });
+
+        $('.multiple-select').multipleSelect();
+
+        $('.form-select').select2({
+            dropdownParent: $('#modal-container .modal-content'),
+        });
+
+        $(document).off('click', '#btn-add-prato');
+        $(document).on('click', '#btn-add-prato', function (e) {
+
+            if ($('#pessoas').valid()) {
+
+                var id = $('#select-prato').val();
+                var index = $('#tabela-pratos tbody tr').length;
+                var pessoas = $('#pessoas').val();
+                var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
+
+                $.ajax({
+                    url: '{% url "AdicionarPratoOrcamento" %}',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        index: index,
+                        pessoas: pessoas,
+                        csrfmiddlewaretoken: csrfmiddlewaretoken,
+                    },
+                    beforeSend: function () {
+                        $('#btn-add-ingrediente').val('Aguarde...');
+                        $('#btn-add-ingrediente').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-add-ingrediente').val('Adicionar');
+                        $('#btn-add-ingrediente').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        $('#tabela-pratos tbody').append(resposta);
+                        // $('.mask-quantidade').mask('###.###.##0,000', {reverse: true});
+
+                        atualizarListaIngredientes();
+                    }
+                });
+            }
+        });
+
+        $(document).off('change', '#pessoas');
+        $(document).on('change', '#pessoas', function (e) {
+            let pessoas = $(this).val();
+
+            $('#tabela-pratos tbody tr').each(function () {
+                let rendimento = parseFloat($(this).find('.rendimento-prato').text().replace(',','.'))
+                let quantidade = parseFloat(pessoas) / parseFloat(rendimento)
+                $(this).find('.quantidade-prato').text(quantidade.toLocaleString(
+                    undefined, // leave undefined to use the visitor's browser 
+                            // locale or a string like 'en-US' to override it.
+                    { minimumFractionDigits: 2 }
+                ));
+                $(this).find('.input-prato-quantidade').val(quantidade);
+            });
+
+            atualizarListaIngredientes();
+        });
+
+        atualizarListaIngredientes();
+    });
+
+    function atualizarListaIngredientes() {
+
+        var dados = $('#form-orcamento').serialize();
+
+        $.ajax({
+            url: '{% url "AtualizarListaIngredientes" %}',
+            type: 'POST',
+            data: dados,
+            success: function (resposta) {                
+                $('#conteudo-detalhes').html(resposta);
+            }
+        });
+    }
+</script>

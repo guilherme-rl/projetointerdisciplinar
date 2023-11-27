@@ -1,0 +1,71 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Excluir Ingrediente</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body">
+    <form action="/excluiringrediente/" method="post" id="form-excluir">
+        {% csrf_token %}
+        <input type="hidden" id="ingrediente-id" name="id" value="{{ ingrediente.id }}" />
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Confirma a exclusão do Ingrediente?</label>
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label>Descricao: {{ ingrediente.descricao }}</label>
+                </div>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Excluir" class="btn btn-vermelho" id="btn-excluir" form="form-excluir" />
+    
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal ingerdiente');
+
+        $('#form-excluir').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+            
+            $.ajax({
+                url: form.attr('action'),
+                type: 'POST',
+                data: form.serialize(),
+                beforeSend: function () {
+                    $('#btn-salvar').val('Aguarde...');
+                    $('#btn-salvar').attr('disabled', true);
+                    //$('#submited').val(true);
+                },
+                complete: function () {
+                    $('#btn-salvar').val('Excluir');
+                    $('#btn-salvar').attr('disabled', false);
+                    //$('#submited').val(false);
+                },
+                success: function (resp) {
+                    //notificationBar(resp.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resp.erro);
+                    
+                    if (resp.sucesso) {
+                        $('#modal-container').modal('hide');
+                        atualizarTabelaIngrediente();
+                    }
+                }
+            });
+        })
+    });
+</script>
