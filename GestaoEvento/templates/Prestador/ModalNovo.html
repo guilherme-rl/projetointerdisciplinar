@@ -9,18 +9,16 @@
         {% csrf_token %}
         <input type="hidden" id="prestador-id" name="id" value="{{ prestador.id }}" />
         <div class="row">
-            <div class="col-md-6">
-                <div class="form-group">
-                    <label class="form-label">Nome/Razão Social</label>
-                    <input type="text" class="form-control" name="nome" value="{{ prestador.nome_razao }}" />
-                </div>
-            </div>
-        </div>
-        <div class="row">
             <div class="col-md-3">
                 <div class="form-group">
                     <label class="form-label">CPF/CNPJ</label>
                     <input type="text" class="form-control" name="cpf_cnpj" value="{{ prestador.cpf_cnpj }}" />
+                </div>
+            </div>
+            <div class="col-md-6">
+                <div class="form-group">
+                    <label class="form-label">Nome/Razão Social</label>
+                    <input type="text" class="form-control" name="nome" value="{{ prestador.nome_razao }}" />
                 </div>
             </div>
             <div class="col-md-3">
@@ -29,6 +27,8 @@
                     <input type="date" class="form-control" name="data_nasc" id="data_nasc" value="{{ data_formatada }}" />
                 </div>
             </div>
+        </div>
+        <div class="row">
         </div>
         <div class="row">
             <div class="col-md-9">
@@ -44,6 +44,7 @@
                 </div>
             </div>
         </div>
+        <div class="row">
             <div class="col-md-5">
                 <div class="form-group">
                     <label class="form-label">Bairro</label>
@@ -60,6 +61,16 @@
                 <div class="form-group">
                     <label class="form-label">Estado</label>
                         <input type="text" class="form-control" name="estado"  id="estado" maxlength="2" value="{{ endereco_principal.estado }}" />
+                    </div>
+                </div>
+            </div>
+            <div class="row">
+            </div>
+            <div class="row">
+                <div class="col-md-9">
+                    <div class="form-group">
+                    <label class="form-label">Descriçao Serviço </label>
+                        <input type="text" class="form-control" name="descricao"  value="{{prestador.descricao}}" />
                 </div>
             </div>
         </div>
