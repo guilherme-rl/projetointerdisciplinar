@@ -107,6 +107,16 @@
 
 </div>
 
+<div class="row mt-3" style="padding-left: 15px; padding-right: 15px" >
+    <div class="col-md-12">
+        <h5 class="mt-3">Estimativa dos ingredientes</h5>
+    </div>
+</div>
+<div class="row" style="padding-left: 15px; padding-right: 15px" >
+    <div class="col-md-12" id="conteudo-detalhes">
+    </div>
+</div>
+
 {% load static %}
 <script src="{% static 'GestaoEvento/scripts/multiple-select.js' %}"></script>
 <script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
@@ -168,10 +178,44 @@
                         $('#tabela-pratos tbody').append(resposta);
                         // $('.mask-quantidade').mask('###.###.##0,000', {reverse: true});
 
-                        // AtualizarTotalTabelaIngrediente();
+                        atualizarListaIngredientes();
                     }
                 });
             }
         });
+
+        $(document).off('change', '#pessoas');
+        $(document).on('change', '#pessoas', function (e) {
+            let pessoas = $(this).val();
+
+            $('#tabela-pratos tbody tr').each(function () {
+                let rendimento = parseFloat($(this).find('.rendimento-prato').text().replace(',','.'))
+                let quantidade = parseFloat(pessoas) / parseFloat(rendimento)
+                $(this).find('.quantidade-prato').text(quantidade.toLocaleString(
+                    undefined, // leave undefined to use the visitor's browser 
+                            // locale or a string like 'en-US' to override it.
+                    { minimumFractionDigits: 2 }
+                ));
+                $(this).find('.input-prato-quantidade').val(quantidade);
+            });
+
+            atualizarListaIngredientes();
+        });
+
+        atualizarListaIngredientes();
     });
+
+    function atualizarListaIngredientes() {
+
+        var dados = $('#form-orcamento').serialize();
+
+        $.ajax({
+            url: '{% url "AtualizarListaIngredientes" %}',
+            type: 'POST',
+            data: dados,
+            success: function (resposta) {                
+                $('#conteudo-detalhes').html(resposta);
+            }
+        });
+    }
 </script>

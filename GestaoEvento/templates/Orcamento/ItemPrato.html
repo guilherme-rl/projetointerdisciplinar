@@ -1,16 +1,17 @@
 <tr>
     <input type="hidden" class="prato-id" name="prato[{{ index }}].id" value="{{ prato.id }}" />
     <input type="hidden" class="deletado" name="prato[{{ index }}].deletado" value="{{ False }}" />
+    <input type="hidden" class="input-prato-quantidade" name="prato[{{ index }}].quantidade" value="{{ quantidade }}" />
     <td>
         {{ prato.descricao }}
     </td>
     {% comment %} <td class="text-center">
         {{ prato.custo|floatformat:2 }}
     </td> {% endcomment %}
-    <td class="text-center">
+    <td class="text-center rendimento-prato">
         {{ prato.rendimento|floatformat:0 }}
     </td>
-    <td class="text-center">
+    <td class="text-center quantidade-prato">
         {{ quantidade|floatformat:2 }}
     </td>
     </td><td class="text-center">

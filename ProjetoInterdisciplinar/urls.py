@@ -77,6 +77,7 @@ urlpatterns = [
     path('salvarorcamento/', views.SalvarOrcamento, name='SalvarOrcamento'),
     path('excluirorcamento/', views.ExcluirOrcamento, name='ExcluirOrcamento'),
     path('adicionarpratoorcamento/', views.AdicionarPratoOrcamento, name='AdicionarPratoOrcamento'),
+    path('atualizarlistaingredientes/', views.AtualizarListaIngredientes, name='AtualizarListaIngredientes'),
 
     path('relatorio/', views.IndexRelatorio, name='Relatorio'),
     path('modalnovorelatorio/', views.ModalNovoRelatorio, name='ModalNovoRelatorio'),

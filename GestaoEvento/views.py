@@ -775,6 +775,51 @@ def AdicionarPratoOrcamento(request):
             'quantidade': quantidade,
         },
     )
+    
+    
+def AtualizarListaIngredientes(request):
+    
+    ingredientes = []
+    
+    count = 0
+    deletado = request.POST.get(f'prato[{count}].deletado')
+    while deletado != None:
+        
+        if deletado == 'False':
+            id = request.POST.get(f'prato[{count}].id')
+            quantidade_prato = request.POST.get(f'prato[{count}].quantidade')
+            quantidade_prato = float(quantidade_prato.replace(',', '.'))
+            
+            prato = Prato.objects.get(pk=id)
+            
+            for aux in prato.pratoingredienteaux_set.all():
+                ingrediente = aux.ingrediente
+                
+                # existe = next(filter(lambda x: x.id == ingrediente.id, ingredientes))
+                existe = next((x for x in ingredientes if x.id == ingrediente.id), None)
+                
+                if existe:
+                    existe.quantidade += (float(aux.quantidade) * quantidade_prato)
+                    existe.custo_estimado = existe.quantidade * float(existe.custo_unitario)
+                else:
+                    ingrediente.quantidade = float(aux.quantidade) * quantidade_prato
+                    ingrediente.custo_estimado = ingrediente.quantidade * float(ingrediente.custo_unitario)
+                    ingredientes.append(ingrediente)
+                    ingredientes = sorted(ingredientes, key=lambda x: x.descricao)
+        
+        count += 1
+        deletado = request.POST.get(f'prato[{count}].deletado')
+        
+    total = sum(item.custo_estimado for item in ingredientes)
+    
+    return render(
+        request,
+        'Orcamento/TabelaIngredientes.html',
+        {
+            'ingredientes': ingredientes,
+            'custo_total_estimado': total,
+        },
+    )
 
 
 def SalvarOrcamento(request):
