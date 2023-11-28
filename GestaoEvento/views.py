@@ -1041,6 +1041,55 @@ def AtualizarListaIngredientes(request):
 
 
 def SalvarOrcamento(request):
+    
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            cliente_id = request.POST.get('cliente-id')
+            data = request.POST.get('data-evento')
+            data = datetime.strptime(data, '%Y-%m-%d')
+            
+            cliente = Entidade.objects.get(pk=cliente_id)
+            
+            orcamento = Orcamento()
+            
+            if id != 'None' and id != '':
+                orcamento = Orcamento.objects.get(pk=id)
+                for item in orcamento.orcamentopratoaux_set.all():
+                    prato = Prato.objects.get(pk=item.prato.id)
+                    orcamento.prato.remove(prato)
+            
+            orcamento.quantidade_pessoas = request.POST.get('quantidade-pessoas')
+            orcamento.data_evento = data
+            orcamento.cliente = cliente
+            
+            orcamento.save()
+            
+            count = 0
+            deletado = request.POST.get(f'prato[{count}].deletado')
+            while deletado != None:
+                
+                if deletado == 'False':
+                    id = request.POST.get(f'prato[{count}].id')
+                    # quantidade = request.POST.get(f'prato[{count}].quantidade')
+                    # quantidade = float(quantidade.replace(',', '.'))
+                    
+                    aux = OrcamentoPratoAux(
+                        orcamento_id = orcamento.id,
+                        prato_id= id,
+                    )
+                    
+                    aux.save()
+                
+                count += 1
+                deletado = request.POST.get(f'prato[{count}].deletado')
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
     return JsonResponse({'success': True})
 

@@ -7,11 +7,12 @@
 <div class="modal-body">
     <form action="/salvarorcamento/" method="post" id="form-orcamento">
         {% csrf_token %}
+        <input type="hidden" id="orcamento-id" name="id" value="{{ orcamento.id }}" />
         <div class="row">
-            <div class="col-md-9">
+            <div class="col-md-7">
                 <div class="form-group">
                     <label class="form-label">Selecione o Cliente</label>
-                    <select class="form-select" name="orcamento" aria-label="Selecione o Cliente">
+                    <select class="form-select" name="cliente-id" aria-label="Selecione o Cliente">
                         {% for chave, valor in clientes.items %}
                         <option value="{{ chave }}">{{ valor }}</option>
                         {% endfor %}
@@ -24,12 +25,18 @@
                     <input type="text" class="form-control" id="pessoas" name="quantidade-pessoas" value="" />
                 </div>
             </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">Data Evento</label>
+                    <input type="date" class="form-control" name="data-evento" id="data-evento" value="" />
+                </div>
+            </div>
         </div>
         <div class="row mt-5">
             <div class="col-md-8">
                 <div class="form-group">
                     <label class="form-label">Selecione os Pratos</label>
-                    <select class="form-select" id="select-prato" name="prato" aria-label="Selecione os Pratos" >
+                    <select class="form-select" id="select-prato" name="" aria-label="Selecione os Pratos" >
                         {% for chave, valor in pratos.items %}
                         <option value="{{ chave }}">{{ valor }}</option>
                         {% endfor %}
@@ -200,6 +207,44 @@
             });
 
             atualizarListaIngredientes();
+        });
+
+        $('#form-orcamento').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            // $( "#quantidade" ).rules( "remove" );
+
+            if (form.valid()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    beforeSend: function () {
+                        $('#btn-salvar').val('Aguarde...');
+                        $('#btn-salvar').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-salvar').val('Salvar');
+                        $('#btn-salvar').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        if (resposta.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaOrcamento();
+                        }
+                    }
+                });
+            } else {
+                $( "#quantidade" ).rules( "add", {
+                    required: true,
+                  });
+            }
         });
 
         atualizarListaIngredientes();

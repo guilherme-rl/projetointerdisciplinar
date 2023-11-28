@@ -2,6 +2,7 @@
     <thead>
         <tr>
             <th class="text-center" style="width: 150px;">Código</th>
+            <th class="text-center" style="width: 200px;" >CPF/CNPJ</th>
             <th class="text-left">Cliente</th>
             <th class="text-center" style="width: 150px;">Qtd. Pessoas</th>
             <th class="text-center" style="width: 150px;">Data do Evento</th>
@@ -22,17 +23,46 @@
                 <td class="text-center">
                     {{ orcamento.id }}
                 </td>
+                <td class="text-center">
+                    {% if orcamento.cliente.cpf_cnpj|length == 11%}
+                    <span class="mask-cpf" >
+                        {{ orcamento.cliente.cpf_cnpj }}
+                    </span>
+                    {% else %}
+                    <span class="mask-cnpj" >
+                        {{ orcamento.cliente.cpf_cnpj }}
+                    </span>
+                    {% endif %}
+                </td>
                 <td class="text-left">
-                    {{ orcamentos.cliente.nome_razao }}
+                    {{ orcamento.cliente.nome_razao }}
                 </td>
                 <td class="text-center">
-                    {{ orcamentos.quantidade_pessoas }}
+                    {{ orcamento.quantidade_pessoas }}
                 </td>
                 <td class="text-center">
-                    {{ orcamentos.data_evento }}
+                    {{ orcamento.data_evento|date:"d/m/Y" }}
+                </td>
+                </td><td class="text-center">
+                    <a href="#" class="btn azul btn-editar" data-id="{{ orcamento.id }}" style="padding: 5px;" >
+                        <i class="bi bi-pencil-square" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Editar" ></i>
+                    </a>
+                    <a href="#" class="btn vermelho btn-excluir" data-id="{{ orcamento.id }}" style="padding: 5px;" >
+                        <i class="bi bi-trash3" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Excluir" ></i>
+                    </a>
                 </td>
             </tr>
             {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+<script>
+    $(document).ready(function () {
+        console.log('tabela cliente');
+        
+        $('.mask-cpf').mask('000.000.000-00');
+        $('.mask-cnpj').mask('00.000.000/0000-00');
+
+    });
+</script>
