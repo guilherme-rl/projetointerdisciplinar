@@ -4,28 +4,36 @@
             <th class="text-center" style="width: 150px;">Código</th>
             <th class="text-left">Descrição</th>
             <th class="text-center" style="width: 150px;">Custo Unitário</th>
+            <th class="" style="width: 100px;" ></th>
         </tr>
     </thead>
 
     <tbody>
-        {% if itenslocacao|length == 0 %}
+        {% if itens_locacao|length == 0 %}
         <tr>
             <td class="text-center" colspan="10">
                 Sem itens para serem exibidos
             </td>
         </tr>
         {% else %}
-            {% for itemlocacao in itenslocacao %}
+            {% for item_locacao in itens_locacao %}
             <tr>
                 <td class="text-center">
-                    {{ itemlocacao.id }}
+                    {{ item_locacao.id }}
                 </td>
                 <td class="text-left">
-                    {{ itemlocacao.descricao }}
+                    {{ item_locacao.descricao }}
                 </td>
                 <td class="text-center">
-                    {{ itemlocacao.custo_unitario }}
+                    {{ item_locacao.custo_unitario|floatformat:2 }}
                 </td>
+                <td class="text-center">
+                    <a href="#" class="btn azul btn-editar" data-id="{{ item_locacao.id }}" style="padding: 5px;" >
+                        <i class="bi bi-pencil-square" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Editar" ></i>
+                    </a>
+                    <a href="#" class="btn vermelho btn-excluir" data-id="{{ item_locacao.id}}"  style="padding: 5px;" >
+                        <i class="bi bi-trash3" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Excluir" ></i>
+                    </a>
                 </td>
             </tr>
             {% endfor %}

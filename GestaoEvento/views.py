@@ -200,29 +200,166 @@ def ExcluirCliente(request):
 # region Prestador
 def IndexPrestador(request):
     
-    prestadores = Entidade.objects.filter(tipo='P')
+    prestadores = Entidade.objects.all()
 
     return render(
         request,
         'Prestador/Prestador.html',
         {
-            'title':'Prestadores',
+            'title':'Prestador',
             'prestadores': prestadores
+        }
+    )
+
+def TabelaPrestadores(request):
+    
+    busca = request.POST.get('busca')
+
+    prestadores = Entidade.objects.filter ((Q(tipo='P')) & Q(excluido=False))
+    
+    if busca: 
+        prestadores = prestadores.filter(nome_razao__icontains=busca)
+    
+    return render(
+        request,
+        'Prestador/Tabela.html',
+        {
+            'prestadores': prestadores,
+             'busca': busca,
         }
     )
 
 
 def ModalNovoPrestador(request):
 
+    id = request.GET.get('id')
+    prestador = Entidade()
+    data_formatada = ''
+    endereco_principal = Endereco()
+    
+    if id:
+        prestador = Entidade.objects.get(id=id)
+        data_formatada = prestador.data_nascimento_criacao.strftime('%Y-%m-%d')
+        endereco_principal = prestador.endereco.get(principal=True)
     return render(
         request,
         'Prestador/ModalNovo.html',
+        {
+            'prestador': prestador,
+            'data_formatada': data_formatada,
+            'endereco_principal': endereco_principal,
+        }
+    )
+
+def ModalDetalhesPrestador(request):
+    
+    id = request.GET.get('id')
+    prestador = Entidade.objects.get(pk=id)
+    data_formatada = prestador.data_nascimento_criacao.strftime('%d/%m/%Y')
+    endereco_principal = prestador.endereco.get(principal=True)
+    cep_formatado = f'{endereco_principal.cep[:5]}-{endereco_principal.cep[5:]}'
+    cpf_cnpj_formatado = ''
+    if (len(prestador.cpf_cnpj) == 11):
+        cpf_cnpj_formatado = f'{prestador.cpf_cnpj[:3]}.{prestador.cpf_cnpj[3:6]}.{prestador.cpf_cnpj[6:9]}-{prestador.cpf_cnpj[9:]}'
+    else:
+        cpf_cnpj_formatado = f'{prestador.cpf_cnpj[:2]}.{prestador.cpf_cnpj[2:5:1]}.{prestador.cpf_cnpj[5:8]}/{prestador.cpf_cnpj[8:12]}-{prestador.cpf_cnpj[12:]}'
+
+    return render(
+        request,
+        'Prestador/ModalDetalhesPrestador.html',
+        {
+            'prestador': prestador,
+            'data_formatada': data_formatada,
+            'endereco_principal': endereco_principal,
+            'cpf_cnpj_formatado': cpf_cnpj_formatado,
+            'cep_formatado': cep_formatado,
+        }
+    )
+
+def ModalExcluirPrestador(request):
+    
+    id = request.GET.get('id')
+    prestador = Entidade.objects.get(pk=id)
+    
+    return render(
+        request,
+        'Prestador/ModalExcluir.html',
+        {
+            'prestador': prestador 
+        }
     )
 
 
-def NovoPrestador(request):
+def SalvarPrestador(request):
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            data = datetime.strptime(request.POST.get('data_nasc'), '%Y-%m-%d')
+            prestador = None
+            
+            if id != 'None':
+                prestador = Entidade.objects.get(id=id)
+                prestador.nome_razao = request.POST.get('nome')
+                prestador.data_nascimento_criacao = data
+                
+                endereco = prestador.endereco.get(principal=True)
+                endereco.cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else ''
+                endereco.bairro = request.POST.get('bairro')
+                endereco.complemento = request.POST.get('endereco')
+                endereco.cidade = request.POST.get('cidade')
+                endereco.estado = request.POST.get('estado').upper()
+                
+                endereco.save()
+                
+            else:
+                cpf = request.POST.get('cpf_cnpj')
+                cpf = re.sub(r'[^0-9]', '', cpf)
+                prestador = Entidade(
+                    nome_razao = request.POST.get('nome'),
+                    cpf_cnpj = cpf,
+                    data_nascimento_criacao = data,
+                    tipo = 'P',
+                )
+                prestador.save()
+                
+                prestador.endereco.create(
+                    cep = request.POST.get('cep').replace('-', '') if request.POST.get('cep') else '',
+                    bairro = request.POST.get('bairro'),
+                    complemento = request.POST.get('endereco'),
+                    cidade = request.POST.get('cidade'),
+                    estado = request.POST.get('estado').upper(),
+                    principal = True,
+                )
+            
+            prestador.save()
 
-    return JsonResponse({'success': True})
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        
+        return JsonResponse({'sucesso': False})
+        
+
+
+def ExcluirPrestador(request):
+    
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            prestador = Entidade.objects.get(pk=id)
+            
+            prestador.excluido = True
+            
+            prestador.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 
@@ -257,31 +394,114 @@ def NovoUsuario(request):
 
 # region ItemLocacao
 def IndexItemLocacao(request):
-    
-    itens_locacao = ItemLocacao.objects.all()
+     
+    itemlocacao = ItemLocacao.objects.all()
 
     return render(
         request,
         'ItemLocacao/ItemLocacao.html',
         {
-            'title':'Itens de Locação',
-            'itenslocacao': itens_locacao
+            'title':'Itens Locação',
+            'itenslocacao': itemlocacao
         }
     )
 
 
+def TabelaItensLocacao(request):
+
+    busca = request.POST.get('busca')     
+
+    itemlocacao = ItemLocacao.objects.filter(excluido=False)
+    
+    if busca:
+        itemlocacao = itemlocacao.filter(Q(descricao__icontains=busca) | Q(custo_unitario__icontains=busca))
+    
+
+    return render(
+        request,
+        'ItemLocacao/Tabela.html',
+        {
+            'itens_locacao': itemlocacao,
+            'busca': busca,
+        }
+    )
+
 def ModalNovoItemLocacao(request):
+    
+    id =request.GET.get('id')
+    
+    itemlocacao = ItemLocacao()
+
+    if id:
+        itemlocacao = ItemLocacao.objects.get(pk=id)
+        
 
     return render(
         request,
         'ItemLocacao/ModalNovo.html',
+        {
+            'itemlocacao' : itemlocacao,
+        }
+    
+    )
+
+def ModalExcluirItemLocacao(request):
+
+    id = request.GET.get('id')
+    itemlocacao = ItemLocacao.objects.get(pk=id)
+    
+    return render(
+        request,
+        'ItemLocacao/ModalExcluir.html',
+        {
+        'itemlocacao': itemlocacao
+        }
     )
 
 
-def NovoItemLocacao(request):
+def SalvarItemLocacao(request):   
 
-    return JsonResponse({'success': True})
+    try:
+        with transaction.atomic(): 
 
+            id = request.POST.get('id')
+
+            itemlocacao = ItemLocacao()
+
+            if id != 'None':     
+                itemlocacao = ItemLocacao.objects.get(id=id)
+
+            itemlocacao.descricao = request.POST.get('descricao')
+            itemlocacao.custo_unitario = request.POST.get('custo_unitario')
+        
+
+            itemlocacao.save()
+    
+        return JsonResponse({'sucesso': True})
+        
+    except Exception as e :
+        print(e)
+
+        return JsonResponse({'sucesso': False })
+
+def ExcluirItemLocacao(request):
+
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            itemlocacao= ItemLocacao.objects.get(pk=id)
+           
+            itemlocacao.excluido = True
+
+            itemlocacao.save()
+            
+            return JsonResponse ({'sucesso' : True})
+
+    except Exception as e :
+        print (e)
+        return JsonResponse({'sucesso' : False, 'erro' : str(e)})
+    
 # endregion
 
 # region UnidadeMedida
@@ -318,6 +538,7 @@ def TabelaUnidadeMedida(request):
     )
 
 
+
 def ModalUnidadeMedida(request):
     
     id = request.GET.get('id')
@@ -334,8 +555,6 @@ def ModalUnidadeMedida(request):
             'unidade_medida': unidadeMedida,
         }
     )
-    
-    
 def ModalExcluirUnidadeMedida(request):
     
     id = request.GET.get('id')
@@ -373,7 +592,6 @@ def SalvarUnidadeMedida(request):
         print(e)
         
         return JsonResponse({'sucesso': False})
-    
     
 def ExcluirUnidadeMedida(request):
     

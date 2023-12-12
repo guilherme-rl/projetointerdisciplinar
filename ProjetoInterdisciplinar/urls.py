@@ -38,7 +38,11 @@ urlpatterns = [
 
     path('prestador/', views.IndexPrestador, name='Prestador'),
     path('modalnovoprestador/', views.ModalNovoPrestador, name='ModalNovoPrestador'),
-    path('novoprestador/', views.NovoPrestador, name='NovoPrestador'),
+    path('modalexcluirprestador/', views.ModalExcluirPrestador, name='ModalExcluirPrestador'),
+    path('modaldetalhesprestador/', views.ModalDetalhesPrestador, name='ModalDetalhesPrestador'),
+    path('excluirprestador/', views.ExcluirPrestador, name='ExcluirPrestador'),
+    path('salvarprestador/', views.SalvarPrestador, name='SalvarPrestador'),
+    path('tabelaprestadores/', views.TabelaPrestadores, name='TabelaPrestadores'),
 
     path('usuario/', views.IndexUsuario, name='Usuario'),
     path('modalnovousuario/', views.ModalNovoUsuario, name='ModalNovoUsuario'),
@@ -46,7 +50,11 @@ urlpatterns = [
 
     path('itemlocacao/', views.IndexItemLocacao, name='ItemLocacao'),
     path('modalnovoitemlocacao/', views.ModalNovoItemLocacao, name='ModalNovoItemLocacao'),
-    path('novoitemlocacao/', views.NovoItemLocacao, name='NovoItemLocacao'),
+    path('modalexcluiritemlocacao/', views.ModalExcluirItemLocacao, name='ModalExcluirItemLocacao'),
+    path('salvaritemlocacao/', views.SalvarItemLocacao, name='SalvarItemLocacao'),
+    path('excluiritemlocacao/', views.ExcluirItemLocacao, name='ExcluirItemLocacao'),
+    path('tabelaitenslocacao/', views.TabelaItensLocacao, name='TabelaItensLocacao'),
+
 
     path('unidademedida/', views.IndexUnidadeMedida, name='UnidadeMedida'),
     path('tabelaunidademedida/', views.TabelaUnidadeMedida, name='TabelaUnidadeMedida'),

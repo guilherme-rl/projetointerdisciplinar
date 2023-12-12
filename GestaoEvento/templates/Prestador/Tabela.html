@@ -1,11 +1,10 @@
 <table class="table">
     <thead>
         <tr>
-            <th class="text-center">CPF/CNPJ</th>
-            <th class="text-center">Nome/Razão Social</th>
-            <th class="text-center">Data Nasc./Criação</th>
-            <th class="text-center">Cidade - Estado</th>
-            <th class="text-center">Descrição do Serviço</th>
+            <th class="text-center" style="width: 200px;" >CPF/CNPJ</th>
+            <th class="" >Nome/Razão Social</th>
+            <th class="text-center" style="width: 170px;" >Data Nasc./Criação</th>
+            <th class="" style="width: 100px;" ></th>
         </tr>
     </thead>
 
@@ -20,22 +19,45 @@
             {% for prestador in prestadores %}
             <tr>
                 <td class="text-center">
-                    {{ prestador.cpf_cnpj }}
+                    {% if prestador.cpf_cnpj|length == 11%}
+                    <span class="mask-cpf" >
+                        {{ prestador.cpf_cnpj }}
+                    </span>
+                    {% else %}
+                    <span class="mask-cnpj" >
+                        {{ prestador.cpf_cnpj }}
+                    </span>
+                    {% endif %}
+                </td>
+                <td class="">
+                    <a href="#" class="detalhes-prestador" data-id="{{ prestador.id }}" >
+                        {{ prestador.nome_razao }}
+                    </a>
                 </td>
                 <td class="text-center">
-                    {{ prestador.nome_razao }}
+                    {{ prestador.data_nascimento_criacao|date:"d/m/Y" }}
                 </td>
                 <td class="text-center">
-                    {{ prestador.data_nascimento_criacao }}
-                </td>
-                <td class="text-center">
-                    {{ prestador.endereco.cidade.descricao }} - {{ prestador.endereco.cidade.estado.descricao }}
-                </td>
-                <td class="text-left">
-                    {{ prestador.descricao_servico }}
+                    <a href="#" class="btn azul btn-editar" data-id="{{ prestador.id }}" data-descricao="{{ prestador.nome_razao }}" style="padding: 5px;" >
+                        <i class="bi bi-pencil-square" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Editar" ></i>
+                    </a>
+                    <a href="#" class="btn vermelho btn-excluir" data-id="{{ prestador.id }}" style="padding: 5px;" >
+                        <i class="bi bi-trash3" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Excluir" ></i>
+                    </a>
                 </td>
             </tr>
             {% endfor %}
         {% endif %}
     </tbody>
 </table>
+
+
+<script>
+    $(document).ready(function () {
+        console.log('tabela prestador');
+        
+        $('.mask-cpf').mask('000.000.000-00');
+        $('.mask-cnpj').mask('00.000.000/0000-00');
+
+    });
+</script>

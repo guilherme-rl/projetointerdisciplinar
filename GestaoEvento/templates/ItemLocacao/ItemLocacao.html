@@ -18,21 +18,22 @@
                 <div class="row mb-3" style="margin-top: 10px;">
                     <div class="form-group col-md-4">
                         <label>Pesquisa: </label>
-                        <input type="text" class="form-control" id="search" name="search" value="{{ search }}">
+                        <input type="text" class="form-control" id="busca" name="busca" value="{{ busca }}">
                     </div>
                 </div>
                 <div class="row mb-3">
                     <div class="form-group col-md-2">
-                        <input type="button" class="form-control btn btn-primary" id="btn-search" value="Filtrar">
+                        <input type="button" class="form-control btn btn-primary" id="btn-busca" value="Filtrar">
                     </div>
                 </div>
 
                 <div id="conteudo">
-                    {% include "ItemLocacao/Tabela.html" %}
+                    {% comment %} {% include "ItemLocacao/Tabela.html" %} {% endcomment %}
                 </div>
             </div>
     </div>
 </div>
+
 
 {% load static %}
 <script src="{% static 'GestaoEvento/scripts/jquery-3.7.0.js' %}"></script>
@@ -53,16 +54,103 @@
                 $.ajax({
                     url: '{% url "ModalNovoItemLocacao" %}',
                     method: 'GET',
-                    success: function (resposta) {
+                    success: function (resp) {
                         $('#modal-container .modal-content').css("height", "auto");
-                        $('#modal-container .modal-content').html(resposta);
+                        $('#modal-container .modal-content').html(resp);
                     }
                 });
                 $('#modal-container').off('shown.bs.modal');
             });
             $('#modal-container').modal('show');
-        })
     });
+
+    $(document).off('click', '.btn-editar');
+    $(document).on('click', '.btn-editar', function (e) {
+        e.preventDefault();
+        console.log('click editar item locacao');
+
+        var id = $(this).attr('data-id');
+
+
+        var loading = $('#modal-loading').clone().css('display', 'block');
+        $('#modal-container .modal-content').html(loading);
+        $('#modal-container .modal-content').css("width", "600px");
+        $('#modal-container .modal-content').css("height", "290px");
+        $('#modal-container').off('shown.bs.modal');
+        $('#modal-container').on('shown.bs.modal', function () {
+            $.ajax({
+                url: '{% url "ModalNovoItemLocacao" %}',
+                method: 'GET',
+                data: { 
+                    id: id
+                 },
+                success: function (resp) {
+                    $('#modal-container .modal-content').css("height", "auto");
+                    $('#modal-container .modal-content').html(resp);
+                }
+            });
+            $('#modal-container').off('shown.bs.modal');
+        });
+        $('#modal-container').modal('show');
+    });
+    
+    $(document).off('click', '.btn-excluir');
+    $(document).on('click', '.btn-excluir', function (e) {
+        e.preventDefault();
+        console.log('click excluir item locacao');
+
+        var id = $(this).attr('data-id');
+
+        var loading = $('#modal-loading').clone().css('display', 'block');
+        $('#modal-container .modal-content').html(loading);
+        $('#modal-container .modal-content').css("width", "500px");
+        $('#modal-container .modal-content').css("height", "242px");
+        $('#modal-container').off('shown.bs.modal');
+        $('#modal-container').on('shown.bs.modal', function () {
+            $.ajax({
+                url: '{% url "ModalExcluirItemLocacao" %}',
+                method: 'GET',
+                data: { 
+                    id: id, 
+                },
+                success: function (resposta) {
+                    $('#modal-container .modal-content').css("height", "auto");
+                    $('#modal-container .modal-content').html(resposta);
+                }
+            });
+            $('#modal-container').off('shown.bs.modal');
+        });
+        $('#modal-container').modal('show');
+    });
+
+    $('#btn-busca').click(function (e) {
+        e.preventDefault();
+
+        atualizarTabelaItemLocacao();
+    })
+
+    atualizarTabelaItemLocacao();
+   });
+
+   
+    function atualizarTabelaItemLocacao() {
+
+        var busca = $('#busca').val();
+        var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
+
+        $.ajax({
+            url: '{% url "TabelaItensLocacao" %}',
+            method: 'POST',
+            data: {
+                busca: busca,
+                csrfmiddlewaretoken: csrfmiddlewaretoken,
+            },
+            success: function (resposta) {
+                $('#conteudo').html(resposta);
+            }
+        });
+    }
+    
 </script>
 
 {% endblock %}

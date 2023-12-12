@@ -5,21 +5,21 @@
 </div>
 
 <div class="modal-body">
-    <form action="/novoitemlocacao/" method="post" id="form-item-locacao">
+    <form action="/salvaritemlocacao/" method="post" id="form-item-locacao">
         {% csrf_token %}
+        <input type="hidden" id="itemlocacao-id" name="id" value="{{ itemlocacao.id }}" />
         <div class="row">
-            <div class="col-md-12">
+            <div class="col-md-10">
                 <div class="form-group">
                     <label class="form-label">Descrição</label>
-                    <input type="text" class="form-control" name="descricao" value="" />
+                    <input type="text" class="form-control" name="descricao" value="{{ itemlocacao.descricao }}" />
                 </div>
             </div>
-        </div>
         <div class="row">
             <div class="col-md-4">
                 <div class="form-group">
                     <label class="form-label">Custo Unidade</label>
-                    <input type="text" class="form-control" name="custo-unidade" value="" placeholder="0,00"  />
+                    <input type="text" class="form-control" name="custo_unitario" value="{{ itemlocacao.custo_unitario }}" placeholder="0,00"  />
                 </div>
             </div>
         </div>
@@ -32,8 +32,54 @@
     
 </div>
 
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
 <script>
     $(document).ready(function () {
         console.log('Document ready modal item locacao');
-    });
+
+        $.validator.messages.required = 'Campo obrigatório';
+
+        $('#form-item-locacao').validate({
+            onkeyup: false,
+            rules: {
+                descricao: 'required',
+                custo_unitario: 'required',
+            },
+        });
+
+        $('#form-item-locacao').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            if (form.valid()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    beforeSend: function () {
+                        $('#btn-salvar').val('Aguarde...');
+                        $('#btn-salvar').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-salvar').val('Salvar');
+                        $('#btn-salvar').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        if (resposta.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaItemLocacao();
+                        }
+                    }                                       
+                });
+
+            }
+        });
+    });     
 </script>
