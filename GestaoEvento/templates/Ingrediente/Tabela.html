@@ -1,0 +1,46 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-center" style="width: 150px;">Código</th>
+            <th class="text-left">Descrição</th>
+            <th class="text-center" style="width: 150px;">Unidade Medida</th>
+            <th class="text-center" style="width: 150px;">Custo Unidade</th>
+            <th class="" style="width: 100px;" ></th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if ingredientes|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for ingrediente in ingredientes %}
+            <tr>
+                <td class="text-center">
+                    {{ ingrediente.id }}
+                </td>
+                <td class="text-left">
+                    {{ ingrediente.descricao }}
+                </td>
+                <td class="text-center">
+                    {{ ingrediente.unidade_medida.sigla }}
+                </td>
+                <td class="text-center">
+                    {{ ingrediente.custo_unitario }}
+                </td>
+                </td><td class="text-center">
+                    <a href="#" class="btn azul btn-editar" data-id="{{ ingrediente.id }}" style="padding: 5px;" >
+                        <i class="bi bi-pencil-square" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Editar" ></i>
+                    </a>
+                    <a href="#" class="btn vermelho btn-excluir" data-id="{{ ingrediente.id }}" style="padding: 5px;" >
+                        <i class="bi bi-trash3" data-bs-toggle="tooltip" data-container="body" data-placement="top" title="Excluir" ></i>
+                    </a>
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+</table>

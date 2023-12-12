@@ -1,0 +1,284 @@
+﻿
+<div class="modal-header">
+    <h4 class="modal-title">Cadastro de Prato</h4>
+    <button type="button" class="btn-close close" data-bs-dismiss="modal" aria-label="Close" aria-hidden="true"></button>
+</div>
+
+<div class="modal-body" id="modal-prato">
+    <form action="/salvarprato/" method="post" id="form-prato">
+        {% csrf_token %}
+        <input type="hidden" id="prato-id" name="id" value="{{ prato.id }}" />
+        <div class="row">
+            <div class="col-md-10">
+                <div class="form-group">
+                    <label class="form-label">Descrição</label>
+                    <input type="text" class="form-control" name="descricao" value="{{ prato.descricao }}" />
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">Rendimento</label>
+                    <input type="text" class="form-control" id="rendimento" name="rendimento" min="0" value="{{ prato.rendimento|floatformat:0 }}" />
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-12">
+                <div class="form-group">
+                    <label class="form-label">Observação</label>
+                    <textarea class="form-control" id="observacao" name="observacao" rows="3" value="{{ prato.observacao }}"></textarea>
+                </div>
+            </div>
+        </div>
+        <div class="row mt-5">
+            <div class="col-md-8">
+                <div class="form-group">
+                    <label class="form-label">Ingrediente</label>
+                    <select class="form-select" id="select-ingrediente" aria-label="Selecione o ingrediente">
+                        {% for chave, valor in ingredientes.items %}
+                        <option value="{{ chave }}">{{ valor }}</option>
+                        {% endfor %}
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    <label class="form-label">Quantidade</label>
+                    <input type="text" class="form-control mask-quantidade" id="quantidade" name="quantidade" value="" placeholder="0,00" />
+                </div>
+            </div>
+            <div class="col-md-2" style="">
+                <div class="form-group">
+                    <input type="button" value="Adicionar" class="btn btn-primary" id="btn-add-ingrediente" style="width: 100%; margin-top: 32px;" />
+                </div>
+            </div>
+        </div>
+        <div class="row mt-3">
+            <div class="col-md-12">
+                <table class="table" id="tabela-ingredientes" >
+                    <thead>
+                        <tr>
+                            <th>Ingrediente</th>
+                            <th class="text-center" style="width: 90px;">C.U.</th>
+                            <th class="text-center" style="width: 90px;">Qtd</th>
+                            <th class="text-center" style="width: 90px;">Total (R$)</th>
+                            <th class="text-center" style="width: 50px;"></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% if ingredientes_prato|length > 0 %}
+                            {% for item in ingredientes_prato %}
+                                {% with contador=forloop.counter0 %}
+                                {% include "Prato/ItemIngrediente.html" with index=contador quantidade=item.quantidade ingrediente=item.ingrediente total=item.total %}
+                                {% endwith %}
+                            {% endfor %}
+                        {% endif %}
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td colspan="2"></td>
+                            <td class="text-center" >Total (R$)</td>
+                            <td class="text-center" id="total-prato">0,00</td>
+                            <td colspan="2"></td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+        </div>
+    </form>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-default" id="btn-cancelar" data-bs-dismiss="modal">Cancelar</button>
+    <input type="submit" value="Salvar" class="btn btn-primary" id="btn-salvar" form="form-prato" />
+    
+</div>
+
+{% load static %}
+<script src="{% static 'GestaoEvento/scripts/jquery.validate.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/jquery.mask.min.js' %}"></script>
+<script src="{% static 'GestaoEvento/scripts/select2-4.1.0/select2.js' %}"></script>
+<script>
+    $(document).ready(function () {
+        console.log('Document ready modal prato');
+
+        $.validator.messages.required = 'Obrigatório';
+
+
+        $('#form-prato').validate({
+            onkeyup: false,
+            rules: {
+                descricao: 'required',
+                rendimento: {
+                    required: true,
+                },
+                quantidade: 'required',
+            },
+        });
+
+
+        $('#select-ingrediente').select2({
+            dropdownParent: $('#modal-container .modal-content'),
+        });
+
+        $('.mask-quantidade').mask('###.###.##0,000', {
+            reverse: true,
+            selectOnFocus: true,
+        });
+
+
+        $(document).off('click', '#btn-add-ingrediente');
+        $(document).on('click', '#btn-add-ingrediente', function (e) {
+
+            if ($('#quantidade').valid()) {
+
+                var id = $('#select-ingrediente').val();
+                var index = $('#tabela-ingredientes tbody tr').length;
+                var quantidade = $('#quantidade').val().replace('.', '').replace(',', '.');
+                var csrfmiddlewaretoken = $('input[name="csrfmiddlewaretoken"]').val();
+
+                $.ajax({
+                    url: '{% url "AdicionarIngredientePrato" %}',
+                    type: 'POST',
+                    data: {
+                        id: id,
+                        index: index,
+                        quantidade: quantidade,
+                        csrfmiddlewaretoken: csrfmiddlewaretoken,
+                    },
+                    beforeSend: function () {
+                        $('#btn-add-ingrediente').val('Aguarde...');
+                        $('#btn-add-ingrediente').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-add-ingrediente').val('Adicionar');
+                        $('#btn-add-ingrediente').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        $('#tabela-ingredientes tbody').append(resposta);
+                        $('.mask-quantidade').mask('###.###.##0,000', {reverse: true});
+
+                        AtualizarTotalTabelaIngrediente();
+                    }
+                });
+            }
+        });
+
+        $(document).off('click', '.btn-excluir-ingrediente');
+        $(document).on('click', '.btn-excluir-ingrediente', function (e) {
+
+            $(this).parents('tr').css('display', 'none');
+            $(this).parents('tr').find('.deletado').val('True');
+
+            AtualizarTotalTabelaIngrediente();
+        });
+
+
+        $(document).off('blur', '#rendimento, #quantidade');
+        $(document).on('blur', '#rendimento, #quantidade', function (e) {
+
+            if ($(this).val() != '' && $(this).val() == 0) {
+                $(this).val('');
+            }
+        });
+
+
+        $(document).off('blur', '.mask-quantidade');
+        $(document).on('blur', '.mask-quantidade', function (e) {
+
+            let valor = $(this).val();
+            valor = parseFloat(valor.replace(',','.'));
+            /*if (valor.indexOf(',') < 0) {
+                valor += ',000';
+                $(this).val(valor);
+            }*/
+            $(this).val((valor).toLocaleString(
+                undefined, // leave undefined to use the visitor's browser 
+                        // locale or a string like 'en-US' to override it.
+                { minimumFractionDigits: 3 }
+            ));
+        });
+
+
+        $(document).off('blur', '.ingrediente-quantidade');
+        $(document).on('blur', '.ingrediente-quantidade', function (e) {
+
+            let custo = parseFloat($(this).parents('tr').find('.ingrediente-custo-unitario').val().replace('.', '').replace(',', '.'));
+            let quantidade = parseFloat($(this).val().replace('.', '').replace(',', '.'));
+
+            let total = custo * quantidade;
+
+            $(this).parents('tr').find('.ingrediente-custo-total').val((total).toLocaleString(
+                undefined, // leave undefined to use the visitor's browser 
+                           // locale or a string like 'en-US' to override it.
+                { minimumFractionDigits: 2 }
+            ));
+            AtualizarTotalTabelaIngrediente();
+        });
+        
+
+        $('#form-prato').submit(function (e) {
+            e.preventDefault();
+
+            var form = $(this);
+
+            $( "#quantidade" ).rules( "remove" );
+
+            if (form.valid()) {
+                $.ajax({
+                    url: form.attr('action'),
+                    type: 'POST',
+                    data: form.serialize(),
+                    beforeSend: function () {
+                        $('#btn-salvar').val('Aguarde...');
+                        $('#btn-salvar').attr('disabled', true);
+                        //$('#submited').val(true);
+                    },
+                    complete: function () {
+                        $('#btn-salvar').val('Salvar');
+                        $('#btn-salvar').attr('disabled', false);
+                        //$('#submited').val(false);
+                    },
+                    success: function (resposta) {
+                        //notificationBar(resposta.sucesso, '@action.ToLower()', 'aliquotaicmsissqn', resposta.erro);
+                        
+                        if (resposta.sucesso) {
+                            $('#modal-container').modal('hide');
+                            atualizarTabelaPrato();
+                        }
+                    }
+                });
+            } else {
+                $( "#quantidade" ).rules( "add", {
+                    required: true,
+                  });
+            }
+        });
+
+        AtualizarTotalTabelaIngrediente();
+    });
+
+    function AtualizarTotalTabelaIngrediente() {
+
+        var total = 0;
+        
+        $('#tabela-ingredientes tbody tr').each(function (index, value) {
+            if ($(value).find('.deletado').val() === 'False') {
+                let custo = parseFloat($(value).find('.ingrediente-custo-unitario').val().replace('.', '').replace(',', '.'));
+                let quantidade = parseFloat($(value).find('.ingrediente-quantidade').val().replace('.', '').replace(',', '.'));
+
+                total += custo * quantidade;
+            }
+        });
+
+        $('#total-prato').text((total).toLocaleString(
+            undefined, // leave undefined to use the visitor's browser 
+                       // locale or a string like 'en-US' to override it.
+            { minimumFractionDigits: 2 }
+        ));
+    }
+</script>
