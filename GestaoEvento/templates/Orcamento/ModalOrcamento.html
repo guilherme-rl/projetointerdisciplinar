@@ -56,6 +56,7 @@
                         <tr>
                             <th class="text-left">Descrição</th>
                             {% comment %} <th class="text-center" style="width: 120px;">Custo receita</th> {% endcomment %}
+                            <th class="text-center" style="width: 120px;">Rateio (%)</th>
                             <th class="text-center" style="width: 120px;">Rendimento</th>
                             <th class="text-center" style="width: 130px;">Qtd necessária</th>
                             <th class="" style="width: 50px;" ></th>
@@ -185,7 +186,7 @@
                         $('#tabela-pratos tbody').append(resposta);
                         // $('.mask-quantidade').mask('###.###.##0,000', {reverse: true});
 
-                        atualizarListaIngredientes();
+                        AtualizarRateioPratos();
                     }
                 });
             }
@@ -193,20 +194,7 @@
 
         $(document).off('change', '#pessoas');
         $(document).on('change', '#pessoas', function (e) {
-            let pessoas = $(this).val();
-
-            $('#tabela-pratos tbody tr').each(function () {
-                let rendimento = parseFloat($(this).find('.rendimento-prato').text().replace(',','.'))
-                let quantidade = parseFloat(pessoas) / parseFloat(rendimento)
-                $(this).find('.quantidade-prato').text(quantidade.toLocaleString(
-                    undefined, // leave undefined to use the visitor's browser 
-                            // locale or a string like 'en-US' to override it.
-                    { minimumFractionDigits: 2 }
-                ));
-                $(this).find('.input-prato-quantidade').val(quantidade);
-            });
-
-            atualizarListaIngredientes();
+            AtualizarRateioPratos();
         });
 
         $('#form-orcamento').submit(function (e) {
@@ -247,7 +235,7 @@
             }
         });
 
-        atualizarListaIngredientes();
+        AtualizarRateioPratos();
     });
 
     function atualizarListaIngredientes() {
@@ -263,4 +251,42 @@
             }
         });
     }
+
+    function AtualizarRateioPratos() {
+
+        var quantidadeItens = $('#tabela-pratos tbody tr:has(input[value="False"])').length;
+        var cont = 1;
+
+        let pessoas = parseInt($('#pessoas').val());
+        
+        $('#tabela-pratos tbody tr:has(input[value="False"])').each(function (index, value) {
+            let rendimento = parseInt($(value).find('.rendimento-prato').val().replace('.', '').replace(',', ''));
+            let rateio = 0;
+
+            if (cont < quantidadeItens) {
+                rateio = parseFloat(100/quantidadeItens);
+
+            } else {
+                rateio = 100 - (parseInt(100/quantidadeItens) * (quantidadeItens - 1));
+            }
+                
+            $(value).find('.rateio').val(rateio.toLocaleString(
+                undefined, // leave undefined to use the visitor's browser 
+                        // locale or a string like 'en-US' to override it.
+                { minimumFractionDigits: 2 }
+            ));
+            
+            let quantidade = pessoas/rendimento * rateio / 100;
+            $(value).find('.quantidade-prato').val(quantidade.toLocaleString(
+                undefined, // leave undefined to use the visitor's browser 
+                        // locale or a string like 'en-US' to override it.
+                { minimumFractionDigits: 2 }
+            ));
+
+            cont ++;
+        });
+
+        atualizarListaIngredientes();
+    }
+
 </script>

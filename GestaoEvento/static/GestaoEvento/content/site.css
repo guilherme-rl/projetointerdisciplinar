@@ -165,7 +165,7 @@ input {
     margin-top: 10px;
 }
 
-#modal-prato input[readonly] {
+input[readonly], input[readonly]:focus {
     background-color: #f0cfa2;
     opacity: 1;
 }

@@ -116,6 +116,7 @@ class OrcamentoItemLocacaoAux(models.Model):
 class OrcamentoPratoAux(models.Model):
     orcamento = models.ForeignKey(Orcamento, on_delete=models.CASCADE)
     prato = models.ForeignKey(Prato, on_delete=models.CASCADE)
+    rateio = models.IntegerField(default=0)
 
 
 class OrcamentoPrestadorAux(models.Model):

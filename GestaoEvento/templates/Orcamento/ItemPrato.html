@@ -8,11 +8,14 @@
     {% comment %} <td class="text-center">
         {{ prato.custo|floatformat:2 }}
     </td> {% endcomment %}
-    <td class="text-center rendimento-prato">
-        {{ prato.rendimento|floatformat:0 }}
+    <td class="text-center rateio-prato">
+        <input type="text" class="form-control rateio" name="prato[{{ index }}].rateio" value="{{ rateio|floatformat:0 }}" placeholder="" style="text-align: center;" readonly />
     </td>
-    <td class="text-center quantidade-prato">
-        {{ quantidade|floatformat:2 }}
+    <td class="text-center">
+        <input type="text" class="form-control rendimento-prato" name="prato[{{ index }}].rendimento" value="{{ prato.rendimento|floatformat:0 }}" style="text-align: center;" readonly />
+    </td>
+    <td class="text-center">
+        <input type="text" class="form-control quantidade-prato" name="prato[{{ index }}].quantidade" value="{{ quantidade|floatformat:2 }}" style="text-align: center;" readonly />
     </td>
     </td><td class="text-center">
         <a href="#" class="btn vermelho btn-excluir-prato" data-id="" style="padding: 5px;" >
