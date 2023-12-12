@@ -364,3 +364,4 @@ FodyWeavers.xsd
 
 db.sqlite3
 ProjetoInterdisciplinar/settings.py
+ProjetoInterdisciplinar/GestaoEvento/migrations/
