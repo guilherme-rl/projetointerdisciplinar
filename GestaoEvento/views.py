@@ -635,7 +635,7 @@ def TabelaIngrediente(request):
     ingredientes = Ingrediente.objects.filter(excluido=False)
     
     if busca:
-        ingrediente = ingrediente.filter(Q(descricao__icontains=busca) | Q(unidade_medida__descricao=busca))
+        ingredientes = ingredientes.filter(Q(descricao__icontains=busca) | Q(unidade_medida__descricao=busca))
     
     return render(
         request,
@@ -650,6 +650,9 @@ def TabelaIngrediente(request):
 def ModalIngrediente(request):
     
     unidadesMedida = list(UnidadeMedida.objects.filter(excluido=False))
+    dados = {}
+    for item in unidadesMedida:
+        dados[item.id] = item.sigla
     
     id = request.GET.get('id')
     
@@ -657,12 +660,8 @@ def ModalIngrediente(request):
     ingrediente.custo_unitario = ''
     
     if id:
-        ingrediente = Ingrediente.get(pk=id)
-    
-    dados = {}
-    
-    for item in unidadesMedida:
-        dados[item.id] = item.sigla
+        ingrediente = Ingrediente.objects.get(pk=id)
+
 
     return render(
         request,
@@ -671,6 +670,20 @@ def ModalIngrediente(request):
             'unidades_medida': dados,
             'ingrediente': ingrediente,
         },
+    )
+    
+    
+def ModalExcluirIngrediente(request):
+    
+    id = request.GET.get('id')
+    ingrediente = Ingrediente.objects.get(pk=id)
+
+    return render(
+        request,
+        'Ingrediente/ModalExcluirIngrediente.html',
+        {
+            'ingrediente': ingrediente
+        }
     )
 
 
@@ -688,7 +701,8 @@ def SalvarIngrediente(request):
                 
             ingrediente.descricao = request.POST.get('descricao')
             ingrediente.unidade_medida_id = request.POST.get('unidade-medida')
-            ingrediente.custo_unitario = request.POST.get('custo-unidade')
+            ingrediente.custo_unitario = float(request.POST.get('custo-unidade').replace(',', '.'))
+            
                 
             ingrediente.save()
 
@@ -698,6 +712,25 @@ def SalvarIngrediente(request):
         print(e)
         
         return JsonResponse({'sucesso': False})
+    
+    
+def ExcluirIngrediente(request):
+    
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            ingrediente = Ingrediente.objects.get(pk=id)
+            
+            ingrediente.excluido = True
+            
+            ingrediente.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 
@@ -714,15 +747,51 @@ def IndexPrato(request):
             'pratos': pratos
         }
     )
-
+    
+    
+def TabelaPrato(request):
+    
+    busca = request.POST.get('busca')
+    
+    pratos = Prato.objects.filter(excluido=False)
+    
+    if busca:
+        pratos = pratos.filter(Q(descricao__icontains=busca))
+        
+    lista_pratos = list(pratos)
+    
+    lista_pratos = pratos.all().annotate(custo_total=Sum(
+            F('pratoingredienteaux__quantidade') *
+            F('pratoingredienteaux__ingrediente__custo_unitario')
+        ))
+    
+    return render(
+        request,
+        'Prato/Tabela.html',
+        {
+            'pratos': lista_pratos,
+            'busca': busca,
+        }
+    )
+    
 
 def ModalPrato(request):
     
-    ingredientes = list(Ingrediente.objects.filter(excluido=False))
+    id = request.GET.get('id')
+    prato = Prato()
+    ingredientes_prato = []
+    
+    if id:
+        prato = Prato.objects.get(pk=id)
+        ingredientes_prato = list(prato.pratoingredienteaux_set.all())
+        for item in ingredientes_prato:
+            item.total = item.quantidade * item.ingrediente.custo_unitario
+    
+    lista_ingredientes = list(Ingrediente.objects.filter(excluido=False))
 
     dados = {}
     
-    for item in ingredientes:
+    for item in lista_ingredientes:
         dados[item.id] = item.descricao
         
     return render(
@@ -730,7 +799,23 @@ def ModalPrato(request):
         'Prato/ModalPrato.html',
         {
             'ingredientes': dados,
+            'prato': prato,
+            'ingredientes_prato': ingredientes_prato
         },
+    )
+    
+
+def ModalExcluirPrato(request):
+    
+    id = request.GET.get('id')
+    prato = Prato.objects.get(pk=id)
+
+    return render(
+        request,
+        'Prato/ModalExcluirPrato.html',
+        {
+            'prato': prato
+        }
     )
     
     
@@ -758,9 +843,69 @@ def AdicionarIngredientePrato(request):
 
 def SalvarPrato(request):
     
-    teste = ""
-
-    return JsonResponse({'success': True})
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            
+            prato = Prato()
+            
+            if id != 'None':
+                prato = Prato.objects.get(pk=id)
+                for item in prato.pratoingredienteaux_set.all():
+                    ingrediente = Ingrediente.objects.get(pk=item.ingrediente.id)
+                    prato.ingredientes.remove(ingrediente)
+            
+            prato.descricao = request.POST.get('descricao')
+            prato.rendimento = request.POST.get('rendimento')
+            prato.observacao = request.POST.get('observacao')
+            
+            prato.save()
+            
+            count = 0
+            deletado = request.POST.get(f'ingrediente[{count}].deletado')
+            while deletado != None:
+                
+                if deletado == 'False':
+                    id = request.POST.get(f'ingrediente[{count}].id')
+                    quantidade = request.POST.get(f'ingrediente[{count}].quantidade')
+                    quantidade = float(quantidade.replace(',', '.'))
+                    
+                    aux = PratoIngredienteAux(
+                        prato_id= prato.id,
+                        ingrediente_id = id,
+                        quantidade= quantidade,
+                    )
+                    
+                    aux.save()
+                
+                count += 1
+                deletado = request.POST.get(f'ingrediente[{count}].deletado')
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
+    
+    
+def ExcluirPrato(request):
+    
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            prato = Prato.objects.get(pk=id)
+            
+            prato.excluido = True
+            
+            prato.save()
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
 
 # endregion
 
@@ -779,15 +924,177 @@ def IndexOrcamento(request):
     )
 
 
-def ModalNovoOrcamento(request):
+def TabelaOrcamento(request):
 
+    busca = request.POST.get('busca')
+    
+    orcamentos = Orcamento.objects.filter(excluido=False)
+    
+    if busca:
+        orcamentos = orcamentos.filter(Q(descricao__icontains=busca))
+    
     return render(
         request,
-        'Orcamento/ModalNovo.html',
+        'Orcamento/Tabela.html',
+        {
+            'orcamentos': orcamentos,
+            'busca': busca,
+        }
     )
 
 
-def NovoOrcamento(request):
+def ModalOrcamento(request):
+    
+    lista_clientes = list(Entidade.objects.filter(Q(excluido=False) | Q(tipo='C')))
+    clientes = {}
+    for item in lista_clientes:
+        clientes[item.id] = item.nome_razao
+    
+    lista_pratos = list(Prato.objects.filter(Q(excluido=False)))
+    pratos = {}
+    for item in lista_pratos:
+        pratos[item.id] = item.descricao
+
+    return render(
+        request,
+        'Orcamento/ModalOrcamento.html',
+        {
+            'clientes': clientes,
+            'pratos': pratos,
+        },
+    )
+
+
+def ModalExcluirOrcamento(request):
+
+    return JsonResponse({'success': True})
+
+
+def AdicionarPratoOrcamento(request):
+    
+    id = request.POST.get('id')
+    index = request.POST.get('index')
+    pessoas = request.POST.get('pessoas')
+    
+    prato = Prato.objects.get(pk=id)
+    # prato.custo = 0
+    
+    quantidade = float(pessoas) / float(prato.rendimento)
+    
+    # for item in prato.pratoingredienteaux_set.all():
+    #     prato.custo += item.quantidade * item.ingrediente.custo_unitario
+    
+    return render(
+        request,
+        'Orcamento/ItemPrato.html',
+        {
+            'prato': prato,
+            'index': index,
+            'quantidade': quantidade,
+        },
+    )
+    
+    
+def AtualizarListaIngredientes(request):
+    
+    ingredientes = []
+    
+    count = 0
+    deletado = request.POST.get(f'prato[{count}].deletado')
+    while deletado != None:
+        
+        if deletado == 'False':
+            id = request.POST.get(f'prato[{count}].id')
+            quantidade_prato = request.POST.get(f'prato[{count}].quantidade')
+            quantidade_prato = float(quantidade_prato.replace(',', '.'))
+            
+            prato = Prato.objects.get(pk=id)
+            
+            for aux in prato.pratoingredienteaux_set.all():
+                ingrediente = aux.ingrediente
+                
+                # existe = next(filter(lambda x: x.id == ingrediente.id, ingredientes))
+                existe = next((x for x in ingredientes if x.id == ingrediente.id), None)
+                
+                if existe:
+                    existe.quantidade += (float(aux.quantidade) * quantidade_prato)
+                    existe.custo_estimado = existe.quantidade * float(existe.custo_unitario)
+                else:
+                    ingrediente.quantidade = float(aux.quantidade) * quantidade_prato
+                    ingrediente.custo_estimado = ingrediente.quantidade * float(ingrediente.custo_unitario)
+                    ingredientes.append(ingrediente)
+                    ingredientes = sorted(ingredientes, key=lambda x: x.descricao)
+        
+        count += 1
+        deletado = request.POST.get(f'prato[{count}].deletado')
+        
+    total = sum(item.custo_estimado for item in ingredientes)
+    
+    return render(
+        request,
+        'Orcamento/TabelaIngredientes.html',
+        {
+            'ingredientes': ingredientes,
+            'custo_total_estimado': total,
+        },
+    )
+
+
+def SalvarOrcamento(request):
+    
+    try:
+        with transaction.atomic():
+            
+            id = request.POST.get('id')
+            cliente_id = request.POST.get('cliente-id')
+            data = request.POST.get('data-evento')
+            data = datetime.strptime(data, '%Y-%m-%d')
+            
+            cliente = Entidade.objects.get(pk=cliente_id)
+            
+            orcamento = Orcamento()
+            
+            if id != 'None' and id != '':
+                orcamento = Orcamento.objects.get(pk=id)
+                for item in orcamento.orcamentopratoaux_set.all():
+                    prato = Prato.objects.get(pk=item.prato.id)
+                    orcamento.prato.remove(prato)
+            
+            orcamento.quantidade_pessoas = request.POST.get('quantidade-pessoas')
+            orcamento.data_evento = data
+            orcamento.cliente = cliente
+            
+            orcamento.save()
+            
+            count = 0
+            deletado = request.POST.get(f'prato[{count}].deletado')
+            while deletado != None:
+                
+                if deletado == 'False':
+                    id = request.POST.get(f'prato[{count}].id')
+                    # quantidade = request.POST.get(f'prato[{count}].quantidade')
+                    # quantidade = float(quantidade.replace(',', '.'))
+                    
+                    aux = OrcamentoPratoAux(
+                        orcamento_id = orcamento.id,
+                        prato_id= id,
+                    )
+                    
+                    aux.save()
+                
+                count += 1
+                deletado = request.POST.get(f'prato[{count}].deletado')
+            
+            return JsonResponse({'sucesso': True})
+    
+    except Exception as e:
+        print(e)
+        return JsonResponse({'sucesso': False, 'erro': str(e) })
+
+    return JsonResponse({'success': True})
+
+
+def ExcluirOrcamento(request):
 
     return JsonResponse({'success': True})
 

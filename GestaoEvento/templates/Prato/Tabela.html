@@ -17,7 +17,7 @@
             </td>
         </tr>
         {% else %}
-            {% for pratos in pratos %}
+            {% for prato in pratos %}
             <tr>
                 <td class="text-center">
                     {{ prato.id }}
@@ -26,10 +26,10 @@
                     {{ prato.descricao }}
                 </td>
                 <td class="text-center">
-                    {{ prato.rendimento }}
+                    {{ prato.rendimento|floatformat:0 }}
                 </td>
                 <td class="text-center">
-                    0,00
+                    {{ prato.custo_total|floatformat:2 }}
                 </td>
                 </td><td class="text-center">
                     <a href="#" class="btn azul btn-editar" data-id="{{ prato.id }}" style="padding: 5px;" >

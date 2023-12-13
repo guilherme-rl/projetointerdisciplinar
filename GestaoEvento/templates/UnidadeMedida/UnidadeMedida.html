@@ -40,7 +40,8 @@
     $(document).ready(function () {
         console.log('Script index unidade medida');
 
-        $('.btn-novo-unidade-medida').click(function (e) {
+        $(document).off('click', '.btn-novo-unidade-medida');
+        $(document).on('click', '.btn-novo-unidade-medida', function (e) {
             e.preventDefault();
             console.log('click novo unidade medida');
 

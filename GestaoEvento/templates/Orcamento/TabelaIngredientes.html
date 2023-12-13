@@ -1,0 +1,48 @@
+<table class="table">
+    <thead>
+        <tr>
+            <th class="text-left">Descrição</th>
+            <th class="text-center" style="width: 100px;">C.U. (R$)</th>
+            <th class="text-center" style="width: 100px;">Qtd. Estimada</th>
+            <th class="text-center" style="width: 100px;">Un. Med.</th>
+            <th class="text-center" style="width: 130px;">Custo Estimado (R$)</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% if ingredientes|length == 0 %}
+        <tr>
+            <td class="text-center" colspan="10">
+                Sem itens para serem exibidos
+            </td>
+        </tr>
+        {% else %}
+            {% for ingrediente in ingredientes %}
+            <tr>
+                <td class="text-left">
+                    {{ ingrediente.descricao }}
+                </td>
+                <td class="text-center">
+                    {{ ingrediente.custo_unitario|floatformat:2 }}
+                </td>
+                <td class="text-center">
+                    {{ ingrediente.quantidade|floatformat:3 }}
+                </td>
+                <td class="text-center">
+                    {{ ingrediente.unidade_medida.sigla }}
+                </td>
+                <td class="text-center">
+                    {{ ingrediente.custo_estimado|floatformat:2 }}
+                </td>
+            </tr>
+            {% endfor %}
+        {% endif %}
+    </tbody>
+    <tfoot>
+        <tr>
+            <td colspan="2"></td>
+            <td class="text-right" colspan="2" >Custo Total Estimado (R$)</td>
+            <td class="text-center" id="total-prato">{{ custo_total_estimado|floatformat:2 }}</td>
+        </tr>
+    </tfoot>
+</table>

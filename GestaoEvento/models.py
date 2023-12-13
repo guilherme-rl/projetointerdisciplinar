@@ -63,7 +63,8 @@ class Ingrediente(models.Model):
 
 class Prato(models.Model):
     descricao = models.CharField(max_length=200)
-    rendimento = models.DecimalField(max_digits=10, decimal_places=4)
+    rendimento = models.DecimalField(max_digits=10, decimal_places=4, default=0)
+    observacao = models.TextField(default=None)
     excluido = models.BooleanField(default=False)
     ingredientes = models.ManyToManyField(
         Ingrediente,
